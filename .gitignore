@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+.bashrc
+.nanorc
+.ssh/config
+.ssh/id_ed25519.pub
