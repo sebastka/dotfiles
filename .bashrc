@@ -122,3 +122,16 @@ function kdesrc-run
 }
 #################################################################
 
+
+mkc () {
+	cat << EOF > $1
+#include <stdlib.h>
+#include <stdio.h>
+
+int main(const int argc, char** const argv)
+{
+	printf("hello, world");
+	return EXIT_SUCCESS;
+}
+EOF
+}
