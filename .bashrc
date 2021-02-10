@@ -10,6 +10,7 @@ fi
 #
 
 export LANG=en_US.UTF-8
+export LC_ALL=$LANG
 export EDITOR='nano'
 export ARCHFLAGS="-arch x86_64"
 export MAKEFLAGS="-j12"
