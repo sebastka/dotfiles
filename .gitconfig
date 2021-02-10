@@ -1,0 +1,16 @@
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+	name = Sebastian Karlsen
+	email = sebastian@karlsen.fr
+	signingkey = 5FC5033500935400
+[core]
+	editor = nano
+[commit]
+	gpgsign = true
+[init]
+	defaultBranch = master
+[url "https://invent.kde.org/"]
+	insteadOf = kde:
+[url "ssh://git@invent.kde.org/"]
+	pushInsteadOf = kde:
