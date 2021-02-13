@@ -1,6 +1,7 @@
 #
 #	Load ohmybash
 #
+
 if test -f /usr/share/oh-my-bash/bashrc; then
 	. /usr/share/oh-my-bash/bashrc
 fi
@@ -9,8 +10,11 @@ fi
 #	Env vars
 #
 
+# Locale
 export LANG=en_US.UTF-8
-export LC_ALL=$LANG
+export LC_ALL=nb_NO.UTF-8
+export LC_TIME=$LANG
+
 export EDITOR='nano'
 export ARCHFLAGS="-arch x86_64"
 export MAKEFLAGS="-j12"
@@ -18,6 +22,7 @@ export MAKEFLAGS="-j12"
 #
 #	Aliases
 #
+
 alias pmake='make $(MAKEFLAGS)'
 
 #
