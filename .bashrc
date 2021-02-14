@@ -33,8 +33,7 @@ alias pmake='make $(MAKEFLAGS)'
 export PATH="$HOME/kde/src/kdesrc-build:$PATH"
 
 ## Run projects built with kdesrc-build
-function kdesrc-run
-{
+kdesrc-run () {
 	source "$HOME/kde/build/$1/prefix.sh" && "$HOME/kde/usr/bin/${1##*/}" "${@:2:$#}"
 }
 
@@ -42,6 +41,7 @@ function kdesrc-run
 #	Functions
 #
 
-mkc () {
-	echo -ne "#include <stdlib.h>\n#include <stdio.h>\n\nint main(const int argc, const char** const argv)\n{\n\tprintf(\"hello, world\");\n\n\treturn EXIT_SUCCESS;\n}" >> $1
-}
+if test -f ~/.bash_functions; then
+	. ~/.bash_functions
+fi
+
