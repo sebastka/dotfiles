@@ -4,12 +4,12 @@
 
 # Create base C file
 mkc () {
-	if [ [ $# -ne 1 ] ]; then
+	if [ "$#" -ne 1 ]; then
 		echo "Error: no argument provided"
 		return 1
 	fi
 
-	if test -f $1; then
+	if [ -f "$1" ]; then
 		echo "Error: '$1' already exists"
 		return 1
 	fi
@@ -24,18 +24,18 @@ mkc () {
 # https://www.microsoft.com/en-us/software-download/windows10ISO
 getWin () {
 	# Check args
-	if [ $# -lt 0 ] || [ $# -gt 2 ]; then
+	if [ "$#" -lt 0 ] || [ "$#" -gt 2 ]; then
 		echo "Error: either none or two agrument is required: language (ex: Norwegian) and output file"
 		return 1
 	fi
 
-	if [ $# -eq 0 ] || [ -z "$1" ]; then
+	if [ "$#" -eq 0 ] || [ -z "$1" ]; then
 		LANG_NAME="English"
 	else
 		LANG_NAME=$1
 	fi
 
-	if [ $# -eq 2 ] && [ -z "$2" ]; then
+	if [ "$#" -eq 2 ] && [ -z "$2" ]; then
 		echo "Error: output file cannot be an empty string"
 		return 0
 	fi
@@ -79,7 +79,7 @@ getWin () {
 	echo "Downloading $FILE_NAME ($FILE_SIZE_MB MB [$FILE_SIZE_BYTES bytes])"
 
 	# If second arg is provided, store file to $2
-	if [ $# -eq 2 ]; then
+	if [ "$#" -eq 2 ]; then
 		curl -s -L "$DOWNLOAD_URL" -o "$2"
 	else
 		curl -s -L "$DOWNLOAD_URL" -o "$FILE_NAME"
@@ -97,7 +97,7 @@ getFonts () {
 	fi
 
 	# If iso provided, does the file exist? If not, fetch it
-	if [ $# -eq 1 ] && [ -f "$1"]; then
+	if [ "$#" -eq 1 ] && [ -f "$1"]; then
 		FILE=$1
 	else
 		FILE="win.iso"
@@ -112,7 +112,7 @@ getFonts () {
 	rmdir iso
 
 	# Remove iso if it has not been provided as an argument
-	if [ $# -eq 0 ]; then
+	if [ "$#" -eq 0 ]; then
 		rm $FILE
 	fi
 
