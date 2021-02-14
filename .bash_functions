@@ -1,11 +1,16 @@
+#!/bin/sh
+
 #
 #	Custom Bash functions
 #
 
 # Create base C file
 mkc () {
+	USAGE="Usage: mkc filename"
+
 	if [ "$#" -ne 1 ]; then
 		echo "Error: no argument provided"
+		echo "$USAGE"
 		return 1
 	fi
 
@@ -21,8 +26,11 @@ mkc () {
 
 # Open browser tab in explainshell.com
 explain () {
+	USAGE="Usage: explain command"
+
 	if [ "$#" -lt 1 ]; then
 		echo "Error: no argument provided"
+		echo "$USAGE"
 		return 1
 	fi
 	
@@ -37,9 +45,12 @@ explain () {
 # https://tb.rg-adguard.net/public.php
 # https://www.microsoft.com/en-us/software-download/windows10ISO
 getWin () {
+	USAGE="Usage: getWin [language [output]]"
+
 	# Check args
 	if [ "$#" -lt 0 ] || [ "$#" -gt 2 ]; then
-		echo "Error: either none or two agrument is required: language (ex: Norwegian) and output file"
+		echo "Error: at most to positional arguments"
+		echo "$USAGE"
 		return 1
 	fi
 
@@ -51,6 +62,7 @@ getWin () {
 
 	if [ "$#" -eq 2 ] && [ -z "$2" ]; then
 		echo "Error: output file cannot be an empty string"
+		echo "$USAGE"
 		return 0
 	fi
 
@@ -104,6 +116,8 @@ getWin () {
 
 # Extract Win10 fonts for https://aur.archlinux.org/packages/ttf-ms-win10/
 getFonts () {
+	USAGE=""
+
 	# Does wimextract command exist?
 	if [ ! command -v wimextract &> /dev/null ]; then
 		echo "Error: wimextract command not found. Please install wimlib"
@@ -111,8 +125,12 @@ getFonts () {
 	fi
 
 	# If iso provided, does the file exist? If not, fetch it
-	if [ "$#" -eq 1 ] && [ -f "$1"]; then
+	if [ "$#" -eq 1 ] && [ -f "$1" ]; then
 		FILE=$1
+	elif [ "$#" -eq 1 ] && [ ! -f "$1" ]; then
+		echo "Error: file '$1' not found"
+		echo "$USAGE"
+		return 1
 	else
 		FILE="win.iso"
 		getWin "English" "$FILE"
