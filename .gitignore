@@ -5,6 +5,7 @@
 !.bash_functions
 !.bash_profile
 !.bashrc
+!.gitattributes
 !.gitconfig
 !.gitignore
 !.nanorc
