@@ -2,8 +2,13 @@
 #	Load ohmybash
 #
 
-if test -f /usr/share/oh-my-bash/bashrc; then
+if [ -d /usr/share/oh-my-bash/ ]; then
 	. /usr/share/oh-my-bash/bashrc
+elif [ -d ~/.oh-my-bash/ ]; then
+	. ~/.oh-my-bash/templates/bashrc.osh-template
+else
+	git clone --depth=1 https://github.com/ohmybash/oh-my-bash.git ~/.oh-my-bash
+	. ~/.oh-my-bash/templates/bashrc.osh-template
 fi
 
 #

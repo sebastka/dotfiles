@@ -117,7 +117,7 @@ getFonts () {
 	fi
 
 	# If build folder is found, copy fonts to it
-	if [ -f ~/.cache/paru/clone/ttf-ms-win10/]; then
+	if [ -d ~/.cache/paru/clone/ttf-ms-win10/]; then
 		mv fonts/* ~/.cache/paru/clone/ttf-ms-win10/
 		rmdir fonts
 	fi
