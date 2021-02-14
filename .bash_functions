@@ -116,7 +116,7 @@ getWin () {
 
 # Extract Win10 fonts for https://aur.archlinux.org/packages/ttf-ms-win10/
 getFonts () {
-	USAGE=""
+	USAGE="Usage: getFonts [iso]"
 
 	# Does wimextract command exist?
 	if [ ! command -v wimextract &> /dev/null ]; then
