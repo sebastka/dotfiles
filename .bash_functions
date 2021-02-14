@@ -19,6 +19,20 @@ mkc () {
 	return 0
 }
 
+# Open browser tab in explainshell.com
+explain () {
+	if [ "$#" -lt 1 ]; then
+		echo "Error: no argument provided"
+		return 1
+	fi
+	
+	arg=`echo "$*" | tr ' ' '+'`
+
+	xdg-open "https://explainshell.com/explain?cmd=$arg"
+
+	return 0
+}
+
 # Download Win10 ISO (Inspired from https://gist.github.com/hongkongkiwi/15a5bf16437315df256c118c163607cb)
 # https://tb.rg-adguard.net/public.php
 # https://www.microsoft.com/en-us/software-download/windows10ISO
