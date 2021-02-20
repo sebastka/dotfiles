@@ -1,3 +1,12 @@
+# If not running interactively, don't do anything
+[[ "$-" != *i* ]] && return
+
+# Locale
+export LANG="en_US.UTF-8"
+export LC_ALL="nb_NO.UTF-8"
+export LC_TIME=$LANG
+export LC_CTYPE=$LANG
+
 #
 #	Load ohmybash
 #
@@ -14,11 +23,6 @@ fi
 #
 #	Env vars
 #
-
-# Locale
-export LANG=en_US.UTF-8
-export LC_ALL=nb_NO.UTF-8
-export LC_TIME=$LANG
 
 export EDITOR='nano'
 export ARCHFLAGS="-arch x86_64"
@@ -50,3 +54,6 @@ if [ -f ~/.bash_functions ]; then
 	. ~/.bash_functions
 fi
 
+if [ command -v neofetch &> /dev/null ]; then
+	neofetch
+fi
