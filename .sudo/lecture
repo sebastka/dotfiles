@@ -1,0 +1,22 @@
+#
+#	Groot lecturer
+#
+
+## 1. Chose a lecturer
+# Groot: https://caferock.org/chris/groot.txt || https://www.cyberciti.biz/files/groot.txt
+# Dinosaurus: https://caferock.org/chris/dinosaurus.txt
+# Tradewars: https://caferock.org/chris/tradewars.txt
+
+## 2. Put it in /etc/sudoers.d/lecturer.txt
+# curl -o /etc/sudoers.d/lecturer.txt https://caferock.org/chris/groot.txt
+
+## 3. Put the following in /etc/sudoers.d/lecture:
+Defaults	lecture=always
+Defaults	lecture_file=/etc/sudoers.d/lecturer.txt
+
+## 4. Set correct permissions:
+# sudo chmod 0440 /etc/sudoers.d/lecturer.txt
+# sudo chmod 0440 /etc/sudoers.d/lecture
+
+## 5. Reset sudo
+# sudo sudo --reset-timestamp
