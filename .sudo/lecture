@@ -19,4 +19,4 @@ Defaults	lecture_file=/etc/sudoers.d/lecturer.txt
 # sudo chmod 0440 /etc/sudoers.d/lecture
 
 ## 5. Reset sudo
-# sudo sudo --reset-timestamp
+# sudo --reset-timestamp
