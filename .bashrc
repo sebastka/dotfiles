@@ -54,6 +54,6 @@ if [ -f ~/.bash_functions ]; then
 	. ~/.bash_functions
 fi
 
-if [ command -v neofetch &> /dev/null ]; then
+if [ -x "$(command -v neofetch)" ]; then
 	neofetch
 fi

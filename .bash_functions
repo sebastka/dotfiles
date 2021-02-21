@@ -190,7 +190,7 @@ getFonts () {
 		USAGE="Usage: getFonts [iso]"
 
 		# Does wimextract command exist?
-		if [ ! command -v wimextract &> /dev/null ]; then
+		if ! [ -x "$(command -v wimextract)" ]; then
 			echo "Error: wimextract command not found. Please install wimlib"
 			return 1
 		fi
