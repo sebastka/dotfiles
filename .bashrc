@@ -34,8 +34,8 @@ export MAKEFLAGS="-j12"
 
 alias pmake='make $(MAKEFLAGS)'
 
-if [ -x "$(command -v bpytop)" ]; then
-	alias htop='bpytop'
+if [ -x "$(command -v zenith)" ]; then
+	alias htop='zenith'
 fi
 
 #
