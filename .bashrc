@@ -34,6 +34,10 @@ export MAKEFLAGS="-j12"
 
 alias pmake='make $(MAKEFLAGS)'
 
+if [ -x "$(command -v bpytop)" ]; then
+	alias htop='bpytop'
+fi
+
 #
 #	kdesrc-build
 #
