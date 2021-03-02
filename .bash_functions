@@ -157,18 +157,18 @@ getWin () {
 		fi
 
 		echo "Found $WINDOWS_NAME"
-		# if [ -f "$FILE_NAME" ]; then
-		# 	EXISTING_BYTES=`stat --printf="%s" "$FILE_NAME"`
+		if [ -f "$FILE_NAME" ]; then
+			EXISTING_BYTES=`stat --printf="%s" "$FILE_NAME"`
 
-		# 	if [ "$EXISTING_BYTES" -eq "$FILE_SIZE_BYTES" ]; then
-		# 		echo "File already exists! Skipping download"
-		# 		return 0
-		# 	else
-		# 		echo "File does exist but has wrong bytesize! (got $EXISTING_BYTES expected $FILE_SIZE_BYTES)"
-		# 		echo "Probably corrupt or incomplete - removing"
-		# 		rm "$FILE_NAME"
-		# 	fi
-		# fi
+			if [ "$EXISTING_BYTES" -eq "$FILE_SIZE_BYTES" ]; then
+				echo "File already exists! Skipping download"
+				return 0
+			else
+				echo "File does exist but has wrong bytesize! (got $EXISTING_BYTES expected $FILE_SIZE_BYTES)"
+				echo "Probably corrupt or incomplete - removing"
+				rm "$FILE_NAME"
+			fi
+		fi
 
 		echo "Downloading $FILE_NAME ($FILE_SIZE_MB MB [$FILE_SIZE_BYTES bytes])"
 
