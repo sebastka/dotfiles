@@ -34,9 +34,9 @@ export MAKEFLAGS="-j12"
 
 alias pmake='make $(MAKEFLAGS)'
 
-if [ -x "$(command -v zenith)" ]; then
-	alias htop='zenith'
-fi
+if [ -x "$(command -v zenith)" ]; then alias htop='zenith'; fi
+if [ -x "$(command -v mtr)" ]; then alias traceroute='mtr'; fi
+
 
 #
 #	kdesrc-build
