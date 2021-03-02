@@ -157,27 +157,39 @@ getWin () {
 		fi
 
 		echo "Found $WINDOWS_NAME"
-		if [ -f "$FILE_NAME" ]; then
-			EXISTING_BYTES=`stat --printf="%s" "$FILE_NAME"`
+		# if [ -f "$FILE_NAME" ]; then
+		# 	EXISTING_BYTES=`stat --printf="%s" "$FILE_NAME"`
 
-			if [ "$EXISTING_BYTES" -eq "$FILE_SIZE_BYTES" ]; then
-				echo "File already exists! Skipping download"
-				return 0
-			else
-				echo "File does exist but has wrong bytesize! (got $EXISTING_BYTES expected $FILE_SIZE_BYTES)"
-				echo "Probably corrupt or incomplete - removing"
-				rm "$FILE_NAME"
-			fi
-		fi
+		# 	if [ "$EXISTING_BYTES" -eq "$FILE_SIZE_BYTES" ]; then
+		# 		echo "File already exists! Skipping download"
+		# 		return 0
+		# 	else
+		# 		echo "File does exist but has wrong bytesize! (got $EXISTING_BYTES expected $FILE_SIZE_BYTES)"
+		# 		echo "Probably corrupt or incomplete - removing"
+		# 		rm "$FILE_NAME"
+		# 	fi
+		# fi
 
 		echo "Downloading $FILE_NAME ($FILE_SIZE_MB MB [$FILE_SIZE_BYTES bytes])"
 
 		# If second arg is provided, store file to $2
 		if [ "$#" -eq 2 ]; then
-			curl -s -L "$DOWNLOAD_URL" -o "$2"
-		else
-			curl -s -L "$DOWNLOAD_URL" -o "$FILE_NAME"
+			FILE_NAME="$2"
 		fi
+
+		# Download file
+		curl -s -L "$DOWNLOAD_URL" -o "$FILE_NAME"
+
+		# Checksum
+		shasum=`sha1sum "$FILE_NAME" | cut -d " " -f1`
+
+		if curl -s https://sha1.rg-adguard.net/search.php?sha1="$shasum" | grep -q "<b>It is found in  msdn.rg-adguard.net:</b> 1"; then
+			echo "Checkum OK"
+		else
+			echo "Cheksum failed! Please try again"
+			rm "$FILE_NAME"
+			return 1
+		fi;
 
 		return 0
 	)
@@ -204,7 +216,13 @@ getFonts () {
 			return 1
 		else
 			FILE="win.iso"
-			getWin "English" "$FILE"
+			
+			if getWin "English" "$FILE"; then
+				echo "Download OK"
+			else
+				echo "Download of ISO failed! Please try again"
+				return 1
+			fi;
 		fi
 
 		# Extract fonts from iso
