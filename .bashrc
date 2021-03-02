@@ -55,5 +55,5 @@ if [ -f ~/.bash_functions ]; then
 fi
 
 if [ -x "$(command -v neofetch)" ]; then
-	neofetch
+	neofetch --color_blocks off --disable cpu gpu memory
 fi
