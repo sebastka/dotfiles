@@ -2,12 +2,10 @@
 *
 
 # But not these files...
-!.bash_functions
-!.bash_profile
-!.bashrc
-!.gitconfig
-!.gitignore
-!.nanorc
+!.config/
+!.config/htop/
+!.config/htop/htoprc
+!.ssh/
 !.ssh/config
 !.ssh/id_ed25519.pub
 !.sudo/
@@ -15,4 +13,10 @@
 !.sudo/groot.txt
 !.sudo/dinosaurus.txt
 !.sudo/tradewars.txt
+!.bash_functions
+!.bash_profile
+!.bashrc
+!.gitconfig
+!.gitignore
+!.nanorc
 !deploy.sh
