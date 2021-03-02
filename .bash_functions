@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 #	Custom Bash functions
@@ -221,8 +221,9 @@ getFonts () {
 
 		# If build folder is found, copy fonts to it
 		if [ -d ~/.cache/paru/clone/ttf-ms-win10/ ]; then
-			mv fonts/* ~/.cache/paru/clone/ttf-ms-win10/
-			rmdir fonts
+			cp fonts/* ~/.cache/paru/clone/ttf-ms-win10/
+		elif [ -d ~/.cache/yay/clone/ttf-ms-win10/ ]; then
+			cp fonts/* ~/.cache/yay/clone/ttf-ms-win10/
 		fi
 
 		return 0
