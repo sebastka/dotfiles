@@ -5,6 +5,7 @@
 !.config/
 !.config/htop/
 !.config/htop/htoprc
+!.config/nvim/init.vim
 !.ssh/
 !.ssh/config
 !.ssh/id_ed25519.pub
@@ -19,4 +20,7 @@
 !.gitconfig
 !.gitignore
 !.nanorc
+!.vimrc
+!.vim/
+!.vim/install_plugins.sh
 !deploy.sh

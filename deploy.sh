@@ -16,4 +16,6 @@ for f in `find . -type f -not -path "./.git/*" -not -path "./deploy.sh" -not -pa
 	cp "$f" ~/"$f"
 done
 
+~/.vim/install_plugins.sh
+
 exit 0
