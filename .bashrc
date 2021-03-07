@@ -30,7 +30,8 @@ elif [ -x "$(command -v vim)" ]; then export EDITOR='vim';
 else export EDITOR='vi'; fi
 
 # MAKEFLAGS
-if [ -x "$(command -v nproc)" ]; then export MAKEFLAGS="-j`nproc`"; fi
+if [ -x "$(command -v nproc)" ]; then export MAKEFLAGS=" -j`nproc`";
+else export MAKEFLAGS=''; fi
 
 export ARCHFLAGS="-arch x86_64"
 
@@ -38,7 +39,7 @@ export ARCHFLAGS="-arch x86_64"
 #	Aliases
 #
 
-alias make='make $(MAKEFLAGS)'
+alias make="make$MAKEFLAGS"
 
 
 #
