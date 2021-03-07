@@ -24,17 +24,22 @@ fi
 #	Env vars
 #
 
-export EDITOR='nano'
+# EDITOR
+if [ -x "$(command -v nvim)" ]; then export EDITOR='nvim';
+elif [ -x "$(command -v vim)" ]; then export EDITOR='vim';
+else export EDITOR='vi'; fi
+
+# MAKEFLAGS
+if [ -x "$(command -v nproc)" ]; then export MAKEFLAGS="-j`nproc`"; fi
+
 export ARCHFLAGS="-arch x86_64"
-export MAKEFLAGS="-j12"
 
 #
 #	Aliases
 #
 
-alias pmake='make $(MAKEFLAGS)'
+alias make='make $(MAKEFLAGS)'
 
-if [ -x "$(command -v mtr)" ]; then alias traceroute='mtr'; fi
 
 #
 #	kdesrc-build
