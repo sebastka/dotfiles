@@ -1,0 +1,16 @@
+#!/bin/sh -e
+# Open browser tab in explainshell.com
+
+USAGE="Usage: explain command"
+
+if [ "$#" -lt 1 ]; then
+	echo "Error: no argument provided"
+	echo "$USAGE"
+	exit 1
+fi
+
+arg=`echo "$*" | tr ' ' '+'`
+
+xdg-open "https://explainshell.com/explain?cmd=$arg"
+
+exit 0

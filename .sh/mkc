@@ -1,0 +1,19 @@
+#!/bin/sh -e
+# Create base C file
+
+USAGE="Usage: mkc filename"
+
+if [ "$#" -ne 1 ]; then
+	echo "Error: no argument provided"
+	echo "$USAGE"
+	exit 1
+fi
+
+if [ -f "$1" ]; then
+	echo "Error: '$1' already exists"
+	exit 1
+fi
+
+echo "#include <stdlib.h>\n#include <stdio.h>\n\nint main(const int argc, const char** const argv)\n{\n\tprintf(\"hello, world\");\n\n\treturn EXIT_SUCCESS;\n}\n" >> $1
+
+exit 0

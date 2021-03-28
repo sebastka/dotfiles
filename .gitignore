@@ -1,26 +1,3 @@
-# Ignore everything
-*
+.git/
+*.code-workspace
 
-# But not these files...
-!.config/
-!.config/htop/
-!.config/htop/htoprc
-!.config/nvim/init.vim
-!.ssh/
-!.ssh/config
-!.ssh/id_ed25519.pub
-!.sudo/
-!.sudo/lecture
-!.sudo/groot.txt
-!.sudo/dinosaurus.txt
-!.sudo/tradewars.txt
-!.bash_functions
-!.bash_profile
-!.bashrc
-!.gitconfig
-!.gitignore
-!.nanorc
-!.vimrc
-!.vim/
-!.vim/install_plugins.sh
-!deploy.sh

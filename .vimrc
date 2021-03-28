@@ -7,11 +7,12 @@ set fileencoding=utf-8
 set updatetime=100
 set number					" Show line numbers
 set linebreak					" Break lines at word (requires Wrap lines)
-set showbreak=+++				" Wrap-broken line prefix
+""set showbreak=+++				" Wrap-broken line prefix
 set textwidth=110				" Line wrap (number of cols)
 set colorcolumn=110
 set showmatch					" Highlight matching brace
-""set visualbell				" Use visual bell (no beeping)
+set visualbell					" Use visual bell (no beeping)
+set t_vb=					" Set effect of visual bell to nothing
 
 set hlsearch					" Highlight all search results
 set smartcase					" Enable smart-case search
@@ -32,11 +33,12 @@ set exrc
 set secure
 
 " Advanced
-set ruler					" Show row and column ruler information
+""set ruler					" Show row and column ruler information
 set showtabline=2				" Show tab bar
 ""set autochdir					" Change working directory to open buffer
 set undolevels=1000				" Number of undo levels
 set backspace=indent,eol,start			" Backspace behaviour
+set termguicolors
 
 " Programming
 syntax on
@@ -45,12 +47,23 @@ syntax on
 nnoremap <C-Left> :tabprevious<CR>
 nnoremap <C-Right> :tabnext<CR>
 
+" Plugin manager: VimPlug
+" Install plugin manager: curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+" Install new plugins with :PlugInstall
+call plug#begin('~/.vim/plugged/')
+Plug 'morhetz/gruvbox'
+call plug#end()
+
+" Plugin conf
+
+" Theme
+colorscheme gruvbox
+
 " Show unprintable characters
 highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$\| \+\ze\t/
-
 highlight CarriageReturn ctermbg=red guibg=red
-match CarriageReturn /\r\+$/
 
-" Plugins
+call matchadd('ExtraWhitespace', '\s\+$')
+call matchadd('CarriageReturn', '\r\+$/')
 

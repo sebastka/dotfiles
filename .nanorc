@@ -1,4 +1,4 @@
-set tabsize 4
+set tabsize 8
 set linenumbers
 
 include /usr/share/nano/python.nanorc
