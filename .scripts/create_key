@@ -34,7 +34,7 @@ function main() {
 		local readonly default="${USER}@${HOSTNAME}"
 
 		# Get comment
-		echo "Comment (default: \"${default}\"): "
+		echo -n "Comment (default: \"${default}\"): "
 		read comment
 		[[ -z "${comment}" ]] && comment="${default}"
 
