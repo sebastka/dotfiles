@@ -6,7 +6,7 @@ set -e
 #		create_key type
 #
 #	Arguments:
-#		type (type): key type (ssh or gpg)
+#		type (string): ssh or gpg
 #	Outputs:
 #		Wizard
 #	Returns:
