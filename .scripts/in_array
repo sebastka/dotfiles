@@ -2,7 +2,7 @@
 set -e
 
 #######################################
-#	Check in element is in array.
+#	Check if element is in array.
 #	Beware of undesired behaviour when either
 #	the needle or elements of haystack include whitespaces.
 #		in_array "needle" "${haystack[@]}"
