@@ -1,23 +1,15 @@
 #!/bin/sh
 # Profile file. Runs on login
 
+# Locale
+export LANG="en_US.UTF-8"
+
+# Custom scripts
 [ -d "${HOME}/.scripts/" ] && export PATH="${PATH}:${HOME}/.scripts/"
 
-# Env
+# Software
 export EDITOR='vim'
 export TERMINAL='alacritty'
-
-# Locale
-
-export LANG="en_US.UTF-8"
-export LC_ALL="${LANG}"
-[ locale -a | grep ^nb_NO.utf8 ] && export LC_ALL="nb_NO.UTF-8"
-
-export LC_TIME="${LANG}"
-export LC_CTYPE="${LANG}"
-
-
-
 
 # GPG & SSH
 export GPG_TTY="$(tty)"

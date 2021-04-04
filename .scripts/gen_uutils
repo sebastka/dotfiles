@@ -29,16 +29,15 @@ function main() {
 		rm "${dest}"
 	fi
 
-	# Rust coreutils not installed -> exit without error
-	if ! command ls /usr/bin/uu-*; then
-		return 0
-	fi
-
 	# Create alias for each /usr/bin/uu- binary
-	echo '#!'"/bin/sh" > "${dest}"
-	for f in $(command ls /usr/bin/uu-*); do
+	for f in /usr/bin/uu-*; do
 		echo "alias $(basename ${f} | cut -d- -f2)=${f}" >> "${dest}"
 	done;
+
+	# If no line has been printed to $dest, quit with err
+	if [[ ! -f "${dest}" ]]; then
+		return 1
+	fi
 
 	return 0
 }

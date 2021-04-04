@@ -23,6 +23,16 @@ PS1='[\u@\h \W]\$ '
 # If available, load polyglot:
 [[ -f ~/.polyglot.sh ]] && source ~/.polyglot.sh
 
+#
+#	Env
+#
+
+if locale -a | grep ^nb_NO.utf8 &>/dev/null; then
+	export LC_ALL="nb_NO.UTF-8"
+fi
+export LC_TIME="${LANG}"
+export LC_CTYPE="${LANG}"
+
 # MAKEFLAGS
 [[ -x "$(command -v nproc)" ]] && export MAKEFLAGS="-j`nproc`"
 
