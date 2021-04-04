@@ -32,8 +32,14 @@ function main() {
 		cp "$f" ~/"$f"
 	done
 
+	# Create link ~/.bash_profile -> ~/.profile
 	if [[ ! -f ~/.bash_profile ]]; then
 		ln -s ~/.profile ~/.bash_profile
+	fi
+
+	# Update .ssh/config with local key
+	if [[ -f "${HOME}/.ssh/id_${HOSTNAME}.pub" ]]; then
+		sed -i "s/keyname.path/id_${HOSTNAME}/g" ~/.ssh/config
 	fi
 
 	return 0
