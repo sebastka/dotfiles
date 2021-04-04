@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Open browser tab in explainshell.com
+#		explain command
+#
+#	Arguments:
+#		command (string): command to explain
+#	Outputs:
+#		Opens browser with explanation
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: explain command"
+
+	if [[ "${#}" -lt 1 ]]; then
+		err "Error: one argument required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	cmd=`echo "${*}" | tr ' ' '+'`
+	xdg-open "https://explainshell.com/explain?cmd=${cmd}"
+
+	return 0
+}
+
+main "${@}"; exit

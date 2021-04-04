@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+function main() {
+	err "${*}"
+	return "${?}"
+}
+
+#######################################
+#	Print error message to stderr
+#	https://google.github.io/styleguide/shellguide.html
+#
+#	Arguments:
+#		string to print to stderr
+#	Outputs:
+#		Error message to stderr
+#	Returns:
+#		None
+#######################################
+function err() {
+	echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: ${*}" >&2
+}
+
+main "${@}"; exit

@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Deploy dotfiles
+#		./deploy
+#
+#	Arguments:
+#		None
+#	Outputs:
+#		None
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: ./deploy"
+
+	if [[ "${#}" -ne 0 ]]; then
+		.scripts/err "Error: no argument expected"
+		.scripts/err "${USAGE}"
+		return 1
+	fi
+
+	for f in `find . -type f -not -path "./.git/*" -not -path "./deploy" -not -path "./.gitignore" | cut -c3-`; do
+		# Only remove files (so we don't delete ~/.config by accident)
+		[ -f ~/"$f" ] && rm ~/"$f"
+
+		# If dir exists in dotfiles but not in ~ => create it
+		[ -d ${f%/*} ] && [ ! -d ~/${f%/*} ] && mkdir ~/${f%/*}
+
+		cp "$f" ~/"$f"
+	done
+
+	if [[ ! -f ~/.bash_profile ]]; then
+		ln -s ~/.profile ~/.bash_profile
+	fi
+
+	return 0
+}
+
+main "${@}"; exit

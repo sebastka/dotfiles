@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Description
+#		Create base bash script
+#
+#	Arguments:
+#		name (string): script name
+#	Outputs:
+#		New file with base bash script
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: mksh filename"
+	
+	if [[ "${#}" -ne 1 ]]; then
+		err "Error: one argument required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	if [[ -f "${1}" ]]; then
+		err "Error: '${1}' already exists"
+		return 1
+	fi
+
+	echo -e "#!/bin/bash\nset -e\n\n#######################################\n#\tDescription\n#\t\t${1} arg\n#\n#\tArguments:\n#\t\targ (type): desc\n#\tOutputs:\n#\t\tNone\n#\tReturns:\n#\t\t1 upon error\n#\t\t0 otherwise\n#######################################\nfunction main() {\n\tlocal readonly USAGE=\"Usage: ${1} arg\"\n\n\tif [[ \"\${#}\" -ne 1 ]]; then\n\t\terr \"Error: one argument required\"\n\t\terr \"\${USAGE}\"\n\t\treturn 1\n\tfi\n\n\t# Do something...\n\n\treturn 0\n}\n\nmain \"\${@}\"; exit" >> "${1}"
+	chmod +x "${1}"
+
+	return 0
+}
+
+main "${@}"; exit

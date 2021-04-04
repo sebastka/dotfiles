@@ -1,0 +1,160 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Set sudo lecturer
+#		set_lecturer lecturer
+#
+#	Arguments:
+#		lecturer (string): name of lecturer
+#	Outputs:
+#		None
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: set_lecturer lecturer"
+	declare -a lecturers=("groot" "dinosaurus" "tradewars" "none")
+
+	if [[ "${#}" -ne 1 ]]; then
+		err "Error: one argument required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	# Check if passed lecturer is valid
+	if ! in_array "${1}" "${lecturers[@]}"; then
+		err "Error: invalid argument provided"
+		err "Available lecturers: ${lecturers[@]}"
+		return 1
+	fi
+
+	# If "none", remove config file and lecturer
+	if [[ "${1}" == "none" ]]; then
+		[[ -f /etc/sudoers.d/lecturer.txt ]] && sudo rm /etc/sudoers.d/lecturer.txt
+		[[ -f /etc/sudoers.d/lecture ]] && sudo rm /etc/sudoers.d/lecture
+
+		return 0
+	fi
+
+	# Create files in /etc/sudoers.d/ and give correct permissions
+	set_config
+	eval "set_${1}"
+	sudo chmod 0440 /etc/sudoers.d/lecturer.txt /etc/sudoers.d/lecture
+
+	# Reset sudo so the new lecturer can be tested
+	sudo --reset-timestamp
+
+	return 0
+}
+
+#######################################
+#	Set config file
+#######################################
+function set_config() {
+	sudo bash -c 'cat >/etc/sudoers.d/lecture' <<'EOF'
+#
+#	Lecturer
+#
+
+## 1. Chose a lecturer
+# Groot: https://caferock.org/chris/groot.txt || https://www.cyberciti.biz/files/groot.txt
+# Dinosaurus: https://caferock.org/chris/dinosaurus.txt
+# Tradewars: https://caferock.org/chris/tradewars.txt
+
+## 2. Put it in /etc/sudoers.d/lecturer.txt
+# curl -o /etc/sudoers.d/lecturer.txt https://caferock.org/chris/groot.txt
+
+## 3. Put the following in /etc/sudoers.d/lecture:
+Defaults	lecture=always
+Defaults	lecture_file=/etc/sudoers.d/lecturer.txt
+
+## 4. Set correct permissions:
+# sudo chmod 0440 /etc/sudoers.d/lecturer.txt
+# sudo chmod 0440 /etc/sudoers.d/lecture
+
+## 5. Reset sudo
+# sudo --reset-timestamp
+EOF
+}
+
+#######################################
+#	Dinosaurus: 
+#		https://caferock.org/chris/dinosaurus.txt
+#######################################
+function set_dinosaurus() {
+	sudo bash -c 'cat >/etc/sudoers.d/lecturer.txt' <<'EOF'
+
+[1;92m       .--~--.
+      : [1;96m0[1;92m   [1;96m0[1;92m :
+      (  [97m. .[1;92m  )    [1;36m    ___  _____  ______  _______  __  _____  __  ______
+[1;92m     __) [1;97mVVV[1;92m (__    [1;36m  / _ \/  _/ |/ / __ \/ __/ _ |/ / / / _ \/ / / / __/
+[1;92m    /           \  [1;36m  / // // //    / /_/ /\ \/ __ / /_/ / , _/ /_/ /\ \
+[1;92m   ([1;33mvv[1;92m)   [1;95m|[1;92m   ([1;33mvv[1;92m) [1;36m /____/___/_/|_/\____/___/_/ |_\____/_/|_|\____/___/
+[1;92m   __(_   [1;95m@[1;92m   _)__
+[1;92m  /    \  [1;95m|[1;92m  /    \
+[1;92m  :_[1;33mvv[1;92m_;-===-:_[1;33mvv[1;92m_;
+
+[0m
+
+EOF
+}
+
+#######################################
+#	Groot: 
+#		https://caferock.org/chris/groot.txt
+#		https://www.cyberciti.biz/files/groot.txt
+#######################################
+function set_groot() {
+	sudo bash -c 'cat >/etc/sudoers.d/lecturer.txt' <<'EOF'
+
+     [00;32m  \^V//
+     [00;33m  |[01;37m. [01;37m.[00;33m|   [01;34m I AM (G)ROOT!
+     [00;32m- [00;33m\ - / [00;32m_
+     [00;33m \_| |_/
+     [00;33m   \ \
+     [00;31m __[00;33m/[00;31m_[00;33m/[00;31m__
+     [00;31m|_______|  [00;37m With great power comes great responsibility.
+     [00;31m \     /   [00;37m Use sudo wisely.
+     [00;31m  \___/
+[0m
+
+EOF
+}
+
+#######################################
+#	Tradewars:
+#		https://caferock.org/chris/tradewars.txt
+#######################################
+function set_tradewars() {
+	sudo bash -c 'cat >/etc/sudoers.d/lecturer.txt' <<'EOF'
+
+[40m       [97m.                   [31m.         [97m.          [97m.                              [97m 
+                        [31m.  [34m│                           [97m.                       [97m 
+  [97m.        [90m│            [34m│[31m. [34m│[31m.   [97m.                               [97m.              [97m 
+           [90m│           [34m╷││┌┤│           [37m│                                      [97m 
+       [31m.   [90m│[31m.│[90m ╒[90m▐[34m•   ▄▄[34;104m█▓▒[94m███[94;40m▄▄   •[37m▐╕  ││                                      [97m 
+ [90m─══[90m░░░░░░░░░░░░░░░░░░▒▓█[37;100m░▒▓█[47;34m--[37;40m█████[47;34m-=USS=-[37;100m██▓▒░[90;40m█[90m╛        [97m.                    [97m 
+   [31m:[34m╙─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─┼─╜[31m:                    [97m.        [97m 
+   [31m. [34m┌┼─┼[94;44m═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪═╪[34;40m╕ [31m.                             [97m 
+    [90m╒░░░░░░░░░░░░░░░░░▒▓█[37;100m░▒▓███████[47;34m-[37;40m███████[47;34m--[37;100m▓▒░[37;40m╪═┐          [97m.               [97m. [97m 
+       │   │    ╘▐   [34m▀▀[34;104m█▓▒[94m███[94;40m▀▀   [37;100m▐[37;40m╛   │   [37;100m▐[37;40m┘  │                               [97m 
+       ┘              [90m▐▒▓█[37;100m░▒▓[37;40m▌                           [97m.                     [97m 
+  [97m.                   [90m░[34m•[90m▓█[34m•[37;100m▒▓[34;40m•        [97m.                                        [97m 
+            [97m.         [90m░▒▓█[37;100m░▒▓[37;40m█                                                 [97m 
+                     [31m.[90m░[31m ▄▄▄▄ [37m█[31m.                                            [97m.   [97m 
+                      [90m░▒▓█[37;100m░▒▓[37;40m█                                                 [97m 
+       [97m.              [90m░[34m•[90m▓█[34m•[37;100m▒▓[34;40m•                                                 [97m 
+                      [90m░▒▓█[37;100m░▒▓[37;40m█                                          [97m.      [97m 
+            [97m.        [31m.[90m░[31m ▀▀▀▀ [37m█[31m.      [97m.                                         [97m 
+    [97m.                 [90m░▒▓█[37;100m░▒▓[37;40m█                                                 [97m 
+                      [90m░▒[34m█[90m█[37;100m░[94m█[37m▓[37;40m█                    [97m.                       [97m.    [97m 
+  [97m.              [97m.   [31m.[90m┘║[34m█[90m█[37;100m░[94m█[90;40m│[37m└[31m.           [97m.                                    [97m 
+                       [90m│ │  [37m│                                                  [97m 
+[0m
+
+EOF
+}
+
+main "${@}"; exit

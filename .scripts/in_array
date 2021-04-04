@@ -1,0 +1,38 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Check in element is in array.
+#	Beware of undesired behaviour when either
+#	the needle or elements of haystack include whitespaces.
+#		in_array "needle" "${haystack[@]}"
+#
+#	Arguments:
+#		needle (string): element to look for
+#		haystack (array): array to search in
+#	Outputs:
+#		None
+#	Returns:
+#		0 if needle is in haystack
+#		1 otherwise
+#######################################
+function in_array() {
+	local readonly USAGE="Usage: in_array \"needle\" \"\${haystack[@]}\""
+
+	if [[ "${#}" -lt 2 ]]; then
+		err "Error: two positional arguments are required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	local readonly needle="${1}"
+	local readonly haystack=("${@:2}")
+
+	if [[ ${haystack[*]} =~ (^|[[:space:]])"${needle}"($|[[:space:]]) ]]; then
+		return 0
+	fi
+
+	return 1
+}
+
+in_array "${@}"; exit

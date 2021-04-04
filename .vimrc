@@ -1,3 +1,4 @@
+set nocompatible				" No need for backward compatibility
 set encoding=utf-8
 set fileencoding=utf-8
 
@@ -43,10 +44,6 @@ set termguicolors
 " Programming
 syntax on
 
-" Shortcuts
-nnoremap <C-Left> :tabprevious<CR>
-nnoremap <C-Right> :tabnext<CR>
-
 " Plugin manager: VimPlug
 " Install plugin manager: curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
@@ -66,4 +63,11 @@ highlight CarriageReturn ctermbg=red guibg=red
 
 call matchadd('ExtraWhitespace', '\s\+$')
 call matchadd('CarriageReturn', '\r\+$/')
+
+" Bindings
+
+"Tabs
+nnoremap	t<Right>	:tabnext<CR>
+nnoremap	t<Left>		:tabprev<CR>
+nnoremap	tn		:tabnew<Space>
 

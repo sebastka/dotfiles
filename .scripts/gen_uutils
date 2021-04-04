@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Generate aliases for uutils: https://github.com/uutils/coreutils/
+#	Creates file with aliases: ~/.scripts/uutils_aliases and then removes it
+#		gen_uutils
+#
+#	Arguments:
+#		None
+#	Outputs:
+#		None
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: gen_uutils"
+
+	if [[ "${#}" -ne 0 ]]; then
+		err "Error: no argument required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	dest=~/.uutils_aliases
+
+	# Remove file if it exists
+	if [[ -f "${dest}" ]]; then
+		rm "${dest}"
+	fi
+
+	# Create alias for each /usr/bin/uu- binary
+	echo '#!'"/bin/sh" >> "${dest}"
+	for f in $(command ls /usr/bin/uu-*); do
+		echo "alias $(basename ${f} | cut -d- -f2)=${f}" >> "${dest}"
+	done;
+
+	return 0
+}
+
+main "${@}"; exit

@@ -1,0 +1,73 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Extract Win10 fonts for https://aur.archlinux.org/packages/ttf-ms-win10/
+#		getFonts [iso]
+#
+#	Arguments:
+#		iso (string): optional path to win10 iso
+#	Outputs:
+#		None
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: getFonts [iso]"
+	local iso=""
+
+	if [[ "${#}" -gt 1 ]]; then
+		err "Error: only one possible positional argument"
+		err "${USAGE}"
+		return 1
+	fi
+
+	# Does wimextract command exist?
+	if [[ ! -x "$(command -v wimextract)" ]]; then
+		err "Error: wimextract command not found. Please install wimlib"
+		return 1
+	fi
+
+	# If iso provided
+	if [[ "${#}" -eq 1 ]]; then
+		iso=$1
+
+		if [[ ! -f "${iso}" ]]; then
+			err "Error: file '$1' not found"
+			err "$USAGE"
+			return 1
+		fi
+	else # if not, fetch it
+		iso="win.iso"
+		get_win "English" "${iso}"
+
+		if [[ ! -f "${iso}" ]]; then
+			err "Download failed, please try again"
+			return 1
+		fi;
+	fi
+
+	# Extract fonts from iso
+	mkdir iso
+	sudo mount "${iso}" iso -o loop
+	wimextract iso/sources/install.wim 1 /Windows/{Fonts/"*".{ttf,ttc},System32/Licenses/neutral/"*"/"*"/license.rtf} --dest-dir fonts
+	sudo umount iso
+	rmdir iso
+
+	# Remove iso if it has not been provided as an argument
+	if [ "${#}" -eq 0 ]; then
+		rm "${iso}"
+	fi
+
+	# If build folder is found, copy fonts to it
+	if [ -d ~/.cache/paru/clone/ttf-ms-win10/ ]; then
+		cp fonts/* ~/.cache/paru/clone/ttf-ms-win10/
+	elif [ -d ~/.cache/yay/clone/ttf-ms-win10/ ]; then
+		cp fonts/* ~/.cache/yay/clone/ttf-ms-win10/
+	fi
+
+	return 0
+}
+
+main "${@}"; exit
