@@ -24,12 +24,12 @@ function main() {
 
 	for f in `find . -type f -not -path "./.git/*" -not -path "./deploy" -not -path "./.gitignore" | cut -c3-`; do
 		# Only remove files (so we don't delete ~/.config by accident)
-		[ -f ~/"$f" ] && rm ~/"$f"
+		[[ -f "${HOME}/${f}" ]] && rm "${HOME}/${f}"
 
 		# If dir exists in dotfiles but not in ~ => create it
-		[ -d ${f%/*} ] && [ ! -d ~/${f%/*} ] && mkdir ~/${f%/*}
+		[[ -d ${f%/*} ]] && [[ ! -d "${HOME}/${f%/*}" ]] && mkdir "${HOME}/${f%/*}"
 
-		cp "$f" ~/"$f"
+		cp "${f}" "${HOME}/${f}"
 	done
 
 	# Create link ~/.bash_profile -> ~/.profile
@@ -38,8 +38,8 @@ function main() {
 	fi
 
 	# Update .ssh/config with local key
-	if [[ -f "${HOME}/.ssh/id_${HOSTNAME}.pub" ]]; then
-		sed -i "s/privatekey/id_${HOSTNAME}/g" ~/.ssh/config
+	if [[ -f "${HOME}/.ssh/${USER}@${HOSTNAME}.pub" ]]; then
+		sed -i "s/privatekey/${USER}@${HOSTNAME}/g" ~/.ssh/config
 	else
 		rm ~/.ssh/config
 	fi
