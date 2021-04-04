@@ -40,6 +40,8 @@ function main() {
 	# Update .ssh/config with local key
 	if [[ -f "${HOME}/.ssh/id_${HOSTNAME}.pub" ]]; then
 		sed -i "s/privatekey/id_${HOSTNAME}/g" ~/.ssh/config
+	else
+		rm ~/.ssh/config
 	fi
 
 	return 0
