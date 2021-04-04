@@ -1,0 +1,53 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Description
+#		create_key type
+#
+#	Arguments:
+#		type (type): key type (ssh or gpg)
+#	Outputs:
+#		Wizard
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: create_key type"
+	declare -a types=("ssh" "gpg" "pgp")
+
+	if [[ "${#}" -ne 1 ]]; then
+		err "Error: one argument required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	# Check if passed lecturer is valid
+	if ! in_array "${1}" "${types[@]}"; then
+		err "Error: invalid argument provided"
+		err "Available types: ${types[@]}"
+		return 1
+	fi
+
+	if [[ "${1}" == "ssh" ]]; then
+		local readonly default="${USER}@${HOSTNAME}"
+
+		# Get comment
+		echo "Comment (default: \"${default}\"): "
+		read comment
+		[[ -z "${comment}" ]] && comment="${default}"
+
+		# Generate key
+		ssh-keygen -v -o -a 100 -t ed25519 -f "${HOME}/.ssh/${comment}" -C "${comment}"
+		
+		# Set permissions
+		chmod 400 "${HOME}/.ssh/${comment}" "${HOME}/.ssh/${comment}.pub"
+	elif [[ "${1}" == "gpg" ]] || [[ "${1}" == "pgp" ]]; then
+		gpg --expert --full-gen-key
+	fi
+
+	return 0
+}
+
+main "${@}"; exit
