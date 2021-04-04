@@ -31,7 +31,9 @@ function main() {
 
 	# Create alias for each /usr/bin/uu- binary
 	for f in /usr/bin/uu-*; do
-		echo "alias $(basename ${f} | cut -d- -f2)=${f}" >> "${dest}"
+		if [[ -f "${f}" ]]; then # Prevent "alias *=/usr/bin/uu-*"
+			echo "alias $(basename ${f} | cut -d- -f2)=${f}" >> "${dest}"
+		fi
 	done;
 
 	# If no line has been printed to $dest, quit with err
