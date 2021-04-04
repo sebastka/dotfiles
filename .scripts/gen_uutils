@@ -16,6 +16,7 @@ set -e
 #######################################
 function main() {
 	local readonly USAGE="Usage: gen_uutils"
+	local readonly dest=~/.uutils_aliases
 
 	if [[ "${#}" -ne 0 ]]; then
 		err "Error: no argument required"
@@ -23,15 +24,13 @@ function main() {
 		return 1
 	fi
 
-	dest=~/.uutils_aliases
-
 	# Remove file if it exists
 	if [[ -f "${dest}" ]]; then
 		rm "${dest}"
 	fi
 
 	# Create alias for each /usr/bin/uu- binary
-	echo '#!'"/bin/sh" >> "${dest}"
+	echo '#!'"/bin/sh" > "${dest}"
 	for f in $(command ls /usr/bin/uu-*); do
 		echo "alias $(basename ${f} | cut -d- -f2)=${f}" >> "${dest}"
 	done;
