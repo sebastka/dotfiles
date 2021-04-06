@@ -4,6 +4,10 @@
 # Locale
 export LANG="en_US.UTF-8"
 
+# Env
+[ -z "${HOSTNAME}" ] && export HOSTNAME="$(hostname)"
+[ -z ${HOST} ] && export HOST="${HOSTNAME}"
+
 # Custom scripts
 [ -d "${HOME}/.scripts/" ] && export PATH="${PATH}:${HOME}/.scripts/"
 
@@ -15,6 +19,5 @@ export TERMINAL='alacritty'
 export GPG_TTY="$(tty)"
 [ -f "~/.ssh/id_${HOSTNAME}" ] && export SSH_KEY_PATH="~/.ssh/id_${HOSTNAME}"
 
-# Load bashrc
-[ -f ~/.bashrc ] && source ~/.bashrc
-
+# Load shell config rc
+. ~/.MYSHELLrc

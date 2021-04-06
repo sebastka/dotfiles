@@ -32,17 +32,19 @@ function main() {
 		cp "${f}" "${HOME}/${f}"
 	done
 
-	# Create link ~/.bash_profile -> ~/.profile
-	if [[ ! -f ~/.bash_profile ]]; then
-		ln -s ~/.profile ~/.bash_profile
-	fi
-
 	# Update .ssh/config with local key
 	if [[ -f "${HOME}/.ssh/${USER}@${HOSTNAME}.pub" ]]; then
 		sed -i "s/privatekey/${USER}@${HOSTNAME}/g" ~/.ssh/config
 	else
 		rm ~/.ssh/config
 	fi
+
+	# Set correct shell config file
+	local readonly my_shell=$(echo "${SHELL}" | cut -d'/' -f3)
+
+	echo -e "#!/bin/${my_shell}\n\n[[ \$- != *i* ]] && return\n\n# If available, load polyglot:\n[ -f ~/.polyglot.sh ] && . ~/.polyglot.sh\n\n. ~/.shrc\n" > "${HOME}/.${my_shell}rc"
+	sed -i "s/MYSHELL/${my_shell}/g" "${HOME}/.profile"
+	ln -s "${HOME}/.profile" "${HOME}/.${my_shell}_profile"
 
 	return 0
 }

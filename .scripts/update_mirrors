@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Update pacman mirrors with reflector
+#		update_mirrors
+#
+#	Arguments:
+#		None
+#	Outputs:
+#		None
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: update_mirrors"
+
+	if [[ "${#}" -ne 0 ]]; then
+		err "Error: no argument required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	# Does reflector command exist?
+	if [[ ! -x "$(command -v reflector)" ]]; then
+		err "Error: reflector command not found. Please install reflector"
+		return 1
+	fi
+
+	sudo reflector --country Norway --country Sweden --country Denmark --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
+	return 0
+}
+
+main "${@}"; exit

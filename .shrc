@@ -1,0 +1,41 @@
+#!/bin/sh
+#	     _
+#	 ___| |__  _ __ ___
+#	/ __| '_ \| '__/ __|
+#	\__ \ | | | | | (__
+#	|___/_| |_|_|  \___|
+#
+
+# History file - infinite
+HISTSIZE=-1
+HISTFILESIZE=-1
+
+# Default basic prompt
+[ -z "${PS1}" ] && export PS1='\$ '
+
+# Env
+export LC_ALL="nb_NO.UTF-8"
+export LC_TIME="${LANG}"
+
+# MAKEFLAGS
+[ -x "$(command -v nproc)" ] && export MAKEFLAGS="-j`nproc`"
+
+#
+#	Aliases
+#
+
+# Load uutils (rust coreutils) as aliases, if available
+#gen_uutils && . ~/.uutils_aliases && rm ~/.uutils_aliases
+
+alias make="make ${MAKEFLAGS}"
+alias ls='ls -h --color=auto'
+alias l='ls -alN --group-directories-first'
+alias ss='sudo systemctl'
+alias grep='grep --color=auto'
+alias mkdir='mkdir -p'
+alias vim='vim -p'
+
+# kdesrc-build
+if [[ ":$PATH:" == *":$HOME/kde/src/kdesrc-build:"* ]]; then
+	export PATH="${PATH}:${HOME}/kde/src/kdesrc-build"
+fi
