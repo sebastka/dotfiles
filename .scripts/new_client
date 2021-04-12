@@ -1,0 +1,91 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Description
+#		new_client name
+#
+#	Arguments:
+#		name (string): name of new client
+#	Outputs:
+#		keys and .ovpn files
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: new_client name"
+
+	if [[ "${#}" -ne 1 ]]; then
+		err "Error: one argument required"
+		err "${USAGE}"
+		return 1
+	fi
+
+	# Set env
+	[[ -z "${EASYRSA}" ]] && export EASYRSA=/etc/easy-rsa
+	[[ -z "${EASYRSA_VARS_FILE}" ]] && export EASYRSA_VARS_FILE=/etc/easy-rsa/vars
+	
+	# Create client keys
+	easyrsa gen-req "${1}" nopass
+	easyrsa sign-req client "${1}"
+
+	# Move to /etc/openvpn
+	cp "/etc/easy-rsa/pki/private/${1}.key" /etc/openvpn/client/
+	cp "/etc/easy-rsa/pki/issued/${1}.crt" /etc/openvpn/client/
+	rm "/etc/easy-rsa/pki/reqs/${1}.req"
+
+
+cat <<EOF >>/etc/openvpn/client/$1.ovpn
+###
+###     Config
+###
+
+client
+dev tun
+remote home.karlsen.fr 1194 udp
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+verb 5
+
+auth SHA512
+auth-nocache
+cipher AES-256-GCM
+
+tls-client
+tls-version-min 1.3
+tls-cipher TLS-DHE-RSA-WITH-AES-128-GCM-SHA256
+
+remote-cert-tls server
+key-direction 1
+
+###
+###     Keys and certificates
+###
+
+# /etc/openvpn/server/ca.crt
+<ca>
+$(cat /etc/openvpn/server/ca.crt)
+</ca>
+
+# /etc/openvpn/client/$1.crt
+<cert>
+$(cat /etc/openvpn/client/$1.crt)
+</cert>
+
+# /etc/openvpn/client/$1.key
+<key>
+$(cat /etc/openvpn/client/$1.key)
+</key>
+
+# /etc/openvpn/server/ta.key
+<tls-crypt>
+$(cat /etc/openvpn/server/ta.key)
+</tls-crypt>
+EOF
+	return 0
+}
+
+main "${@}"; exit

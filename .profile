@@ -17,7 +17,8 @@ export TERMINAL='alacritty'
 
 # GPG & SSH
 export GPG_TTY="$(tty)"
-[ -f "~/.ssh/id_${HOSTNAME}" ] && export SSH_KEY_PATH="~/.ssh/id_${HOSTNAME}"
+SSH_KEY_PATH="~/.ssh/${USER}@${HOSTNAME}"
+[ -f "${SSH_KEY_PATH}" ] && export SSH_KEY_PATH
 
 # Load shell config rc
 . ~/.MYSHELLrc

@@ -34,8 +34,3 @@ alias ss='sudo systemctl'
 alias grep='grep --color=auto'
 alias mkdir='mkdir -p'
 alias vim='vim -p'
-
-# kdesrc-build
-if [[ ":$PATH:" == *":$HOME/kde/src/kdesrc-build:"* ]]; then
-	export PATH="${PATH}:${HOME}/kde/src/kdesrc-build"
-fi
