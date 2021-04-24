@@ -22,21 +22,24 @@ function main() {
 		return 1
 	fi
 
-	for f in `find . -type f -not -path "./.git/*" -not -path "./deploy" -not -path "./.gitignore" | cut -c3-`; do
-		# Only remove files (so we don't delete ~/.config by accident)
-		[[ -f "${HOME}/${f}" ]] && rm "${HOME}/${f}"
+	for f in `find "$HOME/dotfiles/" -not -path "*/.git/*" -not -path "*/*.code-workspace" -not -path "*/.gitignore" -not -path "*/deploy"`; do
+		local from="${f}"
+		local to=$(echo "${f}" | sed -r 's/\/dotfiles//')
 
-		# If dir exists in dotfiles but not in ~ => create it
-		[[ -d ${f%/*} ]] && [[ ! -d "${HOME}/${f%/*}" ]] && mkdir "${HOME}/${f%/*}"
+		# If f is a dir, create it in ~
+		[[ -d "${f}" ]] && mkdir -p "${to}" && continue
 
-		cp "${f}" "${HOME}/${f}"
+		# If f exists in ~, remove it
+		[[ -f "${to}" ]] && rm -f "${to}"
+		
+		cp "${f}" "${to}"
 	done
 
 	# Update .ssh/config with local key
 	if [[ -f "${HOME}/.ssh/${USER}@${HOSTNAME}.pub" ]]; then
-		sed -i "s/privatekey/${USER}@${HOSTNAME}/g" ~/.ssh/config
+		sed -i "s/privatekey/${USER}@${HOSTNAME}/g" "${HOME}/.ssh/config"
 	else
-		rm ~/.ssh/config
+		rm "${HOME}/.ssh/config"
 	fi
 
 	# Set correct shell config file
@@ -44,7 +47,7 @@ function main() {
 
 	echo -e "#!${SHELL}\n\n[[ \$- != *i* ]] && return\n\n# If available, load polyglot:\n[ -f ~/.polyglot.sh ] && . ~/.polyglot.sh\n\n. ~/.shrc\n" > "${HOME}/.${my_shell}rc"
 	sed -i "s/MYSHELL/${my_shell}/g" "${HOME}/.profile"
-	ln -s "${HOME}/.profile" "${HOME}/.${my_shell}_profile"
+	[[ ! -L "${HOME}/.${my_shell}_profile" ]] && ln -s "${HOME}/.profile" "${HOME}/.${my_shell}_profile"
 
 	return 0
 }

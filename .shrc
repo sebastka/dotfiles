@@ -30,7 +30,17 @@ export LC_TIME="${LANG}"
 alias make="make ${MAKEFLAGS}"
 alias ls='ls -h --color=auto'
 alias l='ls -alN --group-directories-first'
-alias ss='sudo systemctl'
+alias sctl='sudo systemctl'
 alias grep='grep --color=auto'
 alias mkdir='mkdir -p'
 alias vim='vim -p'
+
+#if [ -x "$(command -v entr)" ]; then
+#	find "$HOME/dotfiles/" \
+#		-maxdepth 1 \
+#		-not -path "*/.git" \
+#		-not -path "*/*.code-workspace" \
+#		-not -path "*/.gitignore" \
+#		-not -path "*/deploy" \
+#	| entr -pd "$HOME/dotfiles/deploy" &
+#fi

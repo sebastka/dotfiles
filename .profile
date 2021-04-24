@@ -8,6 +8,10 @@ export LANG="en_US.UTF-8"
 [ -z "${HOSTNAME}" ] && export HOSTNAME="$(hostname)"
 [ -z ${HOST} ] && export HOST="${HOSTNAME}"
 
+export TERM=st-256color
+export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
+export CLICOLOR=1
+
 # Custom scripts
 [ -d "${HOME}/.scripts/" ] && export PATH="${PATH}:${HOME}/.scripts/"
 
