@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+#######################################
+#	Toggle VPN connection with systemd
+#		vpn clientname
+#	Arguments:
+#		clientname (string): name of the client defined in /etc/openvpn/client/
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: vpn clientname"
+
+	if [[ "${#}" -ne 1 ]]; then
+		err "Error: one argument expected, ${#} received"
+		err "${USAGE}"
+		return 1
+	fi
+
+	local readonly client="openvpn-client@${1}"
+
+	if systemctl is-active "${client}" >/dev/null 2>&1; then
+		echo "Stopping ${client}"
+		sudo systemctl stop "${client}"
+	else
+		echo "Starting ${client}"
+		sudo systemctl start "${client}"
+	fi
+
+	return 0
+}
+
+main "${@}"; exit

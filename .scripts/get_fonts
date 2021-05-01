@@ -18,7 +18,7 @@ function main() {
 	local iso=""
 
 	if [[ "${#}" -gt 1 ]]; then
-		err "Error: only one possible positional argument"
+		err "Error: at most one argument expected, ${#} received"
 		err "${USAGE}"
 		return 1
 	fi

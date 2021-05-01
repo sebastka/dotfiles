@@ -22,7 +22,7 @@ function main() {
 	local readonly USAGE="Usage: get_win [language [output]]"
 
 	if [[ "${#}" -gt 2 ]]; then
-		err "Error: at most two positional arguments"
+		err "Error: at most two arguments expected, ${#} received"
 		err "${USAGE}"
 		return 1
 	fi

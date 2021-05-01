@@ -20,7 +20,7 @@ function in_array() {
 	local readonly USAGE="Usage: in_array \"needle\" \"\${haystack[@]}\""
 
 	if [[ "${#}" -lt 2 ]]; then
-		err "Error: two positional arguments are required"
+		err "Error: two arguments expected, ${#} received"
 		err "${USAGE}"
 		return 1
 	fi

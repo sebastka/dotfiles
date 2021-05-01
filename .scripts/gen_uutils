@@ -19,7 +19,7 @@ function main() {
 	local readonly dest=~/.uutils_aliases
 
 	if [[ "${#}" -ne 0 ]]; then
-		err "Error: no argument required"
+		err "Error: no argument expected, ${#} received"
 		err "${USAGE}"
 		return 1
 	fi

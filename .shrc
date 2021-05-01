@@ -15,7 +15,7 @@ HISTSIZE=-1
 HISTFILESIZE=-1
 
 # Default basic prompt
-[ -z "${PS1}" ] && export PS1='\$ '
+[ -z "$PS1" ] && export PS1='\$ '
 
 # MAKEFLAGS
 [ -x "$(command -v nproc)" ] && export MAKEFLAGS="-j`nproc`"
@@ -27,7 +27,7 @@ HISTFILESIZE=-1
 # Load uutils (rust coreutils) as aliases, if available
 #gen_uutils && . ~/.uutils_aliases && rm ~/.uutils_aliases
 
-alias make="make ${MAKEFLAGS}"
+alias make="make $MAKEFLAGS"
 alias ls='ls -h --color=auto'
 alias ll='ls -alN --group-directories-first'
 alias sctl='sudo systemctl'
