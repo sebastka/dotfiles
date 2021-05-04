@@ -5,19 +5,22 @@
 export LANG="en_US.UTF-8"
 
 # Env
-export LC_CTYPE="nb_NO.UTF-8"
-export LC_NUMERIC="nb_NO.UTF-8"
-export LC_TIME="nb_NO.UTF-8"
-export LC_COLLATE="nb_NO.UTF-8"
-export LC_MONETARY="nb_NO.UTF-8"
-#export LC_MESSAGES="nb_NO.UTF-8"
-#export LC_PAPER="nb_NO.UTF-8"
-#export LC_NAME="nb_NO.UTF-8"
-#export LC_ADDRESS="nb_NO.UTF-8"
-#export LC_TELEPHONE="nb_NO.UTF-8"
-export LC_MEASUREMENT="nb_NO.UTF-8"
-#export LC_IDENTIFICATION="nb_NO.UTF-8"
-#export LC_ALL=nb_NO.UTF-8
+local readonly loc="nb_NO"
+if [[ ! -z $(locale -a | grep $loc) ]]; then
+	export LC_CTYPE="$loc.UTF-8"
+	export LC_NUMERIC="$loc.UTF-8"
+	export LC_TIME="$loc.UTF-8"
+	export LC_COLLATE="$loc.UTF-8"
+	export LC_MONETARY="$loc.UTF-8"
+	export LC_MESSAGES="$loc.UTF-8"
+	#export LC_PAPER="$loc.UTF-8"
+	#export LC_NAME="$loc.UTF-8"
+	#export LC_ADDRESS="$loc.UTF-8"
+	#export LC_TELEPHONE="$loc.UTF-8"
+	export LC_MEASUREMENT="$loc.UTF-8"
+	#export LC_IDENTIFICATION="$loc.UTF-8"
+	#export LC_ALL=nb_NO.UTF-8
+fi
 
 # Env
 [ -z "${HOSTNAME}" ] && export HOSTNAME="$(hostname)"
