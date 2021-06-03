@@ -5,9 +5,10 @@
 export LANG="en_US.UTF-8"
 
 # Env
-local readonly loc="nb_NO"
+readonly loc="nb_NO"
 if [[ ! -z "${loc}" ]] && [[ ! -z $(locale -a | grep $loc) ]]; then
 	# If $loc is not null AND if it is loaded:
+	export LC_ALL="C"
 	export LC_CTYPE="$loc.UTF-8"
 	export LC_NUMERIC="$loc.UTF-8"
 	export LC_TIME="$loc.UTF-8"
