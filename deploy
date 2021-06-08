@@ -23,8 +23,7 @@ function main() {
 
 	local readonly locale=${1}
 
-	for f in `find "$HOME/dotfiles/" -not -path "*/.git/*" -not -path "*/*.code-workspace" -not -path "*/.gitignore" -not -path "*/deploy"`; do
-		local from="${f}"
+	for f in `find "$HOME/dotfiles/" -not -path "*/.git" -not -path "*/.git/*" -not -path "*/*.code-workspace" -not -path "*/.gitignore" -not -path "*/deploy"`; do		local from="${f}"
 		local to=$(echo "${f}" | sed -r 's/\/dotfiles//')
 
 		# If f is a dir, create it in ~
@@ -32,7 +31,7 @@ function main() {
 
 		# If f exists in ~, remove it
 		[[ -f "${to}" ]] && rm -f "${to}"
-		
+
 		cp "${f}" "${to}"
 	done
 
