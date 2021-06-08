@@ -47,6 +47,7 @@ function main() {
 
 	echo -e "#!${SHELL}\n\n[[ \$- != *i* ]] && return\n\n# If available, load polyglot:\n[ -f ~/.polyglot.sh ] && . ~/.polyglot.sh\n\n. ~/.shrc\n" > "${HOME}/.${my_shell}rc"
 	sed -i "s/MYSHELL/${my_shell}/g" "${HOME}/.profile"
+	[[ -f "${HOME}/.${my_shell}_profile" ]] && rm "${HOME}/.${my_shell}_profile"
 	[[ ! -L "${HOME}/.${my_shell}_profile" ]] && ln -s "${HOME}/.profile" "${HOME}/.${my_shell}_profile"
 
 	return 0
