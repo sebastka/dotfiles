@@ -30,7 +30,7 @@ function main() {
 		return 2
 	fi
 
-	if [[ -f "/etc/openvpn/client/${client_name}.crt" ]] || [[ -f "/etc/openvpn/client/${client_name}.key" ]] || [[ -f "/etc/openvpn/client/${client_name}.ovpn" ]]; then
+	if [[ ! -z $(find /etc/openvpn/ | grep $client_name) ]]; then
 		err "There already is a client named ${client_name}"
 		err "Please use another name"
 		return 3
@@ -60,6 +60,9 @@ function main() {
 		| sed "/<key>/r /etc/openvpn/client/$client_name.key" \
 		| sed '/<tls-crypt>/r /etc/openvpn/server/ta.key' \
 		> "/etc/openvpn/client/${client_name}.ovpn"
+
+	mkdir -p /etc/openvpn/revoked/
+	chown -R openvpn:network /etc/openvpn/server/ /etc/openvpn/client/ /etc/openvpn/revoked/
 
 	return 0
 }

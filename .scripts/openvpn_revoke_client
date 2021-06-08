@@ -16,8 +16,8 @@ set -e
 function main() {
 	local readonly USAGE="Usage: openvpn_revoke_client server_name client_name"
 
-	if [[ "${#}" -ne 1 ]]; then
-		err "Error: one argument expected, ${#} received"
+	if [[ "${#}" -ne 2 ]]; then
+		err "Error: two argument expected, ${#} received"
 		err "${USAGE}"
 		return 1
 	fi
@@ -30,8 +30,8 @@ function main() {
 		return 2
 	fi
 
-	if [[ ! -f "/etc/openvpn/client/${client_name}.crt" ]] || [[ -f "/etc/openvpn/client/${client_name}.key" ]] || [[ -f "/etc/openvpn/client/${client_name}.ovpn" ]]; then
-		err "No client named ${client_name} was found"
+	if [[ ! -f "/etc/openvpn/client/${client_name}.crt" ]] || [[ ! -f "/etc/openvpn/client/${client_name}.key" ]] || [[ ! -f "/etc/openvpn/client/${client_name}.ovpn" ]]; then
+		err "No client named '${client_name}' was found"
 		return 3
 	fi
 
@@ -39,7 +39,7 @@ function main() {
 	[[ -z "${EASYRSA}" ]] && export EASYRSA=/etc/easy-rsa
 	[[ -z "${EASYRSA_VARS_FILE}" ]] && export EASYRSA_VARS_FILE=/etc/easy-rsa/vars
 
-	if [[ ! -d "${EASYRSA}" ]] || [[ ! -f "${EASYRSA_VARS_FILE}" ]] || [[ ! -x "$(command -v reflector)" ]]; then
+	if [[ ! -d "${EASYRSA}" ]] || [[ ! -f "${EASYRSA_VARS_FILE}" ]] || [[ ! -x "$(command -v easyrsa)" ]]; then
 		err "Please install EasyRSA in ${EASYRSA}"
 		return 4
 	fi
@@ -54,9 +54,10 @@ function main() {
 
 	# Move client files
 	mkdir -p /etc/openvpn/revoked/
-	mv "/etc/openvpn/client/${client_name}.*" /etc/openvpn/revoked/
+	mv /etc/openvpn/client/${client_name}.* /etc/openvpn/revoked/
 
 	# Restart server
+	chown -R openvpn:network /etc/openvpn/server/ /etc/openvpn/client/ /etc/openvpn/revoked/
 	systemctl restart "openvpn-server@${server_name}"
 
 	return 0
