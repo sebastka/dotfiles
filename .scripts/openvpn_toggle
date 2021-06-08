@@ -1,17 +1,18 @@
 #!/bin/bash
 set -e
+#set -x
 
 #######################################
 #	Toggle VPN connection with systemd
-#		vpn clientname
+#		openvpn_toggle client_name
 #	Arguments:
-#		clientname (string): name of the client defined in /etc/openvpn/client/
+#		client_name (string): name of the client defined in /etc/openvpn/client/
 #	Returns:
 #		1 upon error
 #		0 otherwise
 #######################################
 function main() {
-	local readonly USAGE="Usage: vpn clientname"
+	local readonly USAGE="Usage: openvpn_toggle client_name"
 
 	if [[ "${#}" -ne 1 ]]; then
 		err "Error: one argument expected, ${#} received"

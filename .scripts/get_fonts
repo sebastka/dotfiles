@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+#set -x
 
 #######################################
 #	Extract Win10 fonts for https://aur.archlinux.org/packages/ttf-ms-win10/
