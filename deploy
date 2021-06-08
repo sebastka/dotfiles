@@ -56,7 +56,7 @@ function main() {
 	[[ ! -L "${HOME}/.${my_shell}_profile" ]] && ln -s "${HOME}/.profile" "${HOME}/.${my_shell}_profile"
 
 	# Authorize my own device to access my device
-	cat "${HOME}/.ssh/*.pub" "${HOME}/.ssh/authorized_keys"
+	cat "${HOME}"/.ssh/*.pub > "${HOME}/.ssh/authorized_keys"
 
 	return 0
 }
