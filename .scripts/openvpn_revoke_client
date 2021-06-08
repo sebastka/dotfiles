@@ -1,0 +1,65 @@
+#!/bin/bash
+set -e
+#set -x
+
+#######################################
+#	Revoke a client and inform vpn server
+#		openvpn_revoke_client server_name client_name
+#
+#	Arguments:
+#		server_name (string): server's Common Name
+#		client_name (string): client's name
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: openvpn_revoke_client server_name client_name"
+
+	if [[ "${#}" -ne 1 ]]; then
+		err "Error: one argument expected, ${#} received"
+		err "${USAGE}"
+		return 1
+	fi
+
+	local readonly server_name="${1}"
+	local readonly client_name="${2}"
+
+	if [ "${EUID}" -ne 0 ]; then
+		err "Please run as root"
+		return 2
+	fi
+
+	if [[ ! -f "/etc/openvpn/client/${client_name}.crt" ]] || [[ -f "/etc/openvpn/client/${client_name}.key" ]] || [[ -f "/etc/openvpn/client/${client_name}.ovpn" ]]; then
+		err "No client named ${client_name} was found"
+		return 3
+	fi
+
+	# Set env
+	[[ -z "${EASYRSA}" ]] && export EASYRSA=/etc/easy-rsa
+	[[ -z "${EASYRSA_VARS_FILE}" ]] && export EASYRSA_VARS_FILE=/etc/easy-rsa/vars
+
+	if [[ ! -d "${EASYRSA}" ]] || [[ ! -f "${EASYRSA_VARS_FILE}" ]] || [[ ! -x "$(command -v reflector)" ]]; then
+		err "Please install EasyRSA in ${EASYRSA}"
+		return 4
+	fi
+
+	# Revoke client
+	easyrsa revoke "${client_name}"
+
+	# Update crl.pem
+	easyrsa gen-crl
+	[[ -f /etc/openvpn/server/crl.pem ]] && rm /etc/openvpn/server/crl.pem
+	cp /etc/easy-rsa/pki/crl.pem /etc/openvpn/server/crl.pem
+
+	# Move client files
+	mkdir -p /etc/openvpn/revoked/
+	mv "/etc/openvpn/client/${client_name}.*" /etc/openvpn/revoked/
+
+	# Restart server
+	systemctl restart "openvpn-server@${server_name}"
+
+	return 0
+}
+
+main "${@}"; exit
