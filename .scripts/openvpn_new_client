@@ -40,7 +40,7 @@ function main() {
 	[[ -z "${EASYRSA}" ]] && export EASYRSA=/etc/easy-rsa
 	[[ -z "${EASYRSA_VARS_FILE}" ]] && export EASYRSA_VARS_FILE=/etc/easy-rsa/vars
 
-	if [[ ! -d "${EASYRSA}" ]] || [[ ! -f "${EASYRSA_VARS_FILE}" ]] || [[ ! -x "$(command -v reflector)" ]]; then
+	if [[ ! -d "${EASYRSA}" ]] || [[ ! -f "${EASYRSA_VARS_FILE}" ]] || [[ ! -x "$(command -v easyrsa)" ]]; then
 		err "Please install EasyRSA in ${EASYRSA}"
 		return 4
 	fi
