@@ -41,7 +41,7 @@ function main() {
 		cp "${f}" "${to}"
 	done
 
-	# Update .ssh/config with local key
+	# If device has a key, set it in .ssh/config, otherwise delete file (since it's useless in that case)
 	if [[ -f "${HOME}/.ssh/${USER}@${HOSTNAME}.pub" ]]; then
 		sed -i "s/privatekey/${USER}@${HOSTNAME}/g" "${HOME}/.ssh/config"
 	else
