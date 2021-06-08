@@ -55,12 +55,12 @@ function main() {
 
 	# Create client.ovpn file
 	echo "${config}" | sed "s/REMOTE_IP/${remote_IP}/g" \
-		| sed $'/<\/ca>/{e cat /etc/openvpn/server/ca.crt\n}' \
-		| sed $'/</cert>/{e cat /etc/openvpn/client/${client_name}.crt\n}' \
-		| sed $'/</key>/{e cat /etc/openvpn/client/${client_name}.key\n}' \
-		| sed $'/</tls-crypt>/{e cat /etc/openvpn/server/ta.key\n}' \
+		| sed '/<ca>/r /etc/openvpn/server/ca.crt' \
+		| sed "/<cert>/r /etc/openvpn/client/$client_name.crt" \
+		| sed "/<key>/r /etc/openvpn/client/$client_name.key" \
+		| sed '/<tls-crypt>/r /etc/openvpn/server/ta.key' \
 		> "/etc/openvpn/client/${client_name}.ovpn"
-	
+
 	return 0
 }
 
