@@ -5,8 +5,8 @@
 export LANG="en_US.UTF-8"
 
 # Env
-readonly loc="nb_NO"
-if [[ ! -z "${loc}" ]] && [[ ! -z $(locale -a | grep $loc) ]]; then
+readonly loc="MYLOC"
+if [[ ! -z "${loc}" ]] && [[ ! -z $(grep -v "#" /etc/locale.gen | grep "$loc") ]]; then
 	# If $loc is not null AND if it is loaded:
 	export LC_ALL="C"
 	export LC_CTYPE="$loc.UTF-8"

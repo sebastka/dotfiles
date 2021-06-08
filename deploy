@@ -3,10 +3,9 @@ set -e
 
 #######################################
 #	Deploy dotfiles
-#		./deploy
-#
+#		./deploy locale
 #	Arguments:
-#		None
+#		locale (string): set user locale to be deployed
 #	Outputs:
 #		None
 #	Returns:
@@ -14,13 +13,15 @@ set -e
 #		0 otherwise
 #######################################
 function main() {
-	local readonly USAGE="Usage: ./deploy"
+	local readonly USAGE="Usage: ./deploy locale"
 
-	if [[ "${#}" -ne 0 ]]; then
-		.scripts/err "Error: no argument expected"
+	if [[ "${#}" -ne 1 ]]; then
+		.scripts/err "Error: one argument expected, ${#} received"
 		.scripts/err "${USAGE}"
 		return 1
 	fi
+
+	local readonly locale=${1}
 
 	for f in `find "$HOME/dotfiles/" -not -path "*/.git/*" -not -path "*/*.code-workspace" -not -path "*/.gitignore" -not -path "*/deploy"`; do
 		local from="${f}"
@@ -47,6 +48,8 @@ function main() {
 
 	echo -e "#!${SHELL}\n\n[[ \$- != *i* ]] && return\n\n# If available, load polyglot:\n[ -f ~/.polyglot.sh ] && . ~/.polyglot.sh\n\n. ~/.shrc\n" > "${HOME}/.${my_shell}rc"
 	sed -i "s/MYSHELL/${my_shell}/g" "${HOME}/.profile"
+	sed -i "s/MYLOC/${locale}/g" "${HOME}/.profile"
+
 	[[ -f "${HOME}/.${my_shell}_profile" ]] && rm "${HOME}/.${my_shell}_profile"
 	[[ ! -L "${HOME}/.${my_shell}_profile" ]] && ln -s "${HOME}/.profile" "${HOME}/.${my_shell}_profile"
 
