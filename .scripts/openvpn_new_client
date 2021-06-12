@@ -4,9 +4,10 @@ set -e
 
 #######################################
 #	Create new client for OpenVPN server
-#		openvpn_new_client remote_IP client_name
+#		openvpn_new_client remote_IP remote_port client_name
 #	Arguments:
 #		remote_IP (string): server's remote IP or hostname
+#		remote_port (int): servers's openvpn extenal port
 #		client_name (string): client's name
 #	Outputs:
 #		Crt, key and .ovpn files
@@ -15,16 +16,17 @@ set -e
 #		0 otherwise
 #######################################
 function main() {
-	local readonly USAGE="Usage: openvpn_new_client remote_IP client_name"
+	local readonly USAGE="Usage: openvpn_new_client remote_IP remote_port client_name"
 
-	if [[ "${#}" -ne 2 ]]; then
+	if [[ "${#}" -ne 3 ]]; then
 		err "Error: two argument expected, ${#} received"
 		err "${USAGE}"
 		return 1
 	fi
 
 	local readonly remote_IP="${1}"
-	local readonly client_name="${2}"
+	local readonly remote_port="${2}"
+	local readonly client_name="${3}"
 
 	if [ "${EUID}" -ne 0 ]; then
 		err "Please run as root"
@@ -56,6 +58,7 @@ function main() {
 
 	# Create client.ovpn file
 	echo "${config}" | sed "s/REMOTE_IP/${remote_IP}/g" \
+		| sed "s/REMOTE_PORT/${remote_port}/g" \
 		| sed '/<ca>/r /etc/openvpn/server/ca.crt' \
 		| sed "/<cert>/r /etc/openvpn/client/$client_name.crt" \
 		| sed "/<key>/r /etc/openvpn/client/$client_name.key" \
@@ -72,7 +75,7 @@ readonly config="# OpenVPN client config
 
 client
 dev tun
-remote REMOTE_IP 1194 udp
+remote REMOTE_IP REMOTE_PORT udp
 resolv-retry infinite
 nobind
 persist-key
