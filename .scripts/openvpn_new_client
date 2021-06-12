@@ -19,7 +19,7 @@ function main() {
 	local readonly USAGE="Usage: openvpn_new_client remote_IP remote_port client_name"
 
 	if [[ "${#}" -ne 3 ]]; then
-		err "Error: two argument expected, ${#} received"
+		err "Error: three argument expected, ${#} received"
 		err "${USAGE}"
 		return 1
 	fi
