@@ -52,7 +52,7 @@ function main() {
 	local readonly my_shell=$(echo "${SHELL}" | rev | cut -d'/' -f1 | rev)
 
 	# Create .profile
-	echo -e "#!${SHELL}\n\n[[ \$- != *i* ]] && return\n\n# If available, load polyglot:\n[ -f ~/.polyglot.sh ] && . ~/.polyglot.sh\n\n. ~/.shrc\n" > "${HOME}/.${my_shell}rc"
+	echo -e "#!${SHELL}\n\n[[ \$- != *i* ]] && return\n\n. ~/.shrc\n" > "${HOME}/.${my_shell}rc"
 	sed -i "s/MYSHELL/${my_shell}/g" "${HOME}/.profile"
 	sed -i "s/MYLOC/${locale}/g" "${HOME}/.profile"
 
