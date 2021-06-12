@@ -91,6 +91,7 @@ remote-cert-tls server
 
 route-nopull 
 route 10.7.0.0 255.255.255.0
+dhcp-option DNS 10.7.0.2
 
 ###
 ###     Keys and certificates
