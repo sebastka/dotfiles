@@ -58,7 +58,7 @@ function main() {
 
 	# Restart server
 	chown -R openvpn:network /etc/openvpn/server/ /etc/openvpn/client/ /etc/openvpn/revoked/
-	systemctl restart "openvpn-server@${server_name}"
+	systemctl reload "openvpn-server@${server_name}"
 
 	return 0
 }
