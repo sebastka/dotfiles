@@ -38,4 +38,4 @@ alias decrypt='gpg --decrypt'
 
 # Set prompt
 [ -z "$PS1" ] && export PS1='\$ '
-[ -x "$(command -v starship)" ] && eval "$(starship init bash)"
+[ -x "$(command -v starship)" ] && eval "$(starship init MYSHELL)"

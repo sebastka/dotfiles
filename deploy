@@ -54,6 +54,7 @@ function main() {
 	# Create .profile
 	echo -e "#!${SHELL}\n\n[[ \$- != *i* ]] && return\n\n. ~/.shrc\n" > "${HOME}/.${my_shell}rc"
 	sed -i "s/MYSHELL/${my_shell}/g" "${HOME}/.profile"
+	sed -i "s/MYSHELL/${my_shell}/g" "${HOME}/.shrc"
 	sed -i "s/MYLOC/${locale}/g" "${HOME}/.profile"
 
 	# Link .bashrc_profile to .profile
