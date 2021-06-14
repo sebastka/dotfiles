@@ -36,6 +36,9 @@ alias decompress='tar -xzvf'
 alias encrypt='gpg --armor --recipient sebastian@karlsen.fr --encrypt'
 alias decrypt='gpg --decrypt'
 
+# Avoid 'grep: warning: GREP_OPTIONS is deprecated; please use an alias or script'
+unset GREP_OPTIONS
+
 # Set prompt
 [ -z "$PS1" ] && export PS1='\$ '
 [ -x "$(command -v starship)" ] && eval "$(starship init MYSHELL)"
