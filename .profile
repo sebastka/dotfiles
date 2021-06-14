@@ -29,7 +29,6 @@ fi
 [ -z "$HOST" ] && export HOST="$HOSTNAME"
 
 export TERM=st-256color
-export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
 export CLICOLOR=1
 
 # Custom scripts

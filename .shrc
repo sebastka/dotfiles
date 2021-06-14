@@ -28,16 +28,13 @@ alias make="make $MAKEFLAGS"
 alias ls='ls -h --color=auto'
 alias ll='ls -alN --group-directories-first'
 alias sctl='sudo systemctl'
-alias grep='grep --color=auto'
+alias grep="GREP_COLOR='1;32' grep --color=always"
 alias mkdir='mkdir -p'
 alias vim='vim -p'
 alias compress='tar -czvf'
 alias decompress='tar -xzvf'
 alias encrypt='gpg --armor --recipient sebastian@karlsen.fr --encrypt'
 alias decrypt='gpg --decrypt'
-
-# Avoid 'grep: warning: GREP_OPTIONS is deprecated; please use an alias or script'
-unset GREP_OPTIONS
 
 # Set prompt
 [ -z "$PS1" ] && export PS1='\$ '
