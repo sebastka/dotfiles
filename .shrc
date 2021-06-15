@@ -31,8 +31,10 @@ alias sctl='sudo systemctl'
 alias grep="GREP_COLOR='1;32' grep --color=always"
 alias mkdir='mkdir -p'
 alias vim='vim -p'
-alias compress='tar -czvf'
-alias decompress='tar -xzvf'
+alias tar='tar -cvf'
+alias untar='tar -xvf'
+alias targz='tar -czvf'
+alias untargz='tar -xzvf'
 alias encrypt='gpg --armor --recipient sebastian@karlsen.fr --encrypt'
 alias decrypt='gpg --decrypt'
 
