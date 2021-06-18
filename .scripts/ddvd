@@ -9,10 +9,8 @@ set -e
 #	Arguments:
 #		device (string): path to device
 #		target (string): path to output file
-#	Outputs:
-#		None
 #	Returns:
-#		1 upon error
+#		1-4 upon error
 #		0 otherwise
 #######################################
 function main() {
@@ -33,13 +31,18 @@ function main() {
 	fi
 
 	if [[ -z $(blkid ${dev}) ]]; then
-		err "Error: device '${dev}' not found"
+		err "Error: no device found in '${dev}'"
 		return 3
 	fi
 
 	local readonly isoinfo=$(isoinfo -d -i "${dev}")
 	local readonly bs=$(echo "${isoinfo}" | grep "Logical block size is" | cut -d' ' -f5)
 	local readonly count=$(echo "${isoinfo}" | grep "Volume size is" | cut -d' ' -f4)
+
+	if [[ -z "${isoinfo}" ]] || [[ -z "${bs}" ]] || [[ -z "${count}" ]]; then
+		err "Return: could not analyze device '${dev}'"
+		return 4
+	fi
 
 	echo "dd if=${dev} bs=${bs} count=${count} of=${target}"
 	
