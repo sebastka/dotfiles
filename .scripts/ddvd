@@ -1,0 +1,62 @@
+#!/bin/bash
+set -e
+#set -x
+
+#######################################
+#	DVD to ISO
+#		ddvd devicd target
+#
+#	Arguments:
+#		device (string): path to device
+#		target (string): path to output file
+#	Outputs:
+#		None
+#	Returns:
+#		1 upon error
+#		0 otherwise
+#######################################
+function main() {
+	local readonly USAGE="Usage: ddvd device target"
+
+	if [[ "${#}" -ne 2 ]]; then
+		err "Error: two argument expected, ${#} received"
+		err "${USAGE}"
+		return 1
+	fi
+
+	local readonly dev="${1}"
+	local readonly target=${2}
+
+	if [[ -f "${target}" ]]; then
+		err "Error: destination file already exists"
+		return 2
+	fi
+
+	if [[ -z $(blkid ${dev}) ]]; then
+		err "Error: device '${dev}' not found"
+		return 3
+	fi
+
+	local readonly isoinfo=$(isoinfo -d -i "${dev}")
+	local readonly bs=$(echo "${isoinfo}" | grep "Logical block size is" | cut -d' ' -f5)
+	local readonly count=$(echo "${isoinfo}" | grep "Volume size is" | cut -d' ' -f4)
+
+	echo "dd if=${dev} bs=${bs} count=${count} of=${target}"
+	
+	# Prompt the user for yes/no
+	while true; do
+		local yn=""
+		read -p "Proceed? (y/n) " yn
+		case $yn in
+			[Yy]* ) break;;
+			[Nn]* ) echo "Aborting" && return 0;;
+			* ) echo "Please answer y/n.";;
+		esac
+	done
+
+	dd if="${dev}" bs="${bs}" count="${count}" of="${target}"
+
+	return 0
+}
+
+main "${@}"; exit
