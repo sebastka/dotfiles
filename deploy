@@ -17,15 +17,15 @@ function main() {
 	local readonly USAGE="Usage: ./deploy locale"
 
 	if [[ "${#}" -ne 1 ]]; then
-		.scripts/err "Error: one argument expected, ${#} received"
-		.scripts/err "${USAGE}"
+		.local/bin/err "Error: one argument expected, ${#} received"
+		.local/bin/err "${USAGE}"
 		return 1
 	fi
 
 	local readonly locale=${1}
 	
 	if [[ -z $(grep -v "#" /etc/locale.gen | grep "${locale}") ]]; then
-		.scripts/err "Locale ${locale} does not exist"
+		.local/bin/err "Locale ${locale} does not exist"
 		return 2
 	fi
 

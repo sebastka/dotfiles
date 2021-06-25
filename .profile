@@ -32,7 +32,8 @@ export TERM=st-256color
 export CLICOLOR=1
 
 # Custom scripts
-[ -d "$HOME/.scripts/" ] && export PATH="$PATH:$HOME/.scripts/"
+[ -d "$HOME/.local/bin" ] && export PATH="$PATH:$HOME/.local/bin"
+[ -d "$HOME/bin" ] && export PATH="$PATH:$HOME/bin"
 
 # Ruby GEM
 [ -x "$(command -v ruby)" ] && \
@@ -44,4 +45,4 @@ export EDITOR='vim'
 export TERMINAL='alacritty'
 
 # Load shell config rc
-. ~/.MYSHELLrc
+[ -f "$HOME/.MYSHELLrc" ] && . "$HOME/.MYSHELLrc"

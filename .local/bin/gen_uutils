@@ -4,7 +4,7 @@ set -e
 
 #######################################
 #	Generate aliases for uutils: https://github.com/uutils/coreutils/
-#	Creates file with aliases: ~/.scripts/uutils_aliases and then removes it
+#	Creates file with aliases: ~/.local/bin/uutils_aliases and then removes it
 #		gen_uutils
 #
 #	Arguments:
