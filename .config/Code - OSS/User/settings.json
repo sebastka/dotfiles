@@ -1,0 +1,21 @@
+{
+	"editor.insertSpaces": false,
+	"editor.detectIndentation": false,
+	"editor.renderWhitespace": "selection",
+	"workbench.colorTheme": "Gruvbox Material Dark",
+	"editor.renderControlCharacters": true,
+	"breadcrumbs.enabled": true,
+	"workbench.colorCustomizations": {
+		"editorWhitespace.foreground": "#ffffff"
+	},
+	"[c]": {
+		"code-eol.highlightExtraWhitespace": true,
+		"code-eol.newlineCharacter": "¬", 
+		"code-eol.returnCharacter": "⇠",
+		"code-eol.crlfCharacter": "↵"
+	},
+	"java.configuration.checkProjectSettingsExclusions": false,
+	"editor.tabSize": 8,
+	"terminal.integrated.tabs.enabled": true,
+	"editor.fontFamily": "'MesloLGS NF', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+}

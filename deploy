@@ -29,9 +29,9 @@ function main() {
 		return 2
 	fi
 
-	for f in `find "$HOME/dotfiles/" -type f -not -path "*/.git" -not -path "*/.git/*" -not -path "*/*.code-workspace" -not -path "*/.gitignore" -not -path "*/deploy"`; do
-		local readonly from="${f}"
-		local readonly to=$(echo "${f}" | sed -r 's/\/dotfiles//')
+	while IFS= read -r line; do
+		local readonly from="${line}"
+		local readonly to=$(echo "${from}" | sed -r 's/\/dotfiles//')
 		local readonly path=$(dirname "${to}")
 
 		# Create parent dir
@@ -40,8 +40,8 @@ function main() {
 		# If f exists in ~, remove it
 		[[ -f "${to}" ]] && rm -f "${to}"
 
-		cp ${f} ${to}
-	done
+		cp "${from}" "${to}"
+	done <<< $(find "${HOME}/dotfiles/" -type f -not -path "*/.git" -not -path "*/.git/*" -not -path "*/*.code-workspace" -not -path "*/.gitignore" -not -path "*/deploy")
 
 	# If device has a key, set it in .ssh/config, otherwise delete file (since it's useless in that case)
 	if [[ -f "${HOME}/.ssh/${USER}@${HOSTNAME}.pub" ]]; then
