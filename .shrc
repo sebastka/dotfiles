@@ -28,6 +28,7 @@ alias make="make $MAKEFLAGS"
 alias ls='ls -h --color=auto'
 alias ll='ls -alN --group-directories-first'
 alias sctl='sudo systemctl'
+alias jctl='sudo journalctl -xeu'
 alias grep="GREP_COLOR='1;32' grep --color=always"
 alias mkdir='mkdir -p'
 alias vim='vim -p'
