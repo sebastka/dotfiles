@@ -1,48 +1,71 @@
-set nocompatible				" No need for backward compatibility
-set encoding=utf-8
-set fileencoding=utf-8
+" Section: Colors
+set background=dark		" use darkmode
+syntax enable			" enable syntax processing
 
-"	Based on VimConfig.com
-
-" General
-set updatetime=100
-set number					" Show line numbers
-set linebreak					" Break lines at word (requires Wrap lines)
-""set showbreak=+++				" Wrap-broken line prefix
-set textwidth=110				" Line wrap (number of cols)
-set colorcolumn=110
-set showmatch					" Highlight matching brace
-set visualbell					" Use visual bell (no beeping)
-set t_vb=					" Set effect of visual bell to nothing
-
-set hlsearch					" Highlight all search results
-set smartcase					" Enable smart-case search
-set ignorecase					" Always case-insensitive
-set incsearch					" Searches for strings incrementally
-
-set autoindent					" Auto-indent new lines
-set cindent					" Use 'C' style program indenting
-""set smartindent				" Enable smart-indent
-set smarttab					" Enable smart-tabs
-set shiftwidth=8
-set tabstop=8
+" Section: Spaces and Tabs
+set autoindent			" automatic indent
+set cindent			" Use 'C' style program indenting
+set tabstop=8			" number of visual spaces per TAB
+set shiftwidth=8		" the size of an indent
+set softtabstop=8		" number of spaces in tab when editing
+"set smarttab			" Enable smart-tabs
+"set smartindent		" Enable smart-indent
+"set expandtab			" tabs are spaces
 set noexpandtab
-set softtabstop=8				" Number of spaces per Tab
+
+" Section: Window
+set hidden			" hides buffers instead of closing them
+set ttyfast			" faster rendering
+set nocompatible		" No need for backward compatibility
+
+" Section: UI Config
+set updatetime=750
+set encoding=utf-8		" Set UTF-* as default encoding
+set fileencoding=utf-8
+"set colorcolumn=110		" Line delimiter
+"set textwidth=110		" Line wrap (number of cols)
+set ruler			" Show row and column ruler information
+set number			" show line numbers
+"set relativenumber		" show relative numbers
+set laststatus=2		" show statusline
+set visualbell			" Use visual bell (no beeping)
+set t_vb=			" Set effect of visual bell to nothing
+set showcmd			" show command in bottom bar
+set cmdheight=1			" height at the bottom
+set undolevels=1000		" Number of undo levels
+set showmatch			" Highlight matching brace
+set showtabline=2		" Show tab bar
+filetype indent on		" load filetype-specific indent files
+
+" remove delay visual mode
+set timeoutlen=1000 ttimeoutlen=0
+
+"" natural split opening
+set splitbelow
+set splitright
+
+" Section: Leader
+let mapleader="	"		" leader is space
 
 " Allow per-directory .vimrc
 set exrc
 set secure
 
-" Advanced
-""set ruler					" Show row and column ruler information
-set showtabline=2				" Show tab bar
-""set autochdir					" Change working directory to open buffer
-set undolevels=1000				" Number of undo levels
-set backspace=indent,eol,start			" Backspace behaviour
-set termguicolors
+" Section: Searching
+set incsearch			" search as characters are enterd
+set hlsearch			" highlight matches
+set smartcase			" Enable smart-case search
+set ignorecase			" Always case-insensitive
 
-" Programming
-syntax on
+"" turn off search highlight
+nnoremap <leader><space> :nohlsearch<CR>
+
+" Sectiozan: Mappings
+"" paste toggle
+set pastetoggle=<F2>
+
+"" yank to clipboard
+nnoremap <leader>y :%y+<CR>
 
 " Plugin manager: VimPlug
 " Install plugin manager: curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -51,8 +74,6 @@ syntax on
 call plug#begin('~/.vim/plugged/')
 Plug 'morhetz/gruvbox'
 call plug#end()
-
-" Plugin conf
 
 " Theme
 colorscheme gruvbox
@@ -70,4 +91,3 @@ call matchadd('CarriageReturn', '\r\+$/')
 nnoremap	t<Right>	:tabnext<CR>
 nnoremap	t<Left>		:tabprev<CR>
 nnoremap	tn		:tabnew<Space>
-
