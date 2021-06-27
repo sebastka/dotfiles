@@ -32,7 +32,7 @@ function main() {
 	for f in `find "$HOME/dotfiles/" -type f -not -path "*/.git" -not -path "*/.git/*" -not -path "*/*.code-workspace" -not -path "*/.gitignore" -not -path "*/deploy"`; do
 		local readonly from="${f}"
 		local readonly to=$(echo "${f}" | sed -r 's/\/dotfiles//')
-		local readonly path=$(dirname "${f}")
+		local readonly path=$(dirname "${to}")
 
 		# Create parent dir
 		[[ ! -d "${path}" ]] && mkdir -p "${path}"
