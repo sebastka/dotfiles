@@ -8,7 +8,7 @@
 
 # GPG & SSH
 export GPG_TTY="$(tty)"
-export SSH_KEY_PATH="$HOME/.ssh/$USER@$HOSTNAME"
+[ -O "$HOME/.ssh/$USER@$HOSTNAME" ] && export SSH_KEY_PATH="$HOME/.ssh/$USER@$HOSTNAME"
 
 # History file - infinite
 HISTSIZE=-1
