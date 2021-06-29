@@ -22,9 +22,9 @@ function main() {
 		return 1
 	fi
 
-	local readonly locale=${1}
+	local readonly locale="${1}"
 	
-	if [[ -z $(grep -v "#" /etc/locale.gen | grep "${locale}") ]]; then
+	if [[ -z $(locale -a 2>/dev/null | grep "$locale") ]]; then
 		.local/bin/err "Locale ${locale} does not exist"
 		return 2
 	fi

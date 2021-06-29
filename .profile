@@ -3,12 +3,12 @@
 
 # Locale
 export LANG="en_US.UTF-8"
+export LC_ALL="${LANG}"
 
-# Env
+# If $loc is not null AND if it is loaded:
 readonly loc="MYLOC"
-if [[ ! -z "${loc}" ]] && [[ ! -z $(grep -v "#" /etc/locale.gen | grep "$loc") ]]; then
-	# If $loc is not null AND if it is loaded:
-	export LC_ALL="C"
+if [[ ! -z "${loc}" ]] && [[ ! -z $(locale -a 2>/dev/null | grep "$loc") ]]; then
+	export LC_ALL="$loc.UTF-8"
 	export LC_CTYPE="$loc.UTF-8"
 	export LC_NUMERIC="$loc.UTF-8"
 	export LC_TIME="$loc.UTF-8"
@@ -21,14 +21,13 @@ if [[ ! -z "${loc}" ]] && [[ ! -z $(grep -v "#" /etc/locale.gen | grep "$loc") ]
 	#export LC_TELEPHONE="$loc.UTF-8"
 	export LC_MEASUREMENT="$loc.UTF-8"
 	#export LC_IDENTIFICATION="$loc.UTF-8"
-	#export LC_ALL=nb_NO.UTF-8
 fi
 
 # Env
 [ -z "${HOSTNAME}" ] && export HOSTNAME="$(hostname)"
 [ -z "$HOST" ] && export HOST="$HOSTNAME"
 
-export TERM=st-256color
+export TERM=xterm-256color
 export CLICOLOR=1
 
 # Custom scripts
