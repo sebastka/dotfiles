@@ -1,0 +1,87 @@
+#       _    _ _
+#      / \  | (_) __ _ ___
+#     / _ \ | | |/ _` / __|
+#    / ___ \| | | (_| \__ \
+#   /_/   \_\_|_|\__,_|___/
+
+# Use fork if present
+[ -x "$(command -v neomutt)" ] && alias mutt='neomutt'
+[ -x "$(command -v nsxiv)" ] && alias sxiv='nsxiv'
+
+# X11 config in .config/X11
+[ -f "$XINITRC" ] && alias startx='startx $XINITRC'
+[ -f "$XDG_CONFIG_HOME/X11/Xresources" ] && alias xrdb='xrdb $XDG_CONFIG_HOME/X11/Xresources'
+
+# XDG
+alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME/yarn/config"'
+alias bmon='bmon -ocurses:nocolors'
+alias svn='svn --config-dir "$XDG_CONFIG_HOME/subversion"'
+
+# PGP encrypt/decrypt with default key
+alias encrypt='gpg --armor --encrypt'   # --default-recipient-self in gpg.conf
+alias decrypt='gpg --decrypt --use-embedded-filename'
+
+# Use makeflags by default
+alias make='make $MAKEFLAGS'
+
+# Make commands interactive
+alias \
+    bc='bc -l' \
+    mkd='mkdir -p'
+
+# Abbreviations
+alias \
+    h='fc -l' \
+    ka='killall' \
+    e='$EDITOR' \
+    v='$VISUAL' \
+    m='$PAGER' \
+    z='zathura' \
+    ll='ls -alh' \
+    cz='chezmoi' \
+    i='nsxiv' \
+    j='jobs'
+
+# Git
+alias \
+    g='git' \
+    ga='git add .' \
+    gc='git commit -S -v' \
+    gp='git push' \
+    gs='git stash' \
+    gsa='git stash apply' \
+    gr='git reset --hard' \
+    grh='git reset --hard HEAD^1'
+
+# Userland-specific aliases
+case "$(uname -o)" in
+    GNU* ) alias \
+        ls='ls --color=auto' \
+        ll='ls -alhvN --group-directories-first' \
+        grep='grep --color=auto' \
+        diff='diff --color=auto' \
+        ip='ip -color=auto' \
+        sctl='sudo systemctl' ;;
+    FreeBSD)
+        alias ls='ls -alh --color=yes'
+        sctl() { "/etc/rc.d/$2" "$1"; } ;;
+    OpenBSD)
+        [ -x "$(command -v colorls)" ] && alias ll='colorls -alh'
+        alias sctl='doas rcctl' ;;
+    *) ;;
+esac
+
+# OS-specific aliases
+case "$(grep NAME /etc/os-release)" in
+    *Arch* ) alias \
+        p='paru'
+        jctl='sudo journalctl -xeu' ;;
+    *BSD) alias p='pkd_add' ;;
+    *) ;;
+esac
+
+if [ -x "$(command -v sudo)" ]; then
+    alias se='sudoedit'
+elif [ -x "$(command -v doas)" ]; then
+    alias se='doas vim'
+fi

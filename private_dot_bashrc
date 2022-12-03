@@ -1,0 +1,29 @@
+#      _               _
+#     | |__   __ _ ___| |__  _ __ ___
+#     | '_ \ / _` / __| '_ \| '__/ __|
+#    _| |_) | (_| \__ \ | | | | | (__
+#   (_)_.__/ \__,_|___/_| |_|_|  \___|
+#
+
+# Abort if non-interactive shell
+echo "$-" | grep -q 'i' || exit
+
+# Source global definitions
+[ ! -f /etc/bashrc ] || . /etc/bashrc
+[ ! -f /etc/bash.bashrc ] || . /etc/bash.bashrc
+[ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
+[ ! -f "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
+
+# Save history for all sessions
+history -a
+export HISTFILE="$XDG_STATE_HOME/bash/history"
+
+# Set bash prompt
+__bash_prompt_command() {
+    EXIT_CODE="$?"
+    uncommitted_changes_symbol='!'
+    PS1="$PROMPT"
+}
+
+# Set dynamic PS1
+PROMPT_COMMAND=__bash_prompt_command

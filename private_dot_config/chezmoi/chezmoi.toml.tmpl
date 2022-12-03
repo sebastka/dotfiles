@@ -1,0 +1,23 @@
+{{- $gpg_key := "94863C7F986D65E8" -}}
+{{- $shell := "bash" -}}
+{{- $nbproc := 0 -}}
+
+{{- if eq .chezmoi.os "freebsd" -}}
+    {{- $shell = "sh" -}}
+{{- else if eq .chezmoi.os "openbsd" -}}
+    {{- $shell = "ksh" -}}
+{{- end -}}
+
+{{- if eq .chezmoi.hostname "zeus" -}}
+    {{- $nbproc = 32 -}}
+{{- end -}}
+
+[data]
+    email = "sebastian@karlsen.fr"
+    name = "Sebastian Karlsen"
+    gpg_key = "{{ $gpg_key }}"
+    shell = "{{ $shell }}"
+    nbproc = {{ $nbproc }}
+
+[gpg]
+    recipient = "{{ $gpg_key }}"

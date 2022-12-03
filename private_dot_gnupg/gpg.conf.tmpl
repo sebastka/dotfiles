@@ -1,0 +1,24 @@
+# Best practices (outdated):    https://help.riseup.net/en/security/message-security/openpgp/best-practices
+# GPG For Humans, Part 1-4:     https://paul.fawkesley.com/ 
+
+# Encrypted connection with hkps
+# Ensure that all keys are refreshed through the selected keyserver
+#keyserver hkps://pgp.mit.edu
+#keyserver hkps://keys.openpgp.org
+#keyserver hkps://hkps.pool.sks-keyservers.net
+keyserver hkps://keyserver.ubuntu.com
+keyserver-options no-honor-keyserver-url
+keyserver-options auto-key-retrieve
+
+# Don't rely on short key ID
+keyid-format 0xlong
+with-fingerprint
+
+# Default key
+default-key {{ .gpg_key }}
+default-recipient-self
+
+# Strong hash by default
+personal-cipher-preferences AES256
+personal-digest-preferences SHA512
+cert-digest-algo SHA512

@@ -1,0 +1,7 @@
+Include config.d/*.conf
+
+Host *
+    AddKeysToAgent      yes
+    Port                22
+    IdentitiesOnly      yes
+    IdentityFile        ~/.ssh/keys/{{ .chezmoi.username }}@{{ .chezmoi.username }}

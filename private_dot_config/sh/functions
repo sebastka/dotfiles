@@ -1,0 +1,25 @@
+#    _____                 _   _
+#   |  ___|   _ _ __   ___| |_(_) ___  _ __  ___
+#   | |_ | | | | '_ \ / __| __| |/ _ \| '_ \/ __|
+#   |  _|| |_| | | | | (__| |_| | (_) | | | \__ \
+#   |_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
+
+# Scan ports with nload and iftop
+scanport() {
+    iftop -nNP -m100M -i eth0 -f "port $1"
+}
+
+# Auto open tmux in mosh session
+mssh() {
+    mosh "$*" -- tmux
+}
+
+# Update arch mirrors
+arch_mirrors_update() {
+    sudo reflector --country Norway --country Sweden --country Denmark --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+}
+
+# Colorized 'tail -f' output
+tailf() {
+    tail -f "$1" | bat --plain --paging=never -l log
+}
