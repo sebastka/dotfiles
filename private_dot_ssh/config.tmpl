@@ -4,4 +4,4 @@ Host *
     AddKeysToAgent      yes
     Port                22
     IdentitiesOnly      yes
-    IdentityFile        ~/.ssh/keys/{{ .chezmoi.username }}@{{ .chezmoi.username }}
+    IdentityFile        ~/.ssh/keys/{{ .chezmoi.username }}@{{ .chezmoi.fqdnHostname }}
