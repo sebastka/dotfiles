@@ -4,4 +4,6 @@ Host *
     AddKeysToAgent      yes
     Port                22
     IdentitiesOnly      yes
+{{ if stat .ssh_key }}
     IdentityFile        {{ .ssh_key }}
+{{ end }}
