@@ -1,4 +1,5 @@
 {{- $gpg_key := "94863C7F986D65E8" -}}
+{{- $ssh_key := (printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/keys" ) .chezmoi.username .chezmoi.fqdnHostname) -}}
 {{- $shell := "bash" -}}
 {{- $nbproc := 0 -}}
 
@@ -18,6 +19,7 @@ encryption = "gpg"
     email = "sebastian@karlsen.fr"
     name = "Sebastian Karlsen"
     gpg_key = "{{ $gpg_key }}"
+    ssh_key = "{{ $ssh_key }}"
     shell = "{{ $shell }}"
     nbproc = {{ $nbproc }}
 

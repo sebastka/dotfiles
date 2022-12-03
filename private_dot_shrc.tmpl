@@ -12,7 +12,7 @@ export GPG_TTY="$(tty)"
 export GPGKEY="{{ .gpg_key }}"
 
 # SSH
-[ -f "$HOME/.ssh/keys/{{ .chezmoi.username }}@{{ .chezmoi.fqdnHostname }}" ] && export SSH_KEY_PATH="$HOME/.ssh/keys/{{ .chezmoi.username }}@{{ .chezmoi.fqdnHostname }}"
+[ -f "{{ .ssh_key }}" ] && export SSH_KEY_PATH="{{ .ssh_key }}"
 [ -x "$(command -v ssh-agent)" ] && ! pgrep -u "$USER" ssh-agent > /dev/null && ssh-agent > "$HOME/.ssh/ssh-agent.env"
 [ -z "$SSH_AUTH_SOCK" ] && . "$HOME/.ssh/ssh-agent.env" > /dev/null
 

@@ -14,5 +14,7 @@
 [alias]
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 
+{{ if stat .ssh_key }}
 [url "git@github.com:sebastka/"]
 	insteadOf = https://sebastka@github.com/sebastka/
+{{ end }}
