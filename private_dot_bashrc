@@ -14,9 +14,10 @@ echo "$-" | grep -q 'i' || exit
 [ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
 [ ! -f "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
 
-# Save history for all sessions
+# Save history
 history -a
 export HISTFILE="$XDG_STATE_HOME/bash/history"
+mkdir -p "$(dirname "$HISTFILE")"
 
 # Set bash prompt
 __bash_prompt_command() {

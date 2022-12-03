@@ -15,6 +15,10 @@ echo "$-" | grep -q 'i' || exit
 export CLICOLOR=true
 export LSCOLORS='ExGxFxdxCxegedabagecec'
 
+# Save history
+export HISTFILE="$XDG_STATE_HOME/ksh/history"
+mkdir -p "$(dirname "$HISTFILE")"
+
 # Fix navigation
 set -o emacs
 alias __A=$(print '\0020') # ^P = up = previous command

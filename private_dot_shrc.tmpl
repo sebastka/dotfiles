@@ -23,6 +23,7 @@ export SSH_KEY_PATH="{{ .ssh_key }}"
 
 # History file
 export HISTFILE="$XDG_STATE_HOME/sh/history"
+mkdir -p "$(dirname "$HISTFILE")"
 export HISTSIZE=100000
 export HISTFILESIZE=$HISTSIZE
 export SAVEHIST=$HISTSIZE
