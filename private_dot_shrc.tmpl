@@ -11,14 +11,14 @@ echo "$-" | grep -q 'i' || return
 export GPG_TTY="$(tty)"
 export GPGKEY="{{ .gpg_key }}"
 
+# If .profile is not loaded (sudo su...)
+[ ! -z "$XDG_CONFIG_HOME" ] || . "$HOME/.config/xdg"
+
 {{ if stat .ssh_key }}
 # SSH
 export SSH_KEY_PATH="{{ .ssh_key }}"
-. "$XDG_CONFIG_HOME/sh/ssh"
+. "$XDG_CONFIG_HOME/sh/ssh" > /dev/null
 {{ end }}
-
-# If .profile is not loaded (sudo su...)
-[ ! -z "$XDG_CONFIG_HOME" ] || . "$HOME/.config/xdg"
 
 # History file
 export HISTFILE="$XDG_STATE_HOME/sh/history"
