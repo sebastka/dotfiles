@@ -14,8 +14,7 @@ export GPGKEY="{{ .gpg_key }}"
 {{ if stat .ssh_key }}
 # SSH
 export SSH_KEY_PATH="{{ .ssh_key }}"
-[ -x "$(command -v ssh-agent)" ] && ! pgrep -u "$USER" ssh-agent > /dev/null && ssh-agent > "$HOME/.ssh/ssh-agent.env"
-[ -z "$SSH_AUTH_SOCK" ] && . "$HOME/.ssh/ssh-agent.env" > /dev/null
+. "$XDG_CONFIG_HOME/sh/ssh"
 {{ end }}
 
 # If .profile is not loaded (sudo su...)
