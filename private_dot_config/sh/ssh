@@ -1,0 +1,20 @@
+#!/bin/sh
+# https://stackoverflow.com/questions/18880024/start-ssh-agent-on-login
+
+readonly SSH_ENV="$HOME/.ssh/ssh-agent.env"
+
+[ -x "$(command -v ssh-agent)" ] || return 1
+
+start_agent() {
+    ssh-agent > "$SSH_ENV"
+    chmod 600 "$SSH_ENV"
+    . "$SSH_ENV" > /dev/null
+}
+
+if [ -f "$SSH_ENV" ]; then
+    . "$SSH_ENV"
+    ps "$SSH_AGENT_PID" | grep -q ssh-agent$ || start_agent
+else
+    start_agent;
+fi
+
