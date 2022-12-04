@@ -6,7 +6,7 @@
 #
 
 # Abort if non-interactive shell
-echo "$-" | grep -q 'i' || exit
+echo "$-" | grep -q 'i' || return
 
 # Source global definitions
 [ ! -f /etc/bashrc ] || . /etc/bashrc

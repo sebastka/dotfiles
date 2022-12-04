@@ -5,7 +5,7 @@
 #   |___/_| |_|_|  \___|
 
 # Abort if non-interactive shell
-echo "$-" | grep -q 'i' || exit
+echo "$-" | grep -q 'i' || return
 
 # GPG
 export GPG_TTY="$(tty)"
