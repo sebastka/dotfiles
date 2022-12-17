@@ -54,29 +54,36 @@ alias \
     grh='git reset --hard HEAD^1'
 
 # Userland-specific aliases
-case "$(uname -o)" in
-    GNU* ) alias \
+case "$(uname -a)" in
+    *GNU* ) alias \
         ls='ls --color=auto' \
         ll='ls -alhvN --group-directories-first' \
         grep='grep --color=auto' \
         diff='diff --color=auto' \
         ip='ip -color=auto' \
-        sctl='sudo systemctl' ;;
-    FreeBSD)
-        alias ls='ls -alh --color=yes'
+        sctl='sudo systemctl' \
+        jctl='sudo journalctl -xeu' ;;
+    FreeBSD*)
+        alias \
+            ls='ls -alh --color=yes' \
+            grep='grep --color=auto' \
+            p='pkd install'
         sctl() { "/etc/rc.d/$2" "$1"; } ;;
-    OpenBSD)
+    OpenBSD*)
         [ -x "$(command -v colorls)" ] && alias ll='colorls -alh'
-        alias sctl='doas rcctl' ;;
+        alias \
+            sctl='doas rcctl'\
+            p='pkd_add' ;;
+    NetBSD*)
+        [ -x "$(command -v colorls)" ] && alias ll='colorls -alh'
+        alias p='pkgin' ;;
     *) ;;
 esac
 
 # OS-specific aliases
 case "$(grep NAME /etc/os-release)" in
-    *Arch* ) alias \
-        p='paru'
-        jctl='sudo journalctl -xeu' ;;
-    *BSD) alias p='pkd_add' ;;
+    *Arch* ) alias p='paru' ;;
+    *Fedora*) alias p='dnf' ;;
     *) ;;
 esac
 

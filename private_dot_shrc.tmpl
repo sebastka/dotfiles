@@ -4,6 +4,8 @@
 #   \__ \ | | | | | (__
 #   |___/_| |_|_|  \___|
 
+[ ! -f /etc/shrc ] || . /etc/shrc
+
 # Abort if non-interactive shell
 echo "$-" | grep -q 'i' || return
 

@@ -46,6 +46,10 @@ export MAKEFLAGS="-j{{ .nbproc }}"
 if [ "$PWD" != "$HOME" ] && [ "$PWD" -ef "$HOME" ]; then cd; fi
 if [ -x /usr/bin/resizewin ]; then /usr/bin/resizewin -z; fi
 if [ -x /usr/bin/fortune ]; then /usr/bin/fortune freebsd-tips; fi
+{{ else if eq .chezmoi.os "netbsd" }}
+export CVS_RSH=ssh
+export PKG_PATH=http://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/x86_64/9.3/All
+export PATH="/usr/pkg/sbin:/usr/pkg/bin:$PATH"
 {{ end }}
 
 # Load common shell config rc
