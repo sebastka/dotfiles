@@ -2,10 +2,11 @@
 
 ## Set up
 
+- Get latest release version number: `cz_version="$(git ls-remote --refs --sort="version:refname" --tags https://github.com/twpayne/chezmoi.git | cut -d/ -f3 | sed -n '$p' | sed 's/^v//')"`
 - Install:
   - Arch Linux: `pacman -S chezmoi`
-  - Fedora: `dnf install https://github.com/twpayne/chezmoi/releases/download/v2.27.2/chezmoi-2.27.2-i686.rpm`
-  - Debian: `curl -sL -o/tmp/chezmoi.deb https://github.com/twpayne/chezmoi/releases/download/v2.27.2/chezmoi_2.27.2_linux_amd64.deb && dpkg -i /tmp/chezmoi.deb`
+  - Fedora: `dnf install "$(printf 'https://github.com/twpayne/chezmoi/releases/download/v%s/chezmoi-%s-i686.rpm' "$cz_version" "$cz_version")"`
+  - Debian: `curl -sL -o/tmp/chezmoi.deb "$(printf 'https://github.com/twpayne/chezmoi/releases/download/v%s/chezmoi_%s_linux_amd64.deb' "$cz_version" "$cz_version")" && dpkg -i /tmp/chezmoi.deb`
   - FreeBSD: `pkg install chezmoi`
 - Init: `chezmoi init sebastka`
 - Apply: `chezmoi apply`
