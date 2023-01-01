@@ -1,0 +1,147 @@
+#!/bin/sh
+set -e      # Abort upon error
+set -u      # Abort upon udefined variable
+#set -x     # Print every command
+
+# PVE API Doc
+# https://pve.proxmox.com/pve-docs/api-viewer/index.html
+
+# Based on
+# https://pve.proxmox.com/wiki/SPICE#Can.27t_start_Spice_session
+
+# Constants
+readonly actions='status, start, stop, shutdown, reboot, spice'
+readonly config_file="$XDG_DATA_HOME/pve_config.txt"
+readonly cookie_file="$XDG_CACHE_HOME/pve_cookie.txt"
+readonly token_file="$XDG_CACHE_HOME/pve_token.txt"
+readonly spice_file="$XDG_CACHE_HOME/pve_spice.txt"
+
+#######################################
+#   Description:
+#       Actions on VM using PVE API
+#   Usage:
+#       ./pve [-l pve_url] [-n pve_node] [-u pve_user] vm_id action
+#   Arguments:
+#        -l pve_url
+#        -n pve_node
+#        -u pve_user (Default: 'root@pam')
+#        vm_id (int): ID of VM to perform action on
+#        action (string): Action to perform on VM (Default: 'status')
+#   Returns:
+#       0 upon success
+#       >=1 upon error
+#######################################
+main() {
+    # Declare
+    pve_url=''
+    pve_node=''
+    pve_user=''
+
+    # Parse args
+    while getopts 'l:n:u:' option; do
+        case "$option" in
+            l) pve_url="$OPTARG" ;;
+            n) pve_node="$OPTARG" ;;
+            u) pve_user="$OPTARG" ;;
+            *) usage ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    # Positional args
+    [ "$#" -le 0 ] || [ "$#" -ge 3 ] && usage
+    readonly vm_id="$1"
+    readonly action="${2-status}"
+
+    # Set up config
+    [ -z "$pve_url" ] || config_set pve_url "$pve_url"
+    [ -z "$pve_node" ] || config_set pve_node "$pve_node"
+    [ -z "$pve_user" ] || config_set pve_user "$pve_user"
+
+    # Set up auth cookie
+    [ ! -f "$cookie_file" ] || [ ! -f "$token_file" ] && setup_auth
+
+    # Execute action
+    case "$action" in
+        status) vm_action "$vm_id" GET 'current' ;;
+        start) vm_action "$vm_id" POST 'start' ;;
+        stop) vm_action "$vm_id" POST 'stop' ;;
+        shutdown) vm_action "$vm_id" POST 'shutdown' ;;
+        reboot) vm_action "$vm_id" POST 'reboot' ;;
+        spice) start_spice "$vm_id" ;;
+        *) usage ;;
+    esac
+}
+
+usage() {
+    echo "Usage: $0 [-l <string>] [-n <string>] [-u <string>] vm_id action"
+    echo
+    echo "-l pve_url"
+    echo "-n pve_node"
+    echo "-u pve_user (Default: 'root@pam')"
+    echo
+    echo "vmid: ID of the VM to perfom action upon"
+    echo "action: $actions (Default: 'status')"
+    exit "${1-1}"
+}
+
+setup_auth() {
+    pve_url="$(config_get 'pve_url')"
+    pve_node="$(config_get 'pve_node')"
+    pve_user="$(config_get 'pve_user')"
+
+    printf 'Enter password for user %s at %s: ' "$pve_user" "$pve_url"
+    read -s pve_pw
+
+    readonly data="$(curl -s -S --data-urlencode "username=$pve_user" --data-urlencode "password=$pve_pw" "$pve_url/api2/json/access/ticket")"
+    echo "$data" | jq -r '.[].ticket' > "$cookie_file"
+    echo "$data" | jq -r '.[].CSRFPreventionToken' > "$token_file"
+}
+
+vm_action() {
+    readonly res="$(api_call "$2" json "qemu/$1/status/$3")"
+    [ ! -z "$res" ] || expire
+    echo "$res" | jq
+}
+
+start_spice() {
+    api_call POST spiceconfig "qemu/$1/spiceproxy" > "$spice_file"
+    [ -s "$spice_file" ] || expire
+    exec remote-viewer "$spice_file" >/dev/null &
+}
+
+expire() {
+    err "Auth cookie has expired"
+    rm "$cookie_file" "$token_file"
+    usage
+}
+
+api_call() {
+    curl -k -s -S \
+        -X "$1" \
+        -b "PVEAuthCookie=$(cat "$cookie_file")" \
+        -H "CSRFPreventionToken: $(cat "$token_file")" \
+        "$(config_get 'pve_url')/api2/$2/nodes/$(config_get 'pve_node')/$3"
+}
+
+config_get() {
+    [ -f "$config_file" ] || touch "$config_file"
+    value="$(grep "$1" "$config_file" | cut -d'=' -f2-)"
+    [ "$1" = 'pve_user' ] && [ -z "$value" ] && echo 'root@pam' && return || true
+    [ -z "$value" ] && { err "Please set $1"; usage; } || echo "$value"
+}
+
+config_set() {
+    config="$(sed "/$1/d" "$config_file" | sed '/^$/d')"
+    echo "$config" > $config_file
+    echo "$1=$2" >> $config_file
+}
+
+#######################################
+#   Print error message to stderr
+#   https://google.github.io/styleguide/shellguide.html
+#######################################
+err() { echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2; }
+
+main "$@"; exit
+

@@ -1,0 +1,108 @@
+#!/bin/sh
+set -e      # Abort upon error
+set -u      # Abort upon udefined variable
+#set -x     # Print every command
+#set -o pipefail # Prevents errors in a pipeline from being masked (not supported by dash yet)
+
+#######################################
+#   Description:
+#       Create template shell script
+#       Check syntax with ShellCheck: https://www.shellcheck.net
+#       Strict mode: http://redsymbol.net/articles/unofficial-bash-strict-mode/#expect-nonzero-exit-status
+#   Usage:
+#       ./mkshell name [arg1 [arg2 ...]]
+#   Arguments:
+#       name (string): script name
+#       args (string): any number of optional positional arguments
+#   Returns:
+#       0 upon success
+#       >=1 upon error
+#######################################
+main() {
+    # Check if $USAGE is respected and if file already exists
+    readonly USAGE='Usage: ./mkshell name [arg1 [arg2 ...]]'
+    [ "$#" -lt 1 ] && err 'Error: at least one argument required' && err "$USAGE" && return 1
+    [ -f "$1" ] && err "Error: '$1' already exists" && return 2
+
+    # Parameters
+    readonly script_name="$1"
+    shift 1
+    readonly args="$@"
+
+    # Generate placeholder content
+
+    # Usage
+    placeholder_usage=".\/$script_name"
+    [ ! -z "$args" ] && placeholder_usage="$placeholder_usage $args"
+
+    # Param list in function comment and variable creation
+    placeholder_args_desc=''
+    params_parameters=''
+
+    [ -z "$args" ] && placeholder_args_desc="\n#        None!"
+    [ ! -z "$args" ] && params_parameters="\n    # Parameters\n"
+
+    i=1
+    for arg in $args; do
+        placeholder_args_desc="$placeholder_args_desc\n#        $arg (type): desc"
+
+        params_parameters="$params_parameters    readonly $arg=\"\$$i\"\n"
+        i=$((i+1))
+    done
+
+    # Write file
+    echo "$template" \
+        | sed "s/PLACEHOLDER_USAGE/$placeholder_usage/g" \
+        | sed "s/PLACEHOLDER_ARGS_DESC/$placeholder_args_desc/g" \
+        | sed "s/PLACEHOLDER_ARGS_NB/$#/g" \
+        | sed "s/PLACEHOLDER_PARAMETERS/$params_parameters/g" \
+        > "$script_name"
+
+    # Make executable
+    chmod +x "$script_name"
+}
+
+#######################################
+#   Print error message to stderr
+#   https://google.github.io/styleguide/shellguide.html
+#######################################
+err() { echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2; }
+
+# Script template
+readonly template="#!/bin/sh
+set -e      # Abort upon error
+set -u      # Abort upon udefined variable
+#set -x     # Print every command
+#set -o pipefail # Prevents errors in a pipeline from being masked (not supported by dash yet)
+
+readonly path=\"\$(dirname -- \"\$(readlink -f -- \"\$0\")\")\"
+
+#######################################
+#   Description:
+#       My Shell script does this and that
+#   Usage:
+#       PLACEHOLDER_USAGE
+#   Arguments:PLACEHOLDER_ARGS_DESC
+#   Returns:
+#       0 upon success
+#       >=1 upon error
+#######################################
+main() {
+    # Check if \$USAGE is respected
+    readonly USAGE='Usage: PLACEHOLDER_USAGE'
+    [ \"\$#\" -ne PLACEHOLDER_ARGS_NB ] && err \"Error: PLACEHOLDER_ARGS_NB argument(s) expected, \$# received\" && err \"\$USAGE\" && return 1
+PLACEHOLDER_PARAMETERS
+    # Do something...
+
+}
+
+#######################################
+#   Print error message to stderr
+#   https://google.github.io/styleguide/shellguide.html
+#######################################
+err() { echo \"[\$(date +'%Y-%m-%dT%H:%M:%S%z')]: \$*\" >&2; }
+
+main \"\$@\"; exit
+"
+
+main "$@"; exit
