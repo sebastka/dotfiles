@@ -37,7 +37,6 @@ export MAKEFLAGS="-j{{ .nbproc }}"
 
 # Custom scripts
 [ -d "$HOME/.local/bin" ] && export PATH=$HOME/.local/bin:$PATH
-[ -f /etc/profile.d/puppet-agent.sh ] && . /etc/profile.d/puppet-agent.sh
 [ -d "$XDG_DATA_HOME/cargo/bin" ] && export PATH=$XDG_DATA_HOME/cargo/bin:$PATH
 [ -f "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm# Load common shell config rc
 [ -f "$XDG_CONFIG_HOME/envman/load.sh" ] && . "$XDG_CONFIG_HOME/envman/load.sh"
