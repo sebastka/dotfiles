@@ -14,7 +14,7 @@ readonly actions='status, start, stop, shutdown, reboot, spice'
 readonly config_file="$XDG_DATA_HOME/pve_config.txt"
 readonly cookie_file="$XDG_CACHE_HOME/pve_cookie.txt"
 readonly token_file="$XDG_CACHE_HOME/pve_token.txt"
-readonly spice_file="$XDG_CACHE_HOME/pve_spice.txt"
+readonly temp_file="$XDG_CACHE_HOME/pve_temp.txt"
 
 #######################################
 #   Description:
@@ -90,38 +90,86 @@ setup_auth() {
     pve_node="$(config_get 'pve_node')"
     pve_user="$(config_get 'pve_user')"
 
+    # Get pw from stdin
     printf 'Enter password for user %s at %s: ' "$pve_user" "$pve_url"
     read -s pve_pw
 
-    readonly data="$(curl -s -S --data-urlencode "username=$pve_user" --data-urlencode "password=$pve_pw" "$pve_url/api2/json/access/ticket")"
-    echo "$data" | jq -r '.[].ticket' > "$cookie_file"
-    echo "$data" | jq -r '.[].CSRFPreventionToken' > "$token_file"
+    # Reset cookie
+    > "$cookie_file"
+    > "$token_file"
+
+    # Fetch response
+    api_call POST json 'access/ticket' "$pve_pw"
+    cat "$temp_file" | jq -r '.[].ticket' | xargs -0 printf 'PVEAuthCookie=%s' > "$cookie_file"
+    cat "$temp_file" | jq -r '.[].CSRFPreventionToken' | xargs -0 printf 'CSRFPreventionToken: %s' > "$token_file"
 }
 
 vm_action() {
-    readonly res="$(api_call "$2" json "qemu/$1/status/$3")"
-    [ ! -z "$res" ] || expire
-    echo "$res" | jq
+    # Check if VM is in correct state
+    case "$3" in
+        current) true ;;
+        start) check_status "$1" 'stopped' ;;
+        stop) check_status "$1" 'running' ;;
+        shutdown) check_status "$1" 'running' ;;
+        reboot) check_status "$1" 'running' ;;
+        *) usage ;;
+    esac
+
+    api_call "$2" json "nodes/$(config_get 'pve_node')/qemu/$1/status/$3" | jq
+}
+
+check_status() {
+    status="$(vm_action "$1" GET 'current' | jq -r '.[].status')"
+    [ "$status" = "$2" ] || { err "VM $1 is not $2"; return 1; }
 }
 
 start_spice() {
-    api_call POST spiceconfig "qemu/$1/spiceproxy" > "$spice_file"
-    [ -s "$spice_file" ] || expire
-    exec remote-viewer "$spice_file" >/dev/null &
+    check_status "$1" 'running'
+    api_call POST spiceconfig "nodes/$(config_get 'pve_node')/qemu/$1/spiceproxy"
+    exec remote-viewer "$temp_file" >/dev/null &
 }
 
-expire() {
-    err "Auth cookie has expired"
-    rm "$cookie_file" "$token_file"
-    usage
+request_send() {
+    if [ ! -z "$4" ] && echo "$3" | grep -q ticket; then
+        # If authenticating, add username and pw in payload
+        AUTH="$(echo "--data-urlencode username=$(config_get 'pve_user') --data-urlencode password=$4")"
+        COOKIE=
+        HEADER=
+    else
+        # Otherwise, include cookie
+        AUTH=
+        COOKIE="$(cat "$cookie_file")"
+        HEADER="$(cat "$token_file")"
+    fi
+
+    curl --insecure --silent --show-error \
+        --request "$1" \
+        $AUTH \
+        --cookie "$COOKIE" \
+        --header "$HEADER" \
+        --write-out "%{http_code}\n" \
+        --output "$temp_file" \
+        "$(config_get 'pve_url')/api2/$2/$3"
 }
 
 api_call() {
-    curl -k -s -S \
-        -X "$1" \
-        -b "PVEAuthCookie=$(cat "$cookie_file")" \
-        -H "CSRFPreventionToken: $(cat "$token_file")" \
-        "$(config_get 'pve_url')/api2/$2/nodes/$(config_get 'pve_node')/$3"
+    status="$(request_send "$1" "$2" "$3" "${4-}")"
+
+    case "$status" in
+        200) true ;;
+        301) err "Response: '301 Moved Permanently'"; return 1 ;;
+        400) err "Response: '400 Bad Request'"; return 1 ;;
+        401) err "Response: '401 Unauthorized'"; return 1 ;;
+        500) err "Response: '500 Internal Server Error'"; return 1 ;;
+        *) err "Response: '$status Error'"; return 1 ;;
+    esac
+
+    if [ -s "$temp_file" ]; then
+        cat "$temp_file"
+    else
+        err "Empty response"
+        return 1
+    fi
 }
 
 config_get() {
