@@ -17,7 +17,7 @@
 {{- $ssh_key = printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/keys" ) .chezmoi.username .chezmoi.fqdnHostname -}}
 {{- else if stat (printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/keys" ) .chezmoi.username .chezmoi.hostname) -}}
 {{- $ssh_key = printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/keys" ) .chezmoi.username .chezmoi.hostname -}}
-{{- if stat (printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/key" ) .chezmoi.username .chezmoi.fqdnHostname) -}}
+{{- else if stat (printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/key" ) .chezmoi.username .chezmoi.fqdnHostname) -}}
 {{- $ssh_key = printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/key" ) .chezmoi.username .chezmoi.fqdnHostname -}}
 {{- else if stat (printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/key" ) .chezmoi.username .chezmoi.hostname) -}}
 {{- $ssh_key = printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/key" ) .chezmoi.username .chezmoi.hostname -}}
