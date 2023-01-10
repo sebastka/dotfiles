@@ -100,7 +100,7 @@ alias p='doas pkg_add'
 alias \
     sctl='sudo systemctl' \
     jctl='sudo journalctl -xeu'
-{{ else if (and (eq .init_sys "init") (ne .chezmoi.osRelease.id "openbsd")) }}
+{{ else if (and (eq .init_sys "init") (eq .chezmoi.osRelease.id "openbsd")) }}
 # OpenBSD traditional init
 alias sctl='doas rcctl'
 {{ else if eq .init_sys "init" }}
