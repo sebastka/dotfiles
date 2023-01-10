@@ -7,13 +7,13 @@
 {{- if eq .chezmoi.os "freebsd" -}}
     # {{- $shell = "sh" -}}
 
-    {{- $init_sys := "init" -}} # rcNG is the default init system on FreeBSD
+    {{- $init_sys = "init" -}} # rcNG is the default init system on FreeBSD
     # https://docs.freebsd.org/en/articles/linux-users/#startup
     # https://www.freebsd.org/cgi/man.cgi?init
 {{- else if eq .chezmoi.os "openbsd" -}}
     {{- $shell = "ksh" -}}
 
-    {{- $init_sys := "init" -}}
+    {{- $init_sys = "init" -}}
     # https://www.openbsdhandbook.com/openbsd_for_linux_users/#init
     # https://man.openbsd.org/init.8
 {{- end -}}
