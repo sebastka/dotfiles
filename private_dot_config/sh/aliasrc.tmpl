@@ -1,0 +1,114 @@
+#       _    _ _
+#      / \  | (_) __ _ ___
+#     / _ \ | | |/ _` / __|
+#    / ___ \| | | (_| \__ \
+#   /_/   \_\_|_|\__,_|___/
+
+# Use fork if present
+[ -x "$(command -v neomutt)" ] && alias mutt='neomutt'
+[ -x "$(command -v nsxiv)" ] && alias sxiv='nsxiv'
+
+# X11 config in .config/X11
+[ -f "$XINITRC" ] && alias startx='startx $XINITRC'
+[ -f "$XDG_CONFIG_HOME/X11/Xresources" ] && alias xrdb='xrdb $XDG_CONFIG_HOME/X11/Xresources'
+
+# XDG
+alias yarn='yarn --use-yarnrc "$XDG_CONFIG_HOME/yarn/config"'
+alias bmon='bmon -ocurses:nocolors'
+alias svn='svn --config-dir "$XDG_CONFIG_HOME/subversion"'
+
+# PGP encrypt/decrypt with default key
+alias encrypt='gpg --armor --encrypt'   # --default-recipient-self in gpg.conf
+alias decrypt='gpg --decrypt --use-embedded-filename'
+
+# Use makeflags by default
+alias make='make $MAKEFLAGS'
+
+# Make commands interactive
+alias \
+    bc='bc -l' \
+    mkd='mkdir -p'
+
+# Abbreviations
+alias \
+    h='fc -l' \
+    ka='killall' \
+    e='$EDITOR' \
+    v='$VISUAL' \
+    m='$PAGER' \
+    z='zathura' \
+    ll='ls -alh' \
+    cz='chezmoi' \
+    i='nsxiv' \
+    j='jobs'
+
+# Git
+alias \
+    g='git' \
+    ga='git add .' \
+    gc='git commit -S -v' \
+    gp='git push' \
+    gs='git stash' \
+    gsa='git stash apply' \
+    gr='git reset --hard' \
+    grh='git reset --hard HEAD^1'
+
+{{ if eq .chezmoi.os "linux" }}
+# Linux
+alias ip='ip -color=auto'
+
+# Assuming GNU-userland on Linux
+alias \
+    ls='ls --color=auto' \
+    ll='ls -alhvN --group-directories-first' \
+    grep='grep --color=auto' \
+    diff='diff --color=auto'
+{{ end }}
+
+{{ if eq .chezmoi.osRelease.id "openbsd" }}
+# Does
+alias
+    sudo='doas' \
+    se='doas vim'
+{{ else }}
+# Sudo
+alias se='sudoedit'
+{{ end }}
+
+{{ if (or (eq .chezmoi.osRelease.id "debian") (eq (index .chezmoi.osRelease "idLike") "debian")) }}
+# Debian(-like)
+alias p='sudo apt'
+{{ else if eq .chezmoi.osRelease.id "arch" }}
+# Arch Linux
+alias p='paru'
+{{ else if eq .chezmoi.osRelease.id "fedora" }}
+# Fedora
+alias p='sudo dnf'
+{{ else if eq .chezmoi.osRelease.id "freebsd" }}
+# FreeBSD
+alias \
+    ls='ls -alh --color=yes' \
+    grep='grep --color=auto' \
+    p='sudo pkg install'
+{{ else if eq .chezmoi.osRelease.id "openbsd" }}
+# OpenBSD
+alias p='doas pkg_add'
+[ -x "$(command -v colorls)" ] && alias ll='colorls -alh'
+{{ else }}
+# Unknown OS/distribution
+{{ end }}
+
+{{ if eq .init_sys "systemd" }}
+# Systemd
+alias \
+    sctl='sudo systemctl' \
+    jctl='sudo journalctl -xeu'
+{{ else if (and (eq .init_sys "init") (ne .chezmoi.osRelease.id "openbsd")) }}
+# OpenBSD traditional init
+alias sctl='doas rcctl'
+{{ else if eq .init_sys "init" }}
+# Traditional init
+sctl() { sudo service "$2" "$1"; }
+{{ else }}
+# Unknown init system
+{{ end }}

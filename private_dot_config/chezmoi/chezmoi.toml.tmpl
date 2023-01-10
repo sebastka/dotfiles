@@ -2,11 +2,20 @@
 {{- $ssh_key := "" -}}
 {{- $shell := "bash" -}}
 {{- $nbproc := 0 -}}
+{{- $init_sys := "systemd" -}}
 
 {{- if eq .chezmoi.os "freebsd" -}}
-    {{- $shell = "sh" -}}
+    # {{- $shell = "sh" -}}
+
+    {{- $init_sys := "init" -}} # rcNG is the default init system on FreeBSD
+    # https://docs.freebsd.org/en/articles/linux-users/#startup
+    # https://www.freebsd.org/cgi/man.cgi?init
 {{- else if eq .chezmoi.os "openbsd" -}}
     {{- $shell = "ksh" -}}
+
+    {{- $init_sys := "init" -}}
+    # https://www.openbsdhandbook.com/openbsd_for_linux_users/#init
+    # https://man.openbsd.org/init.8
 {{- end -}}
 
 {{- if eq .chezmoi.hostname "zeus" -}}
@@ -26,6 +35,7 @@ encryption = "gpg"
     ssh_key = "{{ $ssh_key }}"
     shell = "{{ $shell }}"
     nbproc = {{ $nbproc }}
+    init_sys = "{{ $init_sys }}"
 
 [gpg]
     recipient = "{{ $gpg_key }}"
