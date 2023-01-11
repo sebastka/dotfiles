@@ -16,11 +16,11 @@ export GPGKEY="{{ .gpg_key }}"
 # If .profile is not loaded (sudo su...)
 [ ! -z "$XDG_CONFIG_HOME" ] || . "$HOME/.config/xdg"
 
-{{ if stat .ssh_key }}
+{{ if stat .ssh_key_path -}}
 # SSH
-export SSH_KEY_PATH="{{ .ssh_key }}"
+export SSH_KEY_PATH="{{ .ssh_key_path }}"
 . "$XDG_CONFIG_HOME/sh/ssh" > /dev/null
-{{ end }}
+{{- end }}
 
 # History file
 export HISTFILE="$XDG_STATE_HOME/sh/history"

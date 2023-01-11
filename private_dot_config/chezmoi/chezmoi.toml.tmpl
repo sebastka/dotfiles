@@ -1,5 +1,8 @@
 {{- $gpg_key := "94863C7F986D65E8" -}}
-{{- $ssh_key := "" -}}
+{{- $github_user := "sebastka" -}}
+{{- $ssh_key_name := printf "%s@%s" .chezmoi.username .chezmoi.fqdnHostname -}}
+{{- $ssh_key_path := printf "%s/%s" (joinPath .chezmoi.homeDir ".ssh/key" ) $ssh_key_name -}}
+{{- $ssh_key_public_string := "" -}}
 {{- $shell := "bash" -}}
 {{- $nbproc := 0 -}}
 {{- $init_sys := "systemd" -}}
@@ -22,8 +25,8 @@
     {{- $nbproc = 32 -}}
 {{- end -}}
 
-{{- if stat (printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/key" ) .chezmoi.username .chezmoi.fqdnHostname) -}}
-{{- $ssh_key = printf "%s/%s@%s" (joinPath .chezmoi.homeDir ".ssh/key" ) .chezmoi.username .chezmoi.fqdnHostname -}}
+{{- if stat $ssh_key_path -}}
+{{- $ssh_key_public_string = index (split " " (include (print $ssh_key_path ".pub"))) "_1" -}}
 {{- end -}}
 
 encryption = "gpg"
@@ -31,8 +34,11 @@ encryption = "gpg"
 [data]
     email = "sebastian@karlsen.fr"
     name = "Sebastian Karlsen"
+    github_user = "{{ $github_user }}"
     gpg_key = "{{ $gpg_key }}"
-    ssh_key = "{{ $ssh_key }}"
+    ssh_key_name = "{{ $ssh_key_name }}"
+    ssh_key_public_string = "{{ $ssh_key_public_string }}"
+    ssh_key_path = "{{ $ssh_key_path }}"
     shell = "{{ $shell }}"
     nbproc = {{ $nbproc }}
     init_sys = "{{ $init_sys }}"

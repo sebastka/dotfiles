@@ -1,20 +1,41 @@
-# This is Git's per-user configuration file.
+# This is Git's per-user configuration file
+
+#[core]
+#    editor = "vim" # Fetch editor from env instead
+
 [user]
     name = {{ .name }}
     email = {{ .email }}
     signingkey = {{ .gpg_key }}
+
+# General
 [commit]
     gpgsign = true
-[core]
-    editor = vim
-[pull]
-    rebase = false
-[init]
-    defaultBranch = master
+[color]
+    ui = true
 [alias]
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 
-{{ if stat .ssh_key }}
-[url "git@github.com:sebastka/"]
-	insteadOf = https://sebastka@github.com/sebastka/
-{{ end }}
+# Actions
+[init]
+    defaultBranch = master
+[pull]
+    rebase = false
+[push]
+	default = upstream
+
+{{ if stat .ssh_key_path -}}
+    {{- $tmp_key := "" -}}
+    {{- $tmp_keystring := "" -}}
+
+    {{- range (gitHubKeys .github_user) -}}
+        {{- $tmp_key = split " " .Key -}}
+        {{- $tmp_keystring = index $tmp_key "_1" -}}
+
+        {{- if eq $tmp_keystring $.ssh_key_public_string -}}
+# The GitHub user {{ $.github_user }} has registered the SSH key {{ $.ssh_key_name }}
+[url "git@github.com:"]
+    insteadOf = https://{{ $.github_user }}@github.com/
+        {{- end -}}
+    {{- end -}}
+{{- end }}

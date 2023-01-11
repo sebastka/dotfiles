@@ -3,6 +3,6 @@ Include config.d/*.conf
 Host *
     AddKeysToAgent      yes
     IdentitiesOnly      yes
-{{ if stat .ssh_key }}
-    IdentityFile        {{ .ssh_key }}
-{{ end }}
+{{- if stat .ssh_key_path }}
+    IdentityFile        {{ .ssh_key_path }}
+{{ end -}}
