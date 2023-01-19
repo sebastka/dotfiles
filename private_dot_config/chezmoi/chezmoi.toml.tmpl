@@ -10,7 +10,7 @@
 {{- $nbproc := 0 -}}
 {{- $init_sys := "systemd" -}}
 
-{{- if (or (contains .chezmoi.fqdnHostname "fjordmail") (contains .chezmoi.fqdnHostname "recurrent")) -}}
+{{- if (or (contains "fjordmail" .chezmoi.fqdnHostname) (contains "recurrent" .chezmoi.fqdnHostname)) -}}
     {{- $profile = "work" -}}
     {{- $email = "sebastian@fjordmail.no" -}}
     {{- $gpg_key = "" -}}
