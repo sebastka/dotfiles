@@ -1,4 +1,0 @@
-prefix=.cache/npm
-cache=.cache/npm
-tmp=/tmp/npm
-init-module=.config/npm/config/npm-init.js
