@@ -3,7 +3,7 @@
 
 [".local/state/vim/bundle/Vundle.vim"]
     type = "git-repo"
-    url = "https://github.com/VundleVim/Vundle.vim.git"
+    url = "https://github.com/sebastka/Vundle.vim.git"
 
 [".local/state/vim/bundle/gruvbox"]
     type = "git-repo"
