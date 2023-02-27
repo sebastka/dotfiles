@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e      # Abort upon error
+set -u      # Abort upon udefined variable
+#set -x     # Print every command
+
+main() {
+    readonly key_name="$(whoami)@$(hostname)"
+    readonly key_path="$HOME/.ssh/key"
+
+    mkdir -p "$key_path"
+
+    [ ! -f "$key_path/$key_name" ] || { err "Key already exists: $key_path/$key_name"; return 1; }
+    [ ! -f "$key_path/$key_name.pub" ] || { err "Key already exists: $key_path/$key_name.pub"; return 1; }
+
+    ssh-keygen -o -a 100 -t ed25519 -f "$key_path/$key_name" -C "$key_name"
+}
+
+#######################################
+#   Print error message to stderr
+#   https://google.github.io/styleguide/shellguide.html
+#######################################
+err() { echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2; }
+
+main "$@"; exit
