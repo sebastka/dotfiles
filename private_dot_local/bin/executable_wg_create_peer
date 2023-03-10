@@ -1,0 +1,97 @@
+#!/bin/sh
+set -e      # Abort upon error
+set -u      # Abort upon udefined variable
+#set -x     # Print every command
+#set -o pipefail # Prevents errors in a pipeline from being masked (not supported by dash yet)
+
+#######################################
+#   Description:
+#       Create new WG peer
+#   Usage:
+#       ./wg_create_peer interface username
+#   Arguments:
+#        interface (type): Interface name
+#        username (type): Peer name
+#   Returns:
+#       0 upon success
+#       >=1 upon error
+#######################################
+main() {
+    # Check if $USAGE is respected
+    readonly USAGE='Usage: ./wg_create_peer interface username'
+    [ "$#" -ne 2 ] && err "Error: 2 argument(s) expected, $# received" && err "$USAGE" && return 1
+
+    # Parameters
+    readonly interface="$1"
+    readonly username="$2"
+
+    # Get next peer number and create directory
+    n="$(get_n)"
+    readonly n="$(printf '%03d\n' $((n+1)))"
+    sudo mkdir "/etc/wireguard/$interface.conf.d/$n.$username"
+
+    # Gen peer
+    gen_keys
+    gen_conf
+
+    # Gen profile
+    gen_profile
+
+    # Update permissions
+    sudo chown -R root:root  /etc/wireguard
+    sudo find /etc/wireguard -type d -exec chmod 755 {} \;
+    sudo find /etc/wireguard -type f -exec chmod 640 {} \;
+    sudo find /etc/wireguard -maxdepth 1 -type f -name '*.conf' -exec chmod 644 {} \;
+    sudo find /etc/wireguard -type f \( -name '*.pub' -o -name profile.template.conf \) -exec chmod 644 {} \;
+}
+
+get_n() {
+    find "/etc/wireguard/$interface.conf.d" -mindepth 1 -type d -exec basename {} \; \
+        | cut -d'.' -f1 \
+        | sort -r \
+        | uniq \
+        | sed -n 1p
+}
+
+gen_keys() {
+    wg genkey \
+        | (umask 0077 && sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$n.key") \
+        | wg pubkey \
+        | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$n.pub" \
+        >/dev/null
+    
+    wg genpsk | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$n-001.psk" > /dev/null
+}
+
+gen_conf() {
+    printf "$peerconf" \
+        "$n" "$username" "$(cat "/etc/wireguard/$interface.conf.d/$n.$username/$n.pub")" "$(cat "/etc/wireguard/$interface.conf.d/$n.$username/$n-001.psk")" "$(echo "$n" | sed 's/^0*//')" \
+        | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/peer.conf" \
+        > /dev/null
+    
+    printf 'PostUp = wg addconf %%i /etc/wireguard/%%i.conf.d/%s.%s/peer.conf\n' "$n" "$username" \
+        | sudo tee -a "/etc/wireguard/$interface.conf" \
+        > /dev/null
+}
+
+gen_profile() {
+    printf "$(sudo cat "/etc/wireguard/$interface.conf.d/profile.template.conf")\n" "$n" "$username" "$(echo "$n" | sed 's/^0*//')" "$(sudo cat "/etc/wireguard/$interface.conf.d/$n.$username/$n.key")" "$(sudo cat "/etc/wireguard/$interface.conf.d/$n.$username/$n-001.psk")" \
+        | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$interface.conf" \
+        > /dev/null
+}
+
+readonly peerconf='[Peer]
+# %s.%s
+PublicKey = %s
+PresharedKey = %s
+#PersistentKeepalive = 25
+AllowedIPs = 10.70.31.%s/32
+'
+
+#######################################
+#   Print error message to stderr
+#   https://google.github.io/styleguide/shellguide.html
+#######################################
+err() { echo "[$(date +'%Y-%m-%dT%H:%M:%S%z')]: $*" >&2; }
+
+main "$@"; exit
