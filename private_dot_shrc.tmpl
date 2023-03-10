@@ -30,8 +30,10 @@ export HISTFILESIZE=$HISTSIZE
 export SAVEHIST=$HISTSIZE
 export HISTTIMEFORMAT="[%F %T] "
 
+{{ if eq .profile "private" -}}
 # Misc
 export XZ_DEFAULTS='-T 0'
+{{- end }}
 
 # Locale
 set -a; . "$XDG_CONFIG_HOME/locale.conf"; set +a;
