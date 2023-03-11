@@ -43,7 +43,7 @@ main() {
     sudo find /etc/wireguard -type d -exec chmod 755 {} \;
     sudo find /etc/wireguard -type f -exec chmod 640 {} \;
     sudo find /etc/wireguard -maxdepth 1 -type f -name '*.conf' -exec chmod 644 {} \;
-    sudo find /etc/wireguard -type f \( -name '*.pub' -o -name '*.template.conf' \) -exec chmod 644 {} \;
+    sudo find /etc/wireguard -type f \( -name '*.pub' -o -name '*.template.conf' -o -name 'peer.conf' \) -exec chmod 644 {} \;
 }
 
 get_n() {
