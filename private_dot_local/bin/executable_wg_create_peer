@@ -28,6 +28,7 @@ main() {
     # Get next peer number and create directory
     n="$(get_n)"
     readonly n="$(printf '%03d\n' $((n+1)))"
+    readonly if_n="$(cat "/etc/wireguard/$interface.conf" | grep private-key | cut -d'/' -f5)"
     sudo mkdir "/etc/wireguard/$interface.conf.d/$n.$username"
 
     # Gen peer
@@ -42,15 +43,16 @@ main() {
     sudo find /etc/wireguard -type d -exec chmod 755 {} \;
     sudo find /etc/wireguard -type f -exec chmod 640 {} \;
     sudo find /etc/wireguard -maxdepth 1 -type f -name '*.conf' -exec chmod 644 {} \;
-    sudo find /etc/wireguard -type f \( -name '*.pub' -o -name profile.template.conf \) -exec chmod 644 {} \;
+    sudo find /etc/wireguard -type f \( -name '*.pub' -o -name '*.template.conf' \) -exec chmod 644 {} \;
 }
 
 get_n() {
     find "/etc/wireguard/$interface.conf.d" -mindepth 1 -type d -exec basename {} \; \
-        | cut -d'.' -f1 \
-        | sort -r \
-        | uniq \
-        | sed -n 1p
+        | sort -n \
+        | sed '$!d' \
+        | sudo xargs -I {} cat "/etc/wireguard/$interface.conf.d/{}/peer.conf" \
+        | grep -o -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' \
+        | cut -d'.' -f4
 }
 
 gen_keys() {
@@ -60,12 +62,12 @@ gen_keys() {
         | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$n.pub" \
         >/dev/null
     
-    wg genpsk | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$n-001.psk" > /dev/null
+    wg genpsk | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$n-$if_n.psk" > /dev/null
 }
 
 gen_conf() {
-    printf "$peerconf" \
-        "$n" "$username" "$(cat "/etc/wireguard/$interface.conf.d/$n.$username/$n.pub")" "$(cat "/etc/wireguard/$interface.conf.d/$n.$username/$n-001.psk")" "$(echo "$n" | sed 's/^0*//')" \
+    printf "$(cat "/etc/wireguard/$interface.conf.d/peer.template.conf")\n" \
+        "$n" "$username" "$(cat "/etc/wireguard/$interface.conf.d/$n.$username/$n.pub")" "$(cat "/etc/wireguard/$interface.conf.d/$n.$username/$n-$if_n.psk")" "$(echo "$n" | sed 's/^0*//')" \
         | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/peer.conf" \
         > /dev/null
     
@@ -75,18 +77,10 @@ gen_conf() {
 }
 
 gen_profile() {
-    printf "$(sudo cat "/etc/wireguard/$interface.conf.d/profile.template.conf")\n" "$n" "$username" "$(echo "$n" | sed 's/^0*//')" "$(sudo cat "/etc/wireguard/$interface.conf.d/$n.$username/$n.key")" "$(sudo cat "/etc/wireguard/$interface.conf.d/$n.$username/$n-001.psk")" \
+    printf "$(sudo cat "/etc/wireguard/$interface.conf.d/$interface.template.conf")\n" "$n" "$username" "$(echo "$n" | sed 's/^0*//')" "$(sudo cat "/etc/wireguard/$interface.conf.d/$n.$username/$n.key")" "$(sudo cat "/etc/wireguard/$interface.conf.d/$n.$username/$n-$if_n.psk")" \
         | sudo tee "/etc/wireguard/$interface.conf.d/$n.$username/$interface.conf" \
         > /dev/null
 }
-
-readonly peerconf='[Peer]
-# %s.%s
-PublicKey = %s
-PresharedKey = %s
-#PersistentKeepalive = 25
-AllowedIPs = 10.70.31.%s/32
-'
 
 #######################################
 #   Print error message to stderr
