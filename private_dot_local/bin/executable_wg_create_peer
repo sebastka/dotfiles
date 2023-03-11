@@ -76,7 +76,7 @@ gen_conf() {
         > /dev/null
 
     printf 'wg addconf %s /etc/wireguard/%s.conf.d/%s.%s/peer.conf\n' \
-        "$interface" "$interface" "$n" "$username" \
+        "$interface" "$interface" "$n" "$username"
 }
 
 gen_profile() {
