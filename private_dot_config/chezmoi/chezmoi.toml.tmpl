@@ -10,10 +10,10 @@
 {{- $nbproc := 0 -}}
 {{- $init_sys := "systemd" -}}
 
-{{- if contains "fjordmail" .chezmoi.fqdnHostname -}}
+{{- if contains "fjordmail.no" .chezmoi.fqdnHostname -}}
     {{- $profile = "work" -}}
     {{- $email = "sebastian@fjordmail.no" -}}
-    #{{- $gpg_key = "" -}}
+    {{- $gpg_key = "" -}}
     {{- $github_user = "fjordmailtech" -}}
 {{- end -}}
 
