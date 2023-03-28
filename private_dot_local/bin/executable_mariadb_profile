@@ -1,0 +1,9 @@
+#!/bin/sh
+
+sudo timeout 30 tcpdump -s 65535 -x -nn -q -tttt -i any port 3306 \
+    | sudo tee /tmp/tcpcapture.dump > /dev/null
+
+sudo pt-query-digest --type tcpdump /tmp/tcpcapture.dump \
+    | sudo tee /tmp/digest.out > /dev/null
+
+less /tmp/digest.out
