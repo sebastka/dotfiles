@@ -12,7 +12,6 @@ echo "$-" | grep -q 'i' || return
 [ ! -f /etc/bashrc ] || . /etc/bashrc
 [ ! -f /etc/bash.bashrc ] || . /etc/bash.bashrc
 [ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
-[ ! -f "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
 
 # History
 shopt -s histappend
@@ -37,6 +36,9 @@ if ! shopt -oq posix; then
         . /etc/bash_completion
     fi
 fi
+
+# NVM bash completion
+[ ! -f "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
 
 # Set bash prompt
 __bash_prompt_command() {
