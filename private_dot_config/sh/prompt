@@ -6,19 +6,19 @@
 #   |_|                       |_|
 
 # Font colour
-readonly WHITE="\[\033[38;5;7m\]"     # Default color
-readonly RED="\[\033[38;5;1m\]"       # Exit statu
-readonly BLUE="\[\033[38;5;109m\]"    # WD
-readonly PINK="\[\033[38;5;133m\]"    # Git branch
-readonly ORANGE="\[\033[38;5;130m\]"  # Brackets
-readonly YELLOW="\[\033[38;5;178m\]"  # Username
-readonly GREEN="\[\033[38;5;107m\]"   # Hostname
+WHITE="\[\033[38;5;7m\]"     # Default color
+RED="\[\033[38;5;1m\]"       # Exit statu
+BLUE="\[\033[38;5;109m\]"    # WD
+PINK="\[\033[38;5;133m\]"    # Git branch
+ORANGE="\[\033[38;5;130m\]"  # Brackets
+YELLOW="\[\033[38;5;178m\]"  # Username
+GREEN="\[\033[38;5;107m\]"   # Hostname
 
 # Font decoration
-readonly BOLD="\[\033[1m\]"
+BOLD="\[\033[1m\]"
 
 # Reset font style
-readonly RESET="\[\033[0m\]"
+RESET="\[\033[0m\]"
 
 # Parse git folder
 git_status() {
