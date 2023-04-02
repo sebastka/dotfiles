@@ -57,19 +57,23 @@ alias \
     grh='git reset --hard HEAD^1'
 
 # Docker
+alias d='docker'
+
+[ -x "$(command -v docker-compose)" ] \
+    && alias dc='docker-compose' \
+    || alias dc='docker compose'
+
 alias \
-    d='docker' \
-    dc='docker-compose' \
-    dcl='docker-compose logs -f' \
-    dcr='docker-compose restart' \
-    dcs='docker-compose stop' \
-    dce='docker-compose exec' \
-    dcp='docker-compose ps' \
-    dci='docker-compose images' \
-    dck='docker-compose kill' \
-    dcd='docker-compose down' \
-    dcb='docker-compose build' \
-    dcu='docker-compose up -d'
+    dcl='dc logs -f' \
+    dcr='dc restart' \
+    dcs='dc stop' \
+    dce='dc exec' \
+    dcp='dc ps' \
+    dci='dc images' \
+    dck='dc kill' \
+    dcd='dc down' \
+    dcb='dc build' \
+    dcu='dc up -d'
 
 {{ if eq .chezmoi.os "linux" -}}
 # Linux
