@@ -99,7 +99,9 @@ alias se='sudoedit'
 
 {{ if (or (contains "debian" .chezmoi.osRelease.id) (contains "debian" .chezmoi.osRelease.idLike)) }}
 # Debian(-like)
-alias p='sudo apt'
+alias \
+    p='sudo apt-get' \
+    pu='p update && p upgrade -y&& p dist-upgrade -y && p autoremove --purge && p clean'
 {{- else if eq .chezmoi.osRelease.id "arch" -}}
 # Arch Linux
 alias p='paru'
