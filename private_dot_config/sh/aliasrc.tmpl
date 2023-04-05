@@ -97,7 +97,7 @@ alias
 alias se='sudoedit'
 {{- end }}
 
-{{ if (or (eq .chezmoi.osRelease.id "debian") (eq (index .chezmoi.osRelease "idLike") "debian")) -}}
+{{ if (or (contains "debian" .chezmoi.osRelease.id) (contains "debian" .chezmoi.osRelease.idLike)) }}
 # Debian(-like)
 alias p='sudo apt'
 {{- else if eq .chezmoi.osRelease.id "arch" -}}
