@@ -36,6 +36,6 @@ lessc() {
 
 # Open docker container shell
 dshell() {
-    readonly container_id="$(dps | grep "$1" | awk '{print $1}')"
+    container_id="$(dps | grep "$1" | awk '{print $1}')"
     docker exec -it "$container_id" "/bin/$2"
 }
