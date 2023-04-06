@@ -59,11 +59,18 @@ alias \
 # Docker
 alias \
     d='docker' \
-    dp='docker system prune --all --volumes'
+    dc='d compose' \
+    dco='d container' \
+    di='d image' \
+    dn='d network' \
+    ds='d system' \
+    dv='d volume'
 
-[ -x "$(command -v docker-compose)" ] \
-    && alias dc='docker-compose' \
-    || alias dc='docker compose'
+[ -x "$(command -v docker-compose)" ] && alias dc='docker-compose'
+
+alias \
+    dp='ds prune' \
+    dpa='dp --all --volumes; dv prune --filter all=1'
 
 alias \
     dcl='dc logs -f' \
