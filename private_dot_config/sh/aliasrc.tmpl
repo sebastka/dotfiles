@@ -57,7 +57,9 @@ alias \
     grh='git reset --hard HEAD^1'
 
 # Docker
-alias d='docker'
+alias \
+    d='docker' \
+    dp='docker system prune --all --volumes'
 
 [ -x "$(command -v docker-compose)" ] \
     && alias dc='docker-compose' \
