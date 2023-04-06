@@ -84,6 +84,8 @@ alias \
     dcb='dc build' \
     dcu='dc up -d'
 
+alias dps='d ps --format 'table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Size}}\t{{.Status}}''
+
 {{ if eq .chezmoi.os "linux" -}}
 # Linux
 alias ip='ip -color=auto'
