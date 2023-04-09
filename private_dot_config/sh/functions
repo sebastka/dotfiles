@@ -39,3 +39,29 @@ dshell() {
     container_id="$(dps | grep "$1" | awk '{print $1}')"
     docker exec -it "$container_id" "/bin/$2"
 }
+
+# Get the latest release version from github
+github_latest_release() {
+    git ls-remote --refs --sort="version:refname" --tags "https://github.com/$1.git" \
+        | cut -d/ -f3 \
+        | sed -n '$p' \
+        | sed 's/^v//'
+}
+
+# Update chezmoi
+update_chezmoi() {
+    version="$(github_latest_release twpayne/chezmoi)"
+    release_url="$(printf 'https://github.com/twpayne/chezmoi/releases/download/v%s/chezmoi_%s_linux_amd64.deb' "$version" "$version")"
+
+    curl -sL -o/tmp/chezmoi.deb "$release_url"
+    sudo dpkg -i /tmp/chezmoi.deb
+}
+
+# Update ctop
+update_ctop() {
+    version="$(github_latest_release bcicen/ctop)"
+    release_url="$(printf 'https://github.com/bcicen/ctop/releases/download/v%s/ctop-%s-linux-amd64' "$version" "$version")"
+
+    curl -sL -o/tmp/ctop "$release_url"
+    sudo install -m 755 /tmp/ctop /usr/local/bin/ctop
+}
