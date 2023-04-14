@@ -35,10 +35,14 @@ if ! shopt -oq posix; then
     elif [ -f /etc/bash_completion ]; then
         . /etc/bash_completion
     fi
+
+    # NVM
+    [ ! -s "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
 fi
 
-# NVM bash completion
-[ ! -f "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
+# Load utilties
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -f "$XDG_CONFIG_HOME/envman/load.sh" ] && . "$XDG_CONFIG_HOME/envman/load.sh"
 
 # Set bash prompt
 __bash_prompt_command() {
