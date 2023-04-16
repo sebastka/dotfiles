@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eux
+
+main() {
+    vm_id="$1"
+    mv_pid="$(get_vm_pid "$vm_id")"
+
+    if [ -n "$mv_pid" ]; then
+        kill -9 "$mv_pid"
+    fi
+}
+
+get_vm_pid() {
+    ps aux | grep "/usr/bin/kvm -id $1" | grep -v grep | awk '{print $2}'
+}
+
+main "$@"; exit
