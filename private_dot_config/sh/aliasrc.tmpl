@@ -108,7 +108,7 @@ alias
 alias se='sudoedit'
 {{- end }}
 
-{{ if (or (contains "debian" .chezmoi.osRelease.id) (contains "debian" .chezmoi.osRelease.idLike)) }}
+{{ if (or (contains "debian" .chezmoi.osRelease.id) (and (hasKey .chezmoi.osRelease "idLike") (contains "debian" .chezmoi.osRelease.idLike))) }}
 # Debian(-like)
 alias \
     p='sudo apt-get' \
