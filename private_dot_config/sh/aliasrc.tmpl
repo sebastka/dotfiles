@@ -153,3 +153,9 @@ sctl() { sudo service "$2" "$1"; }
 {{- else -}}
 # Unknown init system
 {{- end }}
+
+# Flatpak
+alias \
+    fp='flatpak' \
+    fpu='fp update' \
+    fpi='fp install'
