@@ -19,21 +19,6 @@ arch_mirrors_update() {
     sudo reflector --country Norway --country Sweden --country Denmark --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 }
 
-# Colorized 'tail -f' output
-tailf() {
-    tail -f "$1" | bat --plain --paging=never -l log
-}
-
-# Colorized 'cat' output
-catc() {
-    bat --plain --paging=never -l log "$1"
-}
-
-# Colorized 'less' output
-lessc() {
-    bat --plain --paging=always -l log "$1"
-}
-
 # Open docker container shell
 dshell() {
     container_id="$(dps | grep "$1" | awk '{print $1}')"
