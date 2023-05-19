@@ -86,12 +86,6 @@ alias \
 
 alias dps="d ps --format 'table {{ "{{" }} .ID {{ "}}" }}\t{{ "{{" }} .Names {{ "}}" }}\t{{ "{{" }} .Image {{ "}}" }}\t{{ "{{" }} .Size {{ "}}" }}\t{{ "{{" }} .Status {{ "}}" }}'"
 
-# Use docker containers if binaries aren't installed locally
-if [ -x "$(command -v docker)" ]; then
-    [ -x "$(command -v php)" ] || alias \
-        php='docker run -it --rm -v "$PWD":/usr/src/myapp -w /usr/src/myapp php:8.2-alpine php'
-fi
-
 {{ if eq .chezmoi.os "linux" -}}
 # Linux
 alias ip='ip -color=auto'
