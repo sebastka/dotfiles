@@ -50,3 +50,18 @@ update_ctop() {
     curl -sL -o/tmp/ctop "$release_url"
     sudo install -m 755 /tmp/ctop /usr/local/bin/ctop
 }
+
+# Update composer
+update_composer() {
+    curl -sL -o /tmp/composer-setup.sig "https://composer.github.io/installer.sig"
+    printf '  composer-setup.php\n' >> /tmp/composer-setup.sig
+
+    curl -sL -o/tmp/composer-setup.php "https://getcomposer.org/installer"
+
+    cd /tmp
+    if sha384sum --check composer-setup.sig > /dev/null 2>&1; then
+        sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    else
+        echo "Checksum failed, aborting installation"
+    fi
+}
