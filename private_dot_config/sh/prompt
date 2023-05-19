@@ -58,7 +58,7 @@ get_exit_status() {
 }
 
 # Tested on bash and ksh
-readonly PROMPT="$BOLD$ORANGE[$YELLOW\u$WHITE@$GREEN\h $BLUE\W$ORANGE]$PINK\$(git_status)$RED\$(get_exit_status) $WHITE\$ $RESET"
+PROMPT="$BOLD$ORANGE[$YELLOW\u$WHITE@$GREEN\h $BLUE\W$ORANGE]$PINK\$(git_status)$RED\$(get_exit_status) $WHITE\$ $RESET"
 
 # Set simple PS1
 PS1="\u@\h:\w \\$ "
