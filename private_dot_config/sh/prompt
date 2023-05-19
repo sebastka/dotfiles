@@ -20,12 +20,25 @@ BOLD="\[\033[1m\]"
 # Reset font style
 RESET="\[\033[0m\]"
 
+# Check if git repo
+is_git_repo() {
+    if [ -d .git ]; then
+        return 0
+    elif git symbolic-ref HEAD >/dev/null 2>&1; then
+        return 0
+    elif git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        return 0
+    fi
+
+    return 1
+}
+
 # Parse git folder
 git_status() {
     # Git status: branch, + for untracked files and ! for uncommitted changes
     [ -z "$uncommitted_changes_symbol" ] && uncommitted_changes_symbol='!!'
 
-    if git symbolic-ref HEAD >/dev/null 2>&1; then # Is git repo?
+    if is_git_repo; then
         printf ' ('
         git symbolic-ref --quiet --short HEAD | tr -d '\n' # Branch
         [ -z "$(git ls-files --others --exclude-standard)" ] || printf '+' # Untracked files
