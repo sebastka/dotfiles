@@ -65,3 +65,13 @@ update_composer() {
         echo "Checksum failed, aborting installation"
     fi
 }
+
+# Init new machine
+init_machine() {
+    sudo rm /etc/machine-id /var/lib/dbus/machine-id
+    sudo systemd-machine-id-setup
+    sudo ln -s /etc/machine-id /var/lib/dbus/machine-id
+
+    sudo rm /etc/ssh/ssh_host_*
+    sudo dpkg-reconfigure openssh-server
+}
