@@ -98,7 +98,7 @@ alias \
     diff='diff --color=auto'
 {{- end }}
 
-{{ if eq .chezmoi.osRelease.id "openbsd" -}}
+{{ if (or (contains "openbsd" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "openbsd" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "openbsd" .chezmoi.osRelease.idLike))) }}
 # Does
 alias
     sudo='doas' \
@@ -108,24 +108,24 @@ alias
 alias se='sudoedit'
 {{- end }}
 
-{{ if (or (contains "debian" .chezmoi.osRelease.id) (and (hasKey .chezmoi.osRelease "idLike") (contains "debian" .chezmoi.osRelease.idLike))) }}
+{{ if (or (contains "debian" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "debian" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "debian" .chezmoi.osRelease.idLike))) }}
 # Debian(-like)
 alias \
     p='sudo apt-get' \
     pu='p update && p upgrade -y&& p dist-upgrade -y && p autoremove --purge && p clean'
-{{- else if eq .chezmoi.osRelease.id "arch" -}}
+{{- else if (or (contains "arch" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "arch" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "arch" .chezmoi.osRelease.idLike))) }}
 # Arch Linux
 alias p='paru'
-{{- else if eq .chezmoi.osRelease.id "fedora" -}}
+{{- else if (or (contains "fedora" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "fedora" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "fedora" .chezmoi.osRelease.idLike))) }}
 # Fedora
 alias p='sudo dnf'
-{{- else if eq .chezmoi.osRelease.id "freebsd" -}}
+{{- else if (or (contains "freebsd" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "freebsd" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "freebsd" .chezmoi.osRelease.idLike))) }}
 # FreeBSD
 alias \
     ls='ls -alh --color=yes' \
     grep='grep --color=auto' \
     p='sudo pkg install'
-{{- else if eq .chezmoi.osRelease.id "openbsd" -}}
+{{- else if (or (contains "openbsd" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "openbsd" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "openbsd" .chezmoi.osRelease.idLike))) }}
 # OpenBSD
 alias p='doas pkg_add'
 [ -x "$(command -v colorls)" ] && alias ll='colorls -alh'
@@ -138,7 +138,7 @@ alias p='doas pkg_add'
 alias \
     sctl='sudo systemctl' \
     jctl='sudo journalctl -xeu'
-{{- else if (and (eq .init_sys "init") (eq .chezmoi.osRelease.id "openbsd")) -}}
+{{- else if (and (eq .init_sys "init") (hasKey .chezmoi.osRelease "id") (contains "openbsd" .chezmoi.osRelease.id)) -}}
 # OpenBSD traditional init
 alias sctl='doas rcctl'
 {{- else if eq .init_sys "init" -}}
