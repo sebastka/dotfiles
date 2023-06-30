@@ -2,12 +2,18 @@
 set -eu
 
 get_container_id() {
-	docker ps --format 'table {{ .ID }}\t{{ .Names }}' \
-		| awk -v name="$1" '{ if($2 == name) {print $1;} }'
+    docker ps --format 'table {{ .ID }}\t{{ .Names }}' \
+        | awk -v name="$1" '{ if($2 == name) {print $1;} }'
 }
 
+list_available_containers() {
+	printf 'Available containers:\n'
+	docker ps --format 'table {{ .ID }}\t{{ .Names }}\t{{ .Image }}\t{{ .Size }}\t{{ .Status }}'
+}
+
+[ "$#" -eq 1 ] || { printf 'One argument required: container_name\n\n'; list_available_containers; exit 1; }
 container_id="$(get_container_id "$1")"
-[ ! -z "$container_id" ] || { echo "No container found with name '$1'."; exit 1; }
+[ ! -z "$container_id" ] || { printf 'No container found with name "%s".\n\n' "$1"; list_available_containers; exit 2; }
 
 docker exec -it "$container_id" /bin/bash || \
     docker exec -it "$container_id" /bin/sh
