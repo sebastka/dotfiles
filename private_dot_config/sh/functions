@@ -19,12 +19,6 @@ arch_mirrors_update() {
     sudo reflector --country Norway --country Sweden --country Denmark --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 }
 
-# Open docker container shell
-dshell() {
-    container_id="$(dps | grep "$1" | awk '{print $1}')"
-    docker exec -it "$container_id" "/bin/$2"
-}
-
 # Get the latest release version from github
 github_latest_release() {
     git ls-remote --refs --sort="version:refname" --tags "https://github.com/$1.git" \
