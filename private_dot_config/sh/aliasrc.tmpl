@@ -112,7 +112,7 @@ alias se='sudoedit'
 # Debian(-like)
 alias \
     p='sudo apt-get' \
-    pu='p update && p upgrade -y&& p dist-upgrade -y && p autoremove --purge && p clean'
+    pu='p update && p upgrade -y && p dist-upgrade -y && p autoremove --purge && p clean'
 {{- else if (or (contains "arch" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "arch" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "arch" .chezmoi.osRelease.idLike))) }}
 # Arch Linux
 alias p='paru'
