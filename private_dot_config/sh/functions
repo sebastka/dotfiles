@@ -27,6 +27,13 @@ github_latest_release() {
         | sed 's/^v//'
 }
 
+# Docker stack deploy
+dsd() {
+    cluster_name="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_name=' | cut -d'=' -f2)"
+    node_env="$1"
+    docker stack deploy -c docker-compose.base.yml -c "docker-compose.$cluster_name.$node_env.yml" --with-registry-auth "$(pwd | rev | cut -d'/' -f1 | rev)"
+}
+
 # Update chezmoi
 update_chezmoi() {
     version="$(github_latest_release twpayne/chezmoi)"

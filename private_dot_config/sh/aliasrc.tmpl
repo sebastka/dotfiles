@@ -49,42 +49,19 @@ alias \
 alias \
     g='git' \
     ga='git add .' \
-    gc='git commit -S -v' \
-    gp='git push' \
-    gs='git stash' \
-    gsa='git stash apply' \
-    gr='git reset --hard' \
-    grh='git reset --hard HEAD^1'
+    gc='git commit -S -v'
 
 # Docker
 alias \
     d='docker' \
-    dc='d compose' \
-    dco='d container' \
-    di='d image' \
-    dn='d network' \
-    ds='d system' \
-    dv='d volume'
+    dc='docker compose' \
+    dcl='docker compose logs -f' \
+    dcd='docker compose down' \
+    dcu='docker compose up -d' \
+    dpa='docker system prune --all --volumes; docker volume prune --filter all=1' \
+    dps="docker ps --format 'table {{ "{{" }} .ID {{ "}}" }}\t{{ "{{" }} .Names {{ "}}" }}\t{{ "{{" }} .Image {{ "}}" }}\t{{ "{{" }} .Size {{ "}}" }}\t{{ "{{" }} .Status {{ "}}" }}'"
 
 [ -x "$(command -v docker-compose)" ] && alias dc='docker-compose'
-
-alias \
-    dp='ds prune' \
-    dpa='dp --all --volumes; dv prune --filter all=1'
-
-alias \
-    dcl='dc logs -f' \
-    dcr='dc restart' \
-    dcs='dc stop' \
-    dce='dc exec' \
-    dcp='dc ps' \
-    dci='dc images' \
-    dck='dc kill' \
-    dcd='dc down' \
-    dcb='dc build' \
-    dcu='dc up -d'
-
-alias dps="d ps --format 'table {{ "{{" }} .ID {{ "}}" }}\t{{ "{{" }} .Names {{ "}}" }}\t{{ "{{" }} .Image {{ "}}" }}\t{{ "{{" }} .Size {{ "}}" }}\t{{ "{{" }} .Status {{ "}}" }}'"
 
 {{ if eq .chezmoi.os "linux" -}}
 # Linux
@@ -112,7 +89,7 @@ alias se='sudoedit'
 # Debian(-like)
 alias \
     p='sudo apt-get' \
-    pu='p update && p upgrade -y && p dist-upgrade -y && p autoremove --purge && p clean'
+    pu='sudo apt-get update && p upgrade -y && p dist-upgrade -y && p autoremove --purge && p clean'
 {{- else if (or (contains "arch" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "arch" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "arch" .chezmoi.osRelease.idLike))) }}
 # Arch Linux
 alias p='paru'
@@ -151,5 +128,5 @@ sctl() { sudo service "$2" "$1"; }
 # Flatpak
 alias \
     fp='flatpak' \
-    fpu='fp update' \
-    fpi='fp install'
+    fpu='flatpak update' \
+    fpi='flatpak install'
