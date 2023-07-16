@@ -45,7 +45,7 @@ dsd() {
     {
         cat docker-compose.base.yml
 
-        [ "$FM_ENV" = 'all'] \
+        [ "$FM_ENV" = 'all' ] \
             && cat docker-compose.$cluster_name.all.yml \
             || { cat docker-compose.$cluster_name.FM_ENV.yml | envsubst '$FM_ENV'; }
     } | docker stack deploy --with-registry-auth --compose-file - "$service_name"
