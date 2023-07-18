@@ -45,9 +45,18 @@ dsd() {
     {
         cat docker-compose.base.yml
 
-        [ "$FM_ENV" = 'all' ] \
-            && cat docker-compose.$cluster_name.all.yml \
-            || { cat docker-compose.$cluster_name.FM_ENV.yml | envsubst '$FM_ENV'; }
+        if [ "$FM_ENV" = 'all' ]; then
+            cat docker-compose.$cluster_name.all.yml
+        else
+            if [ -f "docker-compose.$cluster_name.$FM_ENV.yml" ]; then
+                cat "docker-compose.$cluster_name.$FM_ENV.yml"
+            elif [ -f "docker-compose.$cluster_name.FM_ENV.yml" ]; then
+                cat "docker-compose.$cluster_name.FM_ENV.yml" | envsubst '$FM_ENV'
+            else
+                echo "No docker-compose.$cluster_name.$FM_ENV.yml or docker-compose.$cluster_name.FM_ENV.yml found"
+                return 1
+            fi
+        fi
     } | docker stack deploy --with-registry-auth --compose-file - "$service_name"
 }
 
