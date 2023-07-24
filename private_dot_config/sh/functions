@@ -37,17 +37,17 @@ dsd() {
 
     [ "$FM_ENV" = 'all' ] && service_name="$d" || service_name="$FM_ENV-$d"
 
-    {
+    (
         cat ../../docker-compose.common.yml
         cat docker-compose.base.yml 
 
         for f in "docker-compose.$CLUSTER_NAME.$FM_ENV.yml" "docker-compose.$CLUSTER_NAME.FM_ENV.yml" "docker-compose.CLUSTER_NAME.$FM_ENV.yml" "docker-compose.CLUSTER_NAME.FM_ENV.yml"; do
-            [ -f "$f" ] && cat "$f" && break || continue
+            [ -f "$f" ] && cat "$f" && exit 0 || continue
         done
 
         echo "No docker-compose.CLUSTER_NAME.FM_ENV.yml found"
-        return 1
-    } | envsubst '$FM_ENV,$CLUSTER_NAME' | if [ "$2" = 'dry' ]; then cat; else tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"; fi
+        exit 1
+    ) | envsubst '$FM_ENV,$CLUSTER_NAME' | if [ "$2" = 'dry' ]; then cat; else tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"; fi
 }
 
 # Update chezmoi
