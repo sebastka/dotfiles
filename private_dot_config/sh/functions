@@ -43,7 +43,8 @@ dsd() {
     [ "$FM_ENV" = 'all' ] && service_name="$d" || service_name="$FM_ENV-$d"
 
     {
-        cat docker-compose.base.yml
+        [ ! -f ../../docker-compose.common.yml ] || cat ../../docker-compose.common.yml
+        [ ! -f docker-compose.base.yml ] || cat docker-compose.base.yml
 
         if [ "$FM_ENV" = 'all' ]; then
             cat docker-compose.$cluster_name.all.yml
@@ -57,7 +58,7 @@ dsd() {
                 return 1
             fi
         fi
-    } | docker stack deploy --with-registry-auth --compose-file - "$service_name"
+    } | tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"
 }
 
 # Update chezmoi
