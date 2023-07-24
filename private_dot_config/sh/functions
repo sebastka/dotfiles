@@ -43,8 +43,8 @@ dsd() {
     [ "$FM_ENV" = 'all' ] && service_name="$d" || service_name="$FM_ENV-$d"
 
     {
-        [ ! -f ../../docker-compose.common.yml ] || cat ../../docker-compose.common.yml
-        [ ! -f docker-compose.base.yml ] || cat docker-compose.base.yml
+        cat ../../docker-compose.common.yml
+        cat docker-compose.base.yml
 
         if [ "$FM_ENV" = 'all' ]; then
             cat docker-compose.$cluster_name.all.yml
