@@ -41,18 +41,12 @@ dsd() {
         cat ../../docker-compose.common.yml
         cat docker-compose.base.yml 
 
-        if [ "$FM_ENV" = 'all' ]; then
-            cat docker-compose.$CLUSTER_NAME.all.yml
-        else
-            if [ -f "docker-compose.$CLUSTER_NAME.$FM_ENV.yml" ]; then
-                cat "docker-compose.$CLUSTER_NAME.$FM_ENV.yml"
-            elif [ -f "docker-compose.$CLUSTER_NAME.FM_ENV.yml" ]; then
-                cat "docker-compose.$CLUSTER_NAME.FM_ENV.yml"
-            else
-                echo "No docker-compose.$CLUSTER_NAME.$FM_ENV.yml or docker-compose.$CLUSTER_NAME.FM_ENV.yml found"
-                return 1
-            fi
-        fi
+        for f in "docker-compose.$CLUSTER_NAME.$FM_ENV.yml" "docker-compose.$CLUSTER_NAME.FM_ENV.yml" "docker-compose.CLUSTER_NAME.$FM_ENV.yml" "docker-compose.CLUSTER_NAME.FM_ENV.yml"; do
+            [ -f "$f" ] && cat "$f" && break || continue
+        done
+
+        echo "No docker-compose.CLUSTER_NAME.FM_ENV.yml found"
+        return 1
     } | envsubst '$FM_ENV,$CLUSTER_NAME' | tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"
 }
 
