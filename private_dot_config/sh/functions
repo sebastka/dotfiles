@@ -28,18 +28,13 @@ github_latest_release() {
 }
 
 # Docker stack deploy
-# dsd() {
-#     [ ! -z "$1" ] || { echo "Usage: dsd env"; return 1; }
-#     cluster_name="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_name=' | cut -d'=' -f2)"
-#     node_env="$1"
-#     docker stack deploy -c docker-compose.base.yml -c "docker-compose.$cluster_name.$node_env.yml" --with-registry-auth "$(pwd | rev | cut -d'/' -f1 | rev)"
-# }
 dsd() {
     [ ! -z "$1" ] || { echo "Usage: dsd env"; return 1; }
-    cluster_name="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_name=' | cut -d'=' -f2)"
     d="$(pwd | rev | cut -d'/' -f1 | rev)"
-    
+
     export FM_ENV="$1"
+    export CLUSTER_NAME="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_name=' | cut -d'=' -f2)"
+
     [ "$FM_ENV" = 'all' ] && service_name="$d" || service_name="$FM_ENV-$d"
 
     {
@@ -47,18 +42,18 @@ dsd() {
         cat docker-compose.base.yml 
 
         if [ "$FM_ENV" = 'all' ]; then
-            cat docker-compose.$cluster_name.all.yml
+            cat docker-compose.$CLUSTER_NAME.all.yml
         else
-            if [ -f "docker-compose.$cluster_name.$FM_ENV.yml" ]; then
-                cat "docker-compose.$cluster_name.$FM_ENV.yml"
-            elif [ -f "docker-compose.$cluster_name.FM_ENV.yml" ]; then
-                cat "docker-compose.$cluster_name.FM_ENV.yml"
+            if [ -f "docker-compose.$CLUSTER_NAME.$FM_ENV.yml" ]; then
+                cat "docker-compose.$CLUSTER_NAME.$FM_ENV.yml"
+            elif [ -f "docker-compose.$CLUSTER_NAME.FM_ENV.yml" ]; then
+                cat "docker-compose.$CLUSTER_NAME.FM_ENV.yml"
             else
-                echo "No docker-compose.$cluster_name.$FM_ENV.yml or docker-compose.$cluster_name.FM_ENV.yml found"
+                echo "No docker-compose.$CLUSTER_NAME.$FM_ENV.yml or docker-compose.$CLUSTER_NAME.FM_ENV.yml found"
                 return 1
             fi
         fi
-    } | envsubst '$FM_ENV' | tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"
+    } | envsubst '$FM_ENV,$CLUSTER_NAME' | tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"
 }
 
 # Update chezmoi
