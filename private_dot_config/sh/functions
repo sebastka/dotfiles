@@ -29,7 +29,7 @@ github_latest_release() {
 
 # Docker stack deploy
 dsd() {
-    [ ! -z "$1" ] || { echo "Usage: dsd env"; return 1; }
+    [ ! -z "$1" ] || { echo "Usage: dsd env [dry]"; return 1; }
     d="$(pwd | rev | cut -d'/' -f1 | rev)"
 
     export FM_ENV="$1"
@@ -47,7 +47,7 @@ dsd() {
 
         echo "No docker-compose.CLUSTER_NAME.FM_ENV.yml found"
         return 1
-    } | envsubst '$FM_ENV,$CLUSTER_NAME' | tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"
+    } | envsubst '$FM_ENV,$CLUSTER_NAME' | if [ "$2" = 'dry' ]; then cat; else tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"; fi
 }
 
 # Update chezmoi
