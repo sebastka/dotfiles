@@ -14,19 +14,20 @@ main() {
         esac
     done
 
+    # One positional argument required
     [ $# -eq 1 ] || { usage; exit 2; }
-    [ ! -z "$INSTANCE_NAME" ] || export INSTANCE_NAME="$(pwd | rev | cut -d'/' -f1 | rev)"
-    stack="$(pwd | rev | cut -d'/' -f2 | rev)"
-
+    
+    stack="$(pwd | rev | cut -d'/' -f1 | rev)"
     export FM_ENV="$1"
     export CLUSTER_NAME="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_name=' | cut -d'=' -f2)"
+    [ ! -z "$INSTANCE_NAME" ] || export INSTANCE_NAME="$stack"
 
     if [ "$FM_ENV" = 'all' ]; then
-        service_name="$INSTANCE_NAME" # traefik
+        service_name="$stack" # traefik
     elif [ ! -z "$iflag" ]; then
         service_name="$FM_ENV-$stack-$INSTANCE_NAME" # dev-rc-soldk
     else
-        service_name="$FM_ENV-$INSTANCE_NAME" # dev-fmapi
+        service_name="$FM_ENV-$stack" # dev-fmapi
     fi
 
     (
