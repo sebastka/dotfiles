@@ -47,7 +47,7 @@ dsd() {
 
         echo "No docker-compose.CLUSTER_NAME.FM_ENV.yml found"
         exit 1
-    ) | envsubst '$FM_ENV,$CLUSTER_NAME' | if [ "$2" = 'dry' ]; then cat; else tee /dev/tty | docker stack deploy --with-registry-auth --compose-file - "$service_name"; fi
+    ) | envsubst '$FM_ENV,$CLUSTER_NAME' | if [ "$2" = 'dry' ]; then cat; else docker stack deploy --with-registry-auth --compose-file - "$service_name"; fi
 }
 
 # Update chezmoi
