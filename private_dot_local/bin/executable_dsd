@@ -5,6 +5,7 @@ set -eu
 main() {
     dflag=
     iflag=
+    INSTANCE_NAME=
 
     while getopts di: name; do
         case $name in
