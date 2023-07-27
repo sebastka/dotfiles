@@ -23,7 +23,7 @@ main() {
 
     if [ "$FM_ENV" = 'all' ]; then
         service_name="$INSTANCE_NAME" # traefik
-    elif [ -z "$iflag" ]; then
+    elif [ ! -z "$iflag" ]; then
         service_name="$FM_ENV-$stack-$INSTANCE_NAME" # dev-rc-soldk
     else
         service_name="$FM_ENV-$INSTANCE_NAME" # dev-fmapi
