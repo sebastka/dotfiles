@@ -22,15 +22,11 @@ RESET="\[\033[0m\]"
 
 # Check if git repo
 is_git_repo() {
-    if is_in_dotgit_dir || [ -d .git ]; then
-        return 0
-    elif git symbolic-ref HEAD >/dev/null 2>&1; then
-        return 0
-    elif git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        return 0
-    fi
-
-    return 1
+    [ -d .git ] \
+        || is_in_dotgit_dir \
+        || git symbolic-ref HEAD >/dev/null 2>&1 \
+        || git rev-parse --is-inside-work-tree >/dev/null 2>&1 \
+        || return 1
 }
 
 is_in_dotgit_dir() {
