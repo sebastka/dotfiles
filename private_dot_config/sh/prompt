@@ -22,7 +22,7 @@ RESET="\[\033[0m\]"
 
 # Check if git repo
 is_git_repo() {
-    if [ -d .git ]; then
+    if is_in_dotgit_dir || [ -d .git ]; then
         return 0
     elif git symbolic-ref HEAD >/dev/null 2>&1; then
         return 0
@@ -33,12 +33,20 @@ is_git_repo() {
     return 1
 }
 
+is_in_dotgit_dir() {
+    pwd | grep -q -E '\/.git($|/)'
+}
+
 # Parse git folder
 git_status() {
     # Git status: branch, + for untracked files and ! for uncommitted changes
     [ -z "$uncommitted_changes_symbol" ] && uncommitted_changes_symbol='!!'
 
-    if is_git_repo; then
+    if is_in_dotgit_dir; then
+        printf ' ('
+        git symbolic-ref --quiet --short HEAD | tr -d '\n' # Branch
+        printf ')'
+    elif is_git_repo; then
         printf ' ('
         git symbolic-ref --quiet --short HEAD | tr -d '\n' # Branch
         [ -z "$(git ls-files --others --exclude-standard)" ] || printf '+' # Untracked files
