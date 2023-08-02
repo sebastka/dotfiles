@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+if ($argc < 2) {
+    echo "Usage: $argv[0] <input file 1> [<input file 2>] [...]\n";
+    exit(1);
+}
+
+function get_csv(string $file_path): array
+{
+    if (!file_exists($file_path)) {
+        echo "File $file_path does not exist\n";
+        exit(1);
+    }
+
+    if (!is_readable($file_path)) {
+        echo "File $file_path is not readable\n";
+        exit(1);
+    }
+
+    $values = array_map('str_getcsv', file($file_path, FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES));
+    $keys = array_shift($values);
+
+    $values = array_map(function ($value) use ($keys) {
+        return array_combine($keys, $value);
+    }, $values);
+
+    return [$keys, $values];
+}
+
+$files = array_slice($argv, 1);
+$combined_keys = [];
+$values = [];
+foreach ($files as $file) {
+    $csv = get_csv($file);
+    $combined_keys = array_unique(array_merge($combined_keys, $csv[0]));
+    $values = array_merge($values, $csv[1]);
+}
+
+$values = array_map(function ($value) use ($combined_keys) {
+    return array_merge(array_fill_keys($combined_keys, ''), $value);
+}, $values);
+
+fputcsv(STDOUT, $combined_keys);
+foreach ($values as $value) {
+    fputcsv(STDOUT, $value);
+}
+
+?>
