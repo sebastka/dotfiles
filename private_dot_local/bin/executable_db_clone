@@ -28,7 +28,7 @@ dump_db()
         --host="$s_db_host" \
         --password \
         "$s_db_name" \
-        > "$db_dump_file"
+        > "$dump_path"
 }
 
 clone_db()
@@ -50,7 +50,7 @@ clone_db()
         --host="$d_db_host" \
         --password \
         "$d_db_name" \
-        < "$db_dump_file"
+        < "$dump_path"
 }
 
 main "$@"; exit
