@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -eux
 
 readonly dump_path="$(mktemp -d)/db.sql"
 
@@ -11,9 +11,14 @@ main()
 
 dump_db()
 {
-    s_db_name="$(get_input 'Source database name')"
-    s_db_user="$(get_input 'Source database user')"
-    s_db_host="$(get_input 'Source database host (default: localhost)')"
+    printf 'Source database name: '
+    read -r s_db_name
+
+    printf 'Source database user: '
+    read -r s_db_user
+
+    printf 'Source database host (default: localhost): '
+    read -r s_db_host
     [ ! -z "$s_db_host" ] || s_db_host='localhost'
 
     mysqldump \
@@ -27,9 +32,14 @@ dump_db()
 
 clone_db()
 {
-    d_db_name="$(get_input 'Destination database name')"
-    d_db_user="$(get_input 'Destination database user')"
-    d_db_host="$(get_input 'Destination database host (default: localhost)')"
+    printf 'Destination database name: '
+    read -r d_db_name
+
+    printf 'Destination database user: '
+    read -r d_db_user
+
+    printf 'Destination database host (default: localhost): '
+    read -r d_db_host
     [ ! -z "$d_db_host" ] || d_db_host='localhost'
 
     mysql \
@@ -43,8 +53,7 @@ clone_db()
 
 get_input()
 {
-    printf '%s: ' "$1"
-    read -r r
+    
     echo "$r"
 }
 
