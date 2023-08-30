@@ -20,6 +20,7 @@ dump_db()
         --user="$s_db_user" \
         --password="$s_db_pass" \
         --host="$s_db_host" \
+        --password \
         "$s_db_name" \
         > "$db_dump_file"
 }
@@ -35,6 +36,7 @@ clone_db()
         --user="$d_db_user" \
         --password="$d_db_pass" \
         --host="$d_db_host" \
+        --password \
         "$d_db_name" \
         < "$db_dump_file"
 }
