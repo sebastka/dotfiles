@@ -1,49 +1,163 @@
 #!/usr/bin/env php
 <?php
 
-if ($argc < 2) {
-    echo "Usage: $argv[0] <input file 1> [<input file 2>] [...]\n";
-    exit(1);
+// Combine multiple CSV files into one CSV file
+function main(int $argc, array &$argv): int
+{
+    [ $options, $files ] = parse_options($argc, $argv, 2);
+
+    // Default delimiter is comma
+    $delimiter = array_key_exists('d', $options) ? $options['d'] : ',';
+    $delimiter = (in_array($delimiter, [ 'tab', '\t', 't' ])) ? "\t" : $delimiter;
+
+    // Fill missing keys with empty strings?
+    $fill = array_key_exists('f', $options) ? true : false;
+
+    // Output file
+    $output_file = array_key_exists('o', $options) ? $options['o'] : NULL;
+    $fd = get_fd($output_file, 'w');
+
+    // Get all keys and values
+    $combined_keys = [];
+    $values = [];
+    foreach ($files as $file) {
+        $csv = get_csv($file, $fill, $delimiter);
+        $combined_keys = array_unique(array_merge($combined_keys, $csv[0]));
+        $values = array_merge($values, $csv[1]);
+    }
+
+    // Add missing keys to values
+    $values = array_map(function ($value) use ($combined_keys) {
+        return array_merge(array_fill_keys($combined_keys, ''), $value);
+    }, $values);
+
+    // Write to STDOUT
+    fputcsv($fd, $combined_keys);
+    foreach ($values as $value) {
+        if (fputcsv($fd, $value) === false) {
+            echo "Could not write to $output_file\n";
+            exit(1);
+        }
+    }
+
+    if ($output_file !== NULL) fclose($fd);
+    return 0;
 }
 
-function get_csv(string $file_path): array
+// File to multidimensional array
+function get_csv(string $file_path, bool $fill = false, string $delimiter = ','): array
 {
+    // Check if file exists
     if (!file_exists($file_path)) {
         echo "File $file_path does not exist\n";
         exit(1);
     }
 
+    // Check if file is readable
     if (!is_readable($file_path)) {
         echo "File $file_path is not readable\n";
         exit(1);
     }
 
-    $values = array_map('str_getcsv', file($file_path, FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES));
+    // Read file and parse CSV
+    $file = file($file_path, FILE_SKIP_EMPTY_LINES|FILE_IGNORE_NEW_LINES);
+    $values = array_map(
+        function (string $line) use ($delimiter) { return str_getcsv($line, $delimiter); },
+        $file
+    );
+    unset($file);
     $keys = array_shift($values);
 
+    // Check if number of keys and values match
+    for ($i = 0; $i < count($values); $i++) {
+        $line = $i + 4;
+
+        if (count($values[$i]) > count($keys)) {
+            printf('There are more values than there are keys at line %d:' . PHP_EOL, $line);
+            print_r($keys);
+            print_r($values[$i]);
+            exit(1);
+        } else if (count($values[$i]) < count($keys)) {
+            if ($fill) {
+                $values[$i] = array_merge($values[$i], array_fill(count($values[$i]), count($keys) - count($values[$i]), ''));
+            } else {
+                printf('There are fewer keys than there are values at line %d:' . PHP_EOL, $line);
+                print_r($keys);
+                print_r($values[$i]);
+                exit(1);
+            }
+        }
+    }
+
+    // They do, so we can combine them
     $values = array_map(function ($value) use ($keys) {
         return array_combine($keys, $value);
     }, $values);
 
-    return [$keys, $values];
+    return [ $keys, $values ];
 }
 
-$files = array_slice($argv, 1);
-$combined_keys = [];
-$values = [];
-foreach ($files as $file) {
-    $csv = get_csv($file);
-    $combined_keys = array_unique(array_merge($combined_keys, $csv[0]));
-    $values = array_merge($values, $csv[1]);
+// https://www.php.net/manual/en/function.getopt.php
+function parse_options(int $argc, array &$argv, $n_arguments = 1): array
+{
+    $shortopts = 'h::d::f::o::';
+    $longopts = [];
+    $options = getopt($shortopts);
+
+    foreach ($options as $key => $value) {
+        switch ($key) {
+            case 'd':
+                if (empty($options['d'])) usage($argv, 1);
+                break;
+            case 'f':
+                break;
+            case 'h':
+                usage($argv, 0);
+                break;
+            case 'o':
+                if (empty($options['o'])) usage($argv, 1);
+                break;
+            default:
+                break;
+        }
+
+        array_shift($argv);
+    }
+
+    if ($argc < $n_arguments) { usage($argv, 1); }
+
+    return [ $options, array_slice($argv, $n_arguments-1) ];
 }
 
-$values = array_map(function ($value) use ($combined_keys) {
-    return array_merge(array_fill_keys($combined_keys, ''), $value);
-}, $values);
+// Get file descriptor from file path
+function &get_fd(?string $file_path, string $mode = 'w')
+{
+    if ($file_path === NULL) {
+        return STDOUT;
+    }
 
-fputcsv(STDOUT, $combined_keys);
-foreach ($values as $value) {
-    fputcsv(STDOUT, $value);
+    if (($fd = fopen($file_path, $mode)) === false) {
+        echo "Could not open $file_path\n";
+        exit(1);
+    }
+
+    return $fd;
 }
+
+// Print usage and exit
+function usage(array &$argv, int $return_value): void
+{
+    echo "Usage: $argv[0] [-h] [-d=,] [-f] [-o=out.csv] <input file 1> [<input file 2>] [...]\n";
+    echo "Combine/reformat one or multiple CSV/TSV files into one CSV file.\n";
+    echo "Options:\n";
+    echo "  -d\t\tDelimiter to use (default: comma)\n";
+    echo "  -f\t\tFill missing keys with empty strings\n";
+    echo "  -h\t\tShow this help message and exit\n";
+    echo "  -o\t\tOutput file (default: STDOUT)\n";
+    exit($return_value);
+}
+
+// Todo: add flag which tells if the first line is a header or not
+exit(main($argc, $argv));
 
 ?>

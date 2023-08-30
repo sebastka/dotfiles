@@ -7,17 +7,18 @@ main() {
     iflag=
     INSTANCE_NAME=
 
-    while getopts di: name; do
+    while getopts di:h name; do
         case $name in
             d) dflag=1; shift $(($OPTIND -1)); ;; # Dry run
             i) iflag=1; export INSTANCE_NAME="$OPTARG"; shift $(($OPTIND -1)); ;; # Instance name
+            h) usage; exit 0; ;;
             ?) usage; exit 2; ;;
         esac
     done
 
     # One positional argument required
     [ $# -eq 1 ] || { usage; exit 2; }
-    
+
     stack="$(pwd | rev | cut -d'/' -f1 | rev)"
     export FM_ENV="$1"
     export CLUSTER_NAME="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_name=' | cut -d'=' -f2)"
