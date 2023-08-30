@@ -1,11 +1,11 @@
 #!/bin/sh
-set -eux
+set -eu
 
 readonly dump_path="$(mktemp -d)/db.sql"
 
 main()
 {
-    dump_db && clone_db
+    dump_db && clone_db && printf 'Done!\n' || printf 'Failed!\n'
     rm -rf "$dump_path"
 }
 
@@ -21,6 +21,7 @@ dump_db()
     read -r s_db_host
     [ ! -z "$s_db_host" ] || s_db_host='localhost'
 
+    printf 'Dumping database...\n'
     mysqldump \
         --user="$s_db_user" \
         --password="$s_db_pass" \
@@ -42,6 +43,7 @@ clone_db()
     read -r d_db_host
     [ ! -z "$d_db_host" ] || d_db_host='localhost'
 
+    printf 'Cloning database...\n'
     mysql \
         --user="$d_db_user" \
         --password="$d_db_pass" \
@@ -49,12 +51,6 @@ clone_db()
         --password \
         "$d_db_name" \
         < "$db_dump_file"
-}
-
-get_input()
-{
-    
-    echo "$r"
 }
 
 main "$@"; exit
