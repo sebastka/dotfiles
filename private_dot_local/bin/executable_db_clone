@@ -6,7 +6,7 @@ readonly dump_path="$(mktemp -d)/db.sql"
 main()
 {
     # If root, don't use --password
-    [ $UID -eq 0 ] && opt='' || opt='--password'
+    [ "$(id -u)" -eq 0 ] && opt='' || opt='--password'
 
     get_info \
         && dump_db \
