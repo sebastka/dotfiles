@@ -5,12 +5,22 @@ readonly dump_path="$(mktemp -d)/db.sql"
 
 main()
 {
-    dump_db && clone_db && printf 'Done!\n' || printf 'Failed!\n'
+    # If root, don't use --password
+    [ $UID -eq 0 ] && opt='' || opt='--password'
+
+    get_info \
+        && dump_db \
+        && clone_db \
+        && printf 'Done!\n' \
+        || printf 'Failed!\n'
+
     rm -rf "$dump_path"
 }
 
-dump_db()
+get_info()
 {
+    # Source
+
     printf 'Source database name: '
     read -r s_db_name
 
@@ -22,19 +32,11 @@ dump_db()
     read -r s_db_host
     [ ! -z "$s_db_host" ] || s_db_host='localhost'
 
-    printf 'Dumping database...\n'
-    mysqldump \
-        --user="$s_db_user" \
-        --host="$s_db_host" \
-        --password \
-        "$s_db_name" \
-        > "$dump_path"
-}
+    # Destination
 
-clone_db()
-{
-    printf 'Destination database name: '
+    printf 'Destination database name (default: %s): ' "$s_db_name"
     read -r d_db_name
+    [ ! -z "$d_db_name" ] || d_db_name="$s_db_name"
 
     printf 'Destination database user (default: %s): ' "$d_db_name"
     read -r d_db_user
@@ -43,12 +45,28 @@ clone_db()
     printf 'Destination database host (default: localhost): '
     read -r d_db_host
     [ ! -z "$d_db_host" ] || d_db_host='localhost'
+}
 
+dump_db()
+{
+    printf 'Dumping database...\n'
+
+    mysqldump \
+        --user="$s_db_user" \
+        --host="$s_db_host" \
+        $opt \
+        "$s_db_name" \
+        > "$dump_path"
+}
+
+clone_db()
+{
     printf 'Cloning database...\n'
+
     mysql \
         --user="$d_db_user" \
         --host="$d_db_host" \
-        --password \
+        $opt \
         "$d_db_name" \
         < "$dump_path"
 }
