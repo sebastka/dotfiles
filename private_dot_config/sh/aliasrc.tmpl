@@ -114,7 +114,7 @@ alias p='doas pkg_add'
 # Systemd
 alias \
     sctl='sudo EDITOR="$EDITOR" PAGER="$PAGER" systemctl' \
-    jctl='sudo EDITOR="$EDITOR" PAGER="$PAGER" journalctl --boot --unit'
+    jctl='sudo EDITOR="$EDITOR" PAGER="$PAGER" journalctl'
 {{- else if (and (eq .init_sys "init") (hasKey .chezmoi.osRelease "id") (contains "openbsd" .chezmoi.osRelease.id)) -}}
 # OpenBSD traditional init
 alias sctl='doas rcctl'
