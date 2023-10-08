@@ -1,5 +1,3 @@
-[ -f /etc/profile.d/puppet-agent.sh ] && . /etc/profile.d/puppet-agent.sh
-
 export EDITOR=vim
 export VISUAL="$EDITOR"
 export PAGER=less

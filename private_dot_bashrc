@@ -9,8 +9,8 @@
 echo "$-" | grep -q 'i' || return
 
 # Source global definitions
-[ ! -f /etc/bashrc ] || . /etc/bashrc
-[ ! -f /etc/bash.bashrc ] || . /etc/bash.bashrc
+#[ ! -f /etc/bashrc ] || . /etc/bashrc
+#[ ! -f /etc/bash.bashrc ] || . /etc/bash.bashrc
 [ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
 
 # History
@@ -53,3 +53,12 @@ __bash_prompt_command() {
 
 # Set dynamic PS1
 PROMPT_COMMAND=__bash_prompt_command
+
+# Open tmux automatically
+command -v tmux >/dev/null \
+    && [ -n "$PS1" ] \
+    && [ "$TERM" != 'screen' ] \
+    && [ "$TERM" != 'tmux' ] \
+    && [ -z "$TMUX" ] \
+    && exec tmux \
+    || true

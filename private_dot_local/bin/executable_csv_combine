@@ -15,14 +15,16 @@ function main(int $argc, array &$argv): int
 
     // Output file
     $output_file = array_key_exists('o', $options) ? $options['o'] : NULL;
-    $fd = get_fd($output_file, 'w');
+    $fd = ($output_file === NULL) ? STDOUT : get_fd($output_file, 'w');
 
     // Get all keys and values
     $combined_keys = [];
     $values = [];
     foreach ($files as $file) {
         $csv = get_csv($file, $fill, $delimiter);
-        $combined_keys = array_unique(array_merge($combined_keys, $csv[0]));
+        if (empty($csv) || empty($csv[0]) || empty($csv[1])) continue;
+        $merged = array_merge($combined_keys, $csv[0]);
+        $combined_keys = array_unique($merged); unset($merged);
         $values = array_merge($values, $csv[1]);
     }
 
@@ -132,10 +134,6 @@ function parse_options(int $argc, array &$argv, $n_arguments = 1): array
 // Get file descriptor from file path
 function &get_fd(?string $file_path, string $mode = 'w')
 {
-    if ($file_path === NULL) {
-        return STDOUT;
-    }
-
     if (($fd = fopen($file_path, $mode)) === false) {
         echo "Could not open $file_path\n";
         exit(1);

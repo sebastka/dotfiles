@@ -1,0 +1,46 @@
+#!/bin/sh
+set -eux
+
+# https://github.com/ryanoasis/nerd-fonts
+# Download and install latest version of Nerd Fonts / JetBrains Mono
+
+temp="$(mktemp -d)"
+version="$(gh_latest_release ryanoasis/nerd-fonts)"
+
+main() {
+    # Fetch nerd fonts...
+    gh_dl_nf JetBrainsMono
+    # gh_dl_nf Noto
+    # gh_dl_nf ...
+
+    # ... and install them
+    mkdir -p "$XDG_DATA_HOME/fonts"
+    mv "$temp"/*.ttf "$XDG_DATA_HOME/fonts"
+    rm -rf "$temp"
+    find "$XDG_DATA_HOME/fonts" -type f -exec chmod 0644 {} \;
+    fc-cache -f -v
+}
+
+# gh_dl_nf JetBrainsMono
+gh_dl_nf()
+{
+    nf_name="$1"
+
+    curl -sL \
+        -o"$temp/$nf_name.zip" \
+        "$(printf 'https://github.com/ryanoasis/nerd-fonts/releases/download/v%s/%s.zip' "$version" "$nf_name")"
+
+    unzip "$temp/$nf_name.zip" -d "$temp"
+    rm "$temp/$nf_name.zip"
+}
+
+# gh_latest_release user/repo
+gh_latest_release()
+{
+    git ls-remote --refs --sort="version:refname" --tags https://github.com/$1.git \
+        | cut -d/ -f3 \
+        | sed -n '$p' \
+        | sed 's/^v//'
+}
+
+main "$@"; exit
