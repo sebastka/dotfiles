@@ -4,13 +4,14 @@ set -eux
 # https://github.com/ryanoasis/nerd-fonts
 # Download and install latest version of Nerd Fonts / JetBrains Mono
 
-temp="$(mktemp -d)"
-version="$(gh_latest_release ryanoasis/nerd-fonts)"
+readonly temp="$(mktemp -d)"
 
 main() {
+    readonly version="$(gh_latest_release ryanoasis/nerd-fonts)"
+
     # Fetch nerd fonts...
-    gh_dl_nf JetBrainsMono
-    # gh_dl_nf Noto
+    gh_dl_nf JetBrainsMono "$version"
+    gh_dl_nf Noto "$version"
     # gh_dl_nf ...
 
     # ... and install them
@@ -21,17 +22,15 @@ main() {
     fc-cache -f -v
 }
 
-# gh_dl_nf JetBrainsMono
+# gh_dl_nf nerdfont_name nerdfont_version
 gh_dl_nf()
 {
-    nf_name="$1"
-
     curl -sL \
-        -o"$temp/$nf_name.zip" \
-        "$(printf 'https://github.com/ryanoasis/nerd-fonts/releases/download/v%s/%s.zip' "$version" "$nf_name")"
+        -o"$temp/$1.zip" \
+        "$(printf 'https://github.com/ryanoasis/nerd-fonts/releases/download/v%s/%s.zip' "$2" "$1")"
 
-    unzip "$temp/$nf_name.zip" -d "$temp"
-    rm "$temp/$nf_name.zip"
+    unzip "$temp/$1.zip" -d "$temp"
+    rm "$temp/$1.zip"
 }
 
 # gh_latest_release user/repo
