@@ -16,4 +16,4 @@ container_id="$(get_container_id "$1")"
 [ ! -z "$container_id" ] || { printf 'No container found with name "%s".\n\n' "$1"; list_available_containers; exit 2; }
 
 docker exec -it "$container_id" /bin/bash || \
-    docker exec -it "$container_id" /bin/sh
+    docker exec -it "$container_id" /bin/sh -l
