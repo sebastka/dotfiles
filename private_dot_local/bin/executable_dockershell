@@ -15,5 +15,8 @@ list_available_containers() {
 container_id="$(get_container_id "$1")"
 [ ! -z "$container_id" ] || { printf 'No container found with name "%s".\n\n' "$1"; list_available_containers; exit 2; }
 
+if [ "$#" -eq 2 ]; then opt="--user $2";
+else opt=''; fi
+
 docker exec -it "$container_id" /bin/bash || \
-    docker exec -it "$container_id" /bin/sh -l
+    docker exec -it $opt "$container_id" /bin/sh -l
