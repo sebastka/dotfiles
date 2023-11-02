@@ -11,7 +11,7 @@ list_available_containers() {
 	docker ps --format 'table {{ .ID }}\t{{ .Names }}\t{{ .Image }}\t{{ .Size }}\t{{ .Status }}'
 }
 
-[ "$#" -le 2 ] || { printf 'One argument required: container_name [user]\n\n'; list_available_containers; exit 1; }
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then printf 'One argument required: container_name [user]\n\n'; list_available_containers; exit 1; fi
 container_id="$(get_container_id "$1")"
 [ ! -z "$container_id" ] || { printf 'No container found with name "%s".\n\n' "$1"; list_available_containers; exit 2; }
 
