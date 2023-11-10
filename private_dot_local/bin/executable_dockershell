@@ -18,5 +18,5 @@ container_id="$(get_container_id "$1")"
 if [ "$#" -eq 2 ]; then opt="--user $2";
 else opt=''; fi
 
-docker exec -it "$container_id" /bin/bash || \
+docker exec -it $opt "$container_id" /bin/bash || \
     docker exec -it $opt "$container_id" /bin/sh -l
