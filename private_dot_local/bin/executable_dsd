@@ -51,7 +51,7 @@ main() {
 
         echo "No specific compose file found"
         exit 1
-    ) | envsubst '$FM_ENV,$CLUSTER_NAME,$INSTANCE_NAME' | if [ ! -z "$dflag" ]; then cat; else docker stack deploy --resolve-image --with-registry-auth --compose-file - "$service_name"; fi
+    ) | envsubst '$FM_ENV,$CLUSTER_NAME,$INSTANCE_NAME' | if [ ! -z "$dflag" ]; then cat; else docker stack deploy --with-registry-auth --compose-file - "$service_name"; fi
 }
 
 usage() { printf "Usage: %s: [-d] [-i instance_name] env\n" $0; }
