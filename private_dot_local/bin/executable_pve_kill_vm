@@ -6,7 +6,7 @@ main() {
     mv_pid="$(get_vm_pid "$vm_id")"
 
     if [ -n "$mv_pid" ]; then
-        kill -9 "$mv_pid"
+        sudo kill -9 "$mv_pid"
     fi
 }
 
