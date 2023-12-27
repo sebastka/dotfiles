@@ -43,6 +43,19 @@ fi
 # Load utilties
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 [ -f "$XDG_CONFIG_HOME/envman/load.sh" ] && . "$XDG_CONFIG_HOME/envman/load.sh"
+[ -f /usr/bin/terraform ] && complete -C /usr/bin/terraform terraform
+
+# Completion for k8s
+if [ -f /usr/bin/kubeadm ]; then
+    mkdir -p "$XDG_DATA_HOME/kube"
+
+    for util in kubectl kubeadm; do
+        [ -f "$XDG_DATA_HOME/kube/$util.completion.bash" ] || \
+            $util completion bash > "$XDG_DATA_HOME/kube/$util.completion.bash"
+        
+        . "$XDG_DATA_HOME/kube/$util.completion.bash"
+    done
+fi
 
 # Set bash prompt
 __bash_prompt_command() {
