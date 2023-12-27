@@ -47,6 +47,10 @@ export MAKEFLAGS="-j{{ .nbproc }}"
 [ -d "$XDG_DATA_HOME/cargo/bin" ] && export PATH=$XDG_DATA_HOME/cargo/bin:$PATH
 export NODE_PATH="$XDG_DATA_HOME/node_modules"
 
+# Kube
+export KUBECONFIG="$XDG_CONFIG_HOME/kube" 
+export KUBECACHEDIR="$XDG_CACHE_HOME/kube"
+
 {{ if eq .chezmoi.os "freebsd" -}}
 # FreeBSD
 if [ "$PWD" != "$HOME" ] && [ "$PWD" -ef "$HOME" ]; then cd; fi
