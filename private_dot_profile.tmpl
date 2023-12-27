@@ -48,7 +48,7 @@ export MAKEFLAGS="-j{{ .nbproc }}"
 export NODE_PATH="$XDG_DATA_HOME/node_modules"
 
 # Kube
-export KUBECONFIG="$XDG_CONFIG_HOME/kube" 
+export KUBECONFIG="$XDG_CONFIG_HOME/kube/config" 
 export KUBECACHEDIR="$XDG_CACHE_HOME/kube"
 
 {{ if eq .chezmoi.os "freebsd" -}}
