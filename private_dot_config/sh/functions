@@ -19,31 +19,11 @@ arch_mirrors_update() {
     sudo reflector --country Norway --country Sweden --country Denmark --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 }
 
-# Get the latest release version from github
-github_latest_release() {
-    git ls-remote --refs --sort="version:refname" --tags "https://github.com/$1.git" \
-        | cut -d/ -f3 \
-        | sed -n '$p' \
-        | sed 's/^v//'
-}
-
-# Update chezmoi
-update_chezmoi() {
-    version="$(github_latest_release twpayne/chezmoi)"
-    release_url="$(printf 'https://github.com/twpayne/chezmoi/releases/download/v%s/chezmoi_%s_linux_amd64.deb' "$version" "$version")"
-
-    curl -sL -o/tmp/chezmoi.deb "$release_url"
-    sudo dpkg -i /tmp/chezmoi.deb
-}
-
-# Update ctop
-update_ctop() {
-    version="$(github_latest_release bcicen/ctop)"
-    release_url="$(printf 'https://github.com/bcicen/ctop/releases/download/v%s/ctop-%s-linux-amd64' "$version" "$version")"
-
-    curl -sL -o/tmp/ctop "$release_url"
-    sudo install -m 755 /tmp/ctop /usr/local/bin/ctop
-}
+# Install/update tools
+install_doctl() { github_install_bin digitalocean doctl; }
+install_chezmoi() { github_install_bin twpayne chezmoi; }
+#install_ctop() { install_github_bin bcicen ctop; } # No tar.gz archive
+#install_neovim() { github_install_bin neovim neovim; }
 
 # Update composer
 update_composer() {

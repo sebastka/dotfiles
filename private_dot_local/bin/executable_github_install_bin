@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+main() {
+    readonly owner="$1"
+    readonly repo="$2"
+    readonly version="$(github_latest_release "$owner/$repo")"
+    readonly url="$(get_url "$owner" "$repo" "$version")"
+
+    rm -f "/home/sebastian/.local/bin/$repo"
+    curl -L -s -o - "$url" | tar -xzf - -C /home/sebastian/.local/bin
+}
+
+get_url()
+{
+    curl -s "https://api.github.com/repos/$1/$2/releases/tags/v$3" \
+        | jq -r '.assets | .[] | select(.name | test("linux.amd64")) | select(.name | test("musl") | not) | select(.name | test("tar.gz")) | .browser_download_url'
+}
+
+main "$@"; exit
