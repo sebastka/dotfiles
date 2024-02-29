@@ -195,8 +195,8 @@ autocmd BufWritePost */vimrc source %
 " If the current file type is HTML/YML, set indentation to 2 spaces.
 autocmd Filetype html,yaml setlocal tabstop=2 shiftwidth=2 expandtab
 
-" If the current file type is hujson, set the file type to JavaScript.
-au BufRead,BufNewFile *.hujson setfiletype javascript
+" If the current file type is hjson, set the file type to JavaScript.
+au BufRead,BufNewFile *.hjson setfiletype javascript
 
 " You can split a window into sections by typing `:split` or `:vsplit`.
 " Display cursorline and cursorcolumn ONLY in active window.
