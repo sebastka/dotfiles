@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eux
+
+sudo tailscale \
+    --socket "/run/tailscale/ts.$1.sock" \
+    up \
+    --reset \
+    --accept-routes
