@@ -8,7 +8,7 @@ main() {
     readonly url="$(get_url "$owner" "$repo" "$version")"
 
     rm -f "/home/sebastian/.local/bin/$repo"
-    curl -L -s -o - "$url" | tar -xzf - -C /home/sebastian/.local/bin
+    curl -L -s -o - "$url" | tar -xzf - -C /home/$USER/.local/bin
 }
 
 get_url()
