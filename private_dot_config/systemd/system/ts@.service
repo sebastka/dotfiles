@@ -1,4 +1,3 @@
-# Copy to /lib/systemd/system/ts@.service
 [Unit]
 Description=Tailscale node agent
 Documentation=https://tailscale.com/kb/
@@ -8,7 +7,7 @@ After=network-pre.target NetworkManager.service systemd-resolved.service
 
 [Service]
 EnvironmentFile=/etc/default/tailscaled
-ExecStart=/usr/sbin/tailscaled --state=/var/lib/tailscale/ts.%I.state --socket=/run/tailscale/ts.%I.sock --port=${PORT} $FLAGS
+ExecStart=/usr/sbin/tailscaled --port=${PORT} --statedir=/var/lib/ts.%I $FLAGS
 ExecStopPost=/usr/sbin/tailscaled --cleanup
 
 Restart=on-failure
@@ -23,3 +22,9 @@ Type=notify
 
 [Install]
 WantedBy=multi-user.target
+
+## Instruction:
+# 1. Copy to /lib/systemd/system/ts@.Service
+# 2. sudo mkdir /var/lib/ts.XXX
+# 3. sudo systemctl start ts@XXX
+# 4. sudo tailscale up --accept-routes

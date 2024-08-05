@@ -1,7 +1,7 @@
 [Unit]
 # systemctl --user enable mount@dirname
-Requires=home-me.mount
-After=home-me.mount
+#Requires=home-me.mount
+#After=home-me.mount
 
 [Service]
 ExecStart=/bin/mount %h/%I
