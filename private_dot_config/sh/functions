@@ -26,6 +26,8 @@ install_composer() { github_install_bin composer composer '' 'select(.name | tes
 #install_ctop() { install_github_bin bcicen ctop; } # No tar.gz archive
 #install_neovim() { github_install_bin neovim neovim; }
 
+install_helm() { mkdir /tmp/helm; curl -L -s -o - "https://get.helm.sh/helm-v$(github_latest_release 'helm/helm')-linux-amd64.tar.gz" | tar -xzf - -C /tmp/helm; mv /tmp/helm/linux-amd64/helm /home/$USER/.local/bin/; rm -rf /tmp/helm; }
+
 # Init new machine
 init_machine() {
     sudo rm /etc/machine-id /var/lib/dbus/machine-id
