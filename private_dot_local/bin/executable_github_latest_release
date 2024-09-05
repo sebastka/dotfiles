@@ -3,7 +3,8 @@ set -eu
 
 # Get the latest release version from github
 git ls-remote --refs --sort="version:refname" --tags "https://github.com/$@.git" \
-    | cut -d/ -f3 \
-    | tr -d -c 0-9,'\n','.' \
+    | cut -d'/' -f3 \
+    | grep -v -E '(beta|rc|stable|alpha|prototype|@)' \
+    | grep -o -E '[0-9.]+' \
     | sort -V \
     | sed -n '$p'

@@ -20,25 +20,11 @@ arch_mirrors_update() {
 }
 
 # Install/update tools
-install_doctl() { github_install_bin digitalocean doctl; }
-install_chezmoi() { github_install_bin twpayne chezmoi; }
+install_doctl() { github_install_bin digitalocean doctl 'v'  'select(.name | test("linux.amd64")) | select(.name | test("musl") | not) | select(.name | test("tar.gz"))'; }
+install_chezmoi() { github_install_bin twpayne chezmoi 'v'   'select(.name | test("linux.amd64")) | select(.name | test("musl") | not) | select(.name | test("tar.gz"))'; }
+install_composer() { github_install_bin composer composer '' 'select(.name | test("composer.phar")) | select(.name | test("composer.phar.asc") | not)'; }
 #install_ctop() { install_github_bin bcicen ctop; } # No tar.gz archive
 #install_neovim() { github_install_bin neovim neovim; }
-
-# Update composer
-update_composer() {
-    curl -sL -o /tmp/composer-setup.sig "https://composer.github.io/installer.sig"
-    printf '  composer-setup.php\n' >> /tmp/composer-setup.sig
-
-    curl -sL -o/tmp/composer-setup.php "https://getcomposer.org/installer"
-
-    cd /tmp
-    if sha384sum --check composer-setup.sig > /dev/null 2>&1; then
-        sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
-    else
-        echo "Checksum failed, aborting installation"
-    fi
-}
 
 # Init new machine
 init_machine() {

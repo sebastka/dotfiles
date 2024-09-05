@@ -4,17 +4,27 @@ set -eu
 main() {
     readonly owner="$1"
     readonly repo="$2"
+    readonly tag_prefix="$3"
+    readonly jq_filters="$4"
     readonly version="$(github_latest_release "$owner/$repo")"
-    readonly url="$(get_url "$owner" "$repo" "$version")"
+    readonly url="$(get_url "$owner" "$repo" "$tag_prefix" "$version" "$jq_filters")"
 
     rm -f "/home/sebastian/.local/bin/$repo"
-    curl -L -s -o - "$url" | tar -xzf - -C /home/$USER/.local/bin
+
+    if echo "$url" | grep -q '.tar.gz'; then
+        curl -L -s -o - "$url" | tar -xzf - -C /home/$USER/.local/bin
+    elif echo "$url" | grep -q '.phar'; then
+        curl -L -s -o "/home/$USER/.local/bin/$repo" "$url"
+        chmod +x "/home/$USER/.local/bin/$repo"
+    else
+        curl -L -s -o "/home/$USER/.local/bin/$repo" "$url"
+    fi
 }
 
 get_url()
 {
-    curl -s "https://api.github.com/repos/$1/$2/releases/tags/v$3" \
-        | jq -r '.assets | .[] | select(.name | test("linux.amd64")) | select(.name | test("musl") | not) | select(.name | test("tar.gz")) | .browser_download_url'
+    curl -s "https://api.github.com/repos/${1}/${2}/releases/tags/${3}${4}" \
+        | jq -r ".assets | .[] | $5 | .browser_download_url"
 }
 
 main "$@"; exit
