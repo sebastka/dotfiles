@@ -47,7 +47,7 @@ fi
 
 # Completion for utilties that support "$util completion bash"
 mkdir -p "$XDG_DATA_HOME/bash_completion"
-for util in kubectl kubeadm helm doctl chezmoi; do
+for util in kubectl kubeadm helm doctl chezmoi cilium; do
     if ! command -v $util >/dev/null 2>&1; then continue; fi
 
     [ -f "$XDG_DATA_HOME/bash_completion/$util.bash" ] || \
