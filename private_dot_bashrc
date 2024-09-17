@@ -56,6 +56,9 @@ for util in kubectl kubeadm helm doctl chezmoi cilium; do
     . "$XDG_DATA_HOME/bash_completion/$util.bash"
 done
 
+# awscli
+[ ! -f "$HOME/.local/bin/aws_completer" ] || complete -C "$HOME/.local/bin/aws_completer" aws
+
 # Set bash prompt
 __bash_prompt_command() {
     EXIT_CODE="$?"
