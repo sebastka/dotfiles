@@ -24,7 +24,7 @@ Type=notify
 WantedBy=multi-user.target
 
 ## Instruction:
-# 1. Copy to /lib/systemd/system/ts@.Service
+# 1. Copy to /lib/systemd/system/ts@.service
 # 2. sudo mkdir /var/lib/ts.XXX
 # 3. sudo systemctl start ts@XXX
 # 4. sudo tailscale up --accept-routes
