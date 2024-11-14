@@ -51,6 +51,9 @@ export NODE_PATH="$XDG_DATA_HOME/node_modules"
 export KUBECONFIG="$XDG_CONFIG_HOME/kube/config" 
 export KUBECACHEDIR="$XDG_CACHE_HOME/kube"
 
+# RKE2
+[ -L /var/lib/rancher/rke2/bin ] && export PATH=$PATH:/var/lib/rancher/rke2/bin
+
 {{ if eq .chezmoi.os "freebsd" -}}
 # FreeBSD
 if [ "$PWD" != "$HOME" ] && [ "$PWD" -ef "$HOME" ]; then cd; fi
