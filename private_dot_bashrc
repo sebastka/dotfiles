@@ -13,75 +13,77 @@ echo "$-" | grep -q 'i' || return
 #[ ! -f /etc/bash.bashrc ] || . /etc/bash.bashrc
 [ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
 
-# History
-shopt -s histappend
-shopt -s checkwinsize
-export HISTFILE="$XDG_STATE_HOME/bash/history"
-export HISTCONTROL=ignoreboth
-mkdir -p "$(dirname "$HISTFILE")"
+eval "$(starship init bash)"
 
-# From Ubuntu/Mint
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
+# # History
+# shopt -s histappend
+# shopt -s checkwinsize
+# export HISTFILE="$XDG_STATE_HOME/bash/history"
+# export HISTCONTROL=ignoreboth
+# mkdir -p "$(dirname "$HISTFILE")"
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        . /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        . /etc/bash_completion
-    fi
+# # From Ubuntu/Mint
+# [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+# if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+#     debian_chroot=$(cat /etc/debian_chroot)
+# fi
 
-    # NVM
-    [ ! -s "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
-fi
+# # enable programmable completion features (you don't need to enable
+# # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# # sources /etc/bash.bashrc).
+# if ! shopt -oq posix; then
+#     if [ -f /usr/share/bash-completion/bash_completion ]; then
+#         . /usr/share/bash-completion/bash_completion
+#     elif [ -f /etc/bash_completion ]; then
+#         . /etc/bash_completion
+#     fi
 
-# Load utilties
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-[ -f "$XDG_CONFIG_HOME/envman/load.sh" ] && . "$XDG_CONFIG_HOME/envman/load.sh"
-[ -f /usr/bin/terraform ] && complete -C /usr/bin/terraform terraform
+#     # NVM
+#     [ ! -s "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
+# fi
 
-# Python venv
-[ ! -d "$XDG_DATA_HOME/python" ] || . "$XDG_DATA_HOME/python/bin/activate"
+# # Load utilties
+# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+# [ -f "$XDG_CONFIG_HOME/envman/load.sh" ] && . "$XDG_CONFIG_HOME/envman/load.sh"
+# [ -f /usr/bin/terraform ] && complete -C /usr/bin/terraform terraform
 
-if [ -x "$(command -v tofu)" ]; then
-    complete -C "$(whereis -b tofu | sed 1q | cut -d' ' -f2)" tofu
-    complete -C "$(whereis -b tofu | sed 1q | cut -d' ' -f2)" tf
-fi
+# # Python venv
+# [ ! -d "$XDG_DATA_HOME/python" ] || . "$XDG_DATA_HOME/python/bin/activate"
 
-# Completion for utilties that support "$util completion bash"
-mkdir -p "$XDG_DATA_HOME/bash_completion"
-for util in kubectl kubeadm helm doctl chezmoi cilium; do
-    if ! command -v $util >/dev/null 2>&1; then continue; fi
+# if [ -x "$(command -v tofu)" ]; then
+#     complete -C "$(whereis -b tofu | sed 1q | cut -d' ' -f2)" tofu
+#     complete -C "$(whereis -b tofu | sed 1q | cut -d' ' -f2)" tf
+# fi
 
-    [ -f "$XDG_DATA_HOME/bash_completion/$util.bash" ] || \
-        $util completion bash > "$XDG_DATA_HOME/bash_completion/$util.bash"
+# # Completion for utilties that support "$util completion bash"
+# mkdir -p "$XDG_DATA_HOME/bash_completion"
+# for util in kubectl kubeadm helm doctl chezmoi cilium; do
+#     if ! command -v $util >/dev/null 2>&1; then continue; fi
+
+#     [ -f "$XDG_DATA_HOME/bash_completion/$util.bash" ] || \
+#         $util completion bash > "$XDG_DATA_HOME/bash_completion/$util.bash"
     
-    . "$XDG_DATA_HOME/bash_completion/$util.bash"
-done
+#     . "$XDG_DATA_HOME/bash_completion/$util.bash"
+# done
 
-# awscli
-[ ! -f "$HOME/.local/bin/aws_completer" ] || complete -C "$HOME/.local/bin/aws_completer" aws
+# # awscli
+# [ ! -f "$HOME/.local/bin/aws_completer" ] || complete -C "$HOME/.local/bin/aws_completer" aws
 
-# Set bash prompt
-__bash_prompt_command() {
-    EXIT_CODE="$?"
-    uncommitted_changes_symbol='!'
-    PS1="$PROMPT"
-}
+# # Set bash prompt
+# __bash_prompt_command() {
+#     EXIT_CODE="$?"
+#     uncommitted_changes_symbol='!'
+#     PS1="$PROMPT"
+# }
 
-# Set dynamic PS1
-PROMPT_COMMAND=__bash_prompt_command
+# # Set dynamic PS1
+# PROMPT_COMMAND=__bash_prompt_command
 
-# Open tmux automatically
-#command -v tmux >/dev/null \
-#    && [ -n "$PS1" ] \
-#    && [ "$TERM" != 'screen' ] \
-#    && [ "$TERM" != 'tmux' ] \
-#    && [ -z "$TMUX" ] \
-#    && exec tmux \
-#    || true
+# # Open tmux automatically
+# #command -v tmux >/dev/null \
+# #    && [ -n "$PS1" ] \
+# #    && [ "$TERM" != 'screen' ] \
+# #    && [ "$TERM" != 'tmux' ] \
+# #    && [ -z "$TMUX" ] \
+# #    && exec tmux \
+# #    || true

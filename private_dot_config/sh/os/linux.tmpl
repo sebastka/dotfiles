@@ -12,6 +12,13 @@ alias \
     grep='grep --color=auto' \
     diff='diff --color=auto'
 
+# Install Starship (Assume GNU / x86_64)
+if [ -x "$(command -v starship)" ]; then
+    url="$(github_get_release_url 'starship/starship' 'v' 'select(.name == "starship-x86_64-unknown-linux-gnu.tar.gz")')"
+    curl -L -s -o - "$url" | tar -xzf - -C /tmp
+    mv /tmp/starship .local/bin/starship
+fi
+
 {{ if (or (contains "debian" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "debian" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "debian" .chezmoi.osRelease.idLike))) }}
 # Debian(-like)
 alias \
