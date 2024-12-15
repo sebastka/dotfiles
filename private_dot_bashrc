@@ -14,6 +14,7 @@ echo "$-" | grep -q 'i' || return
 [ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
 
 eval "$(starship init bash)"
+[ ! -x "$(command -v tofu)" ] || complete -C "$(which tofu)" tofu
 
 # # History
 # shopt -s histappend
@@ -68,22 +69,3 @@ eval "$(starship init bash)"
 
 # # awscli
 # [ ! -f "$HOME/.local/bin/aws_completer" ] || complete -C "$HOME/.local/bin/aws_completer" aws
-
-# # Set bash prompt
-# __bash_prompt_command() {
-#     EXIT_CODE="$?"
-#     uncommitted_changes_symbol='!'
-#     PS1="$PROMPT"
-# }
-
-# # Set dynamic PS1
-# PROMPT_COMMAND=__bash_prompt_command
-
-# # Open tmux automatically
-# #command -v tmux >/dev/null \
-# #    && [ -n "$PS1" ] \
-# #    && [ "$TERM" != 'screen' ] \
-# #    && [ "$TERM" != 'tmux' ] \
-# #    && [ -z "$TMUX" ] \
-# #    && exec tmux \
-# #    || true

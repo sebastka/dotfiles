@@ -52,4 +52,6 @@ if [ -x /usr/bin/fortune ]; then /usr/bin/fortune freebsd-tips; fi
 {{- end }}
 
 # Load common shell config rc
-[ "{{ .shell }}" = "sh" ] || . "$HOME/.{{ .shell }}rc"
+for f in "$HOME/.{{ .shell }}rc" "$XDG_CONFIG_HOME/{{ .shell }}/.{{ .shell }}rc"; do
+    [ ! -f "$f" ] || . "$f"
+done

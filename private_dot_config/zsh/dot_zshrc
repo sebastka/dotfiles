@@ -11,10 +11,15 @@ echo "$-" | grep -q 'i' || return
 # [ ! -f /etc/zshrc ] || . /etc/zshrc
 [ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
 
-[ -d "$XDG_CACHE_HOME/zsh" ] || mkdir "$XDG_CACHE_HOME/zsh"
-setopt SHARE_HISTORY
 export HISTFILE="$XDG_STATE_HOME/zsh/history"
 
+setopt SHARE_HISTORY
 autoload -Uz compinit
 compinit -d "$XDG_CACHE_HOME/zsh/zcompcache"
+autoload -U +X bashcompinit && bashcompinit
+
+# Starship
 eval "$(starship init zsh)"
+
+# Autocomplete
+[ ! -x "$(command -v tofu)" ] || complete -o nospace -C "$(which tofu)" tofu

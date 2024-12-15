@@ -16,9 +16,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Overwrite default Apple bahaviour
 # See /etc/zshrc_Apple_Terminal
-[ ! -d "$HOME/.zsh_sessions" ] || rmdir "$HOME/.zsh_sessions"
-mkdir -p "$XDG_STATE_HOME/zsh/sessions"
-export SHELL_SESSION_DIR="$XDG_STATE_HOME/zsh/sessions"
+[ ! -d "$ZDOTDIR/.zsh_sessions" ] || rmdir "$ZDOTDIR/.zsh_sessions"
+[ -d "$XDG_STATE_HOME/zsh" ] || mkdir "$XDG_STATE_HOME/zsh"
+export SHELL_SESSION_DIR="$XDG_STATE_HOME/zsh/sessions"; mkdir -p "$SHELL_SESSION_DIR"
 export SHELL_SESSION_FILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.session"
 export SHELL_SESSION_HISTFILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.history"
 export SHELL_SESSION_HISTFILE_NEW="$SHELL_SESSION_DIR/$TERM_SESSION_ID.historynew"
