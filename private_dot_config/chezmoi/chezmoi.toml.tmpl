@@ -32,7 +32,7 @@
     # https://www.openbsdhandbook.com/openbsd_for_linux_users/#init
     # https://man.openbsd.org/init.8
 {{- else if eq .chezmoi.os "darwin" -}}
-    {{- $pinentry_program = "/opt/homebrew/bin/pinentry-mac" -}}
+    {{- $pinentry_program = "/opt/homebrew/bin/pinentry-curses" -}}
     {{- $shell = "zsh" -}}
     {{- $locale = "no_NO" -}}
     {{- $init_sys = "launchd" -}}
