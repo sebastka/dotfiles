@@ -1,0 +1,67 @@
+#   _     _                  
+#  | |   (_)_ __  _   ___  __
+#  | |   | | '_ \| | | \ \/ /
+#  | |___| | | | | |_| |>  < 
+#  |_____|_|_| |_|\__,_/_/\_\
+
+# Assuming GNU userland on Linux
+alias \
+    se='sudoedit' \
+    ls='ls --color=auto' \
+    ll='ls -alhvN --group-directories-first' \
+    grep='grep --color=auto' \
+    diff='diff --color=auto'
+
+{{ if (or (contains "debian" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "debian" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "debian" .chezmoi.osRelease.idLike))) }}
+# Debian(-like)
+alias \
+    p='sudo apt-get' \
+    pu='p update && p upgrade -y && p dist-upgrade -y && p autoremove --purge && p clean'
+{{- else if (or (contains "arch" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "arch" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "arch" .chezmoi.osRelease.idLike))) }}
+# Arch Linux
+alias p='paru'
+{{- else if (or (contains "fedora" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "fedora" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "fedora" .chezmoi.osRelease.idLike))) }}
+# Fedora
+alias p='sudo dnf'
+{{- end }}
+
+{{ if eq .init_sys "systemd" -}}
+# Systemd
+alias \
+    sctl='sudo EDITOR="$EDITOR" PAGER="$PAGER" systemctl' \
+    jctl='sudo EDITOR="$EDITOR" PAGER="$PAGER" journalctl' \
+    ip='ip -color=auto'
+{{- else if eq .init_sys "init" -}}
+# Traditional init
+sctl() { sudo service "$2" "$1"; }
+{{- end }}
+
+{{ if eq .chezmoi.os "linux" -}}
+# Init new machine
+init_machine() {
+    sudo rm /etc/machine-id /var/lib/dbus/machine-id
+    sudo systemd-machine-id-setup
+    sudo ln -s /etc/machine-id /var/lib/dbus/machine-id
+
+    sudo rm /etc/ssh/ssh_host_*
+    sudo dpkg-reconfigure openssh-server
+}
+{{- end }}
+
+# Update arch mirrors
+arch_mirrors_update() {
+    sudo reflector --country Norway --country Sweden --country Denmark --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+}
+
+# Install/update tools
+install_doctl() { github_install_bin digitalocean doctl 'v'  'select(.name | test("linux.amd64")) | select(.name | test("musl") | not) | select(.name | test("tar.gz"))'; }
+#install_cfterraforming() { github_install_bin cloudflare cf-terraforming '' 'select(.name | test("linux_amd64")) | select(.name | test("tar.gz"))'; }
+install_chezmoi() { github_install_bin twpayne chezmoi 'v'   'select(.name | test("linux.amd64")) | select(.name | test("musl") | not) | select(.name | test("tar.gz"))'; }
+install_composer() { github_install_bin composer composer '' 'select(.name | test("composer.phar")) | select(.name | test("composer.phar.asc") | not)'; }
+#install_ctop() { install_github_bin bcicen ctop; } # No tar.gz archive
+#install_neovim() { github_install_bin neovim neovim; }
+install_kubectl() { curl -L -s -o "/home/$USER/.local/bin/kubectl" "https://dl.k8s.io/release/$(curl -L -s "https://dl.k8s.io/release/stable.txt")/bin/linux/amd64/kubectl"; chmod +x "/home/$USER/.local/bin/kubectl"; }
+install_helm() { mkdir /tmp/helm; curl -L -s -o - "https://get.helm.sh/helm-v$(github_latest_release 'helm/helm')-linux-amd64.tar.gz" | tar -xzf - -C /tmp/helm; mv /tmp/helm/linux-amd64/helm /home/$USER/.local/bin/; rm -rf /tmp/helm; }
+install_awscli() { mkdir /tmp/aws; curl -L -s -o "/tmp/aws/awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; unzip -q -d "/tmp/aws" "/tmp/aws/awscliv2.zip"; mkdir -p "$HOME/.local/bin" "$XDG_DATA_HOME/aws-cli"; /tmp/aws/aws/install  --bin-dir "$HOME/.local/bin" --install-dir "$XDG_DATA_HOME/aws-cli" --update; rm -rf /tmp/aws; }
+install_cli53() { github_install_bin barnybug cli53 '' 'select(.name | test("cli53-linux-amd64"))'; }
+install_k9s() { mkdir /tmp/k9s; curl -L -s -o - "$(github_get_release_url 'derailed/k9s' 'v' 'select(.name == "k9s_Linux_amd64.tar.gz")')" | tar -xzf - -C /tmp/k9s; mv /tmp/k9s/k9s /home/$USER/.local/bin/; rm -rf /tmp/k9s; }

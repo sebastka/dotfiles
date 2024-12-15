@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+readonly repo="$1"
+
+curl -s "https://api.github.com/repos/${repo}/releases" \
+    | jq -r '.[].tag_name' \
+    | grep -v -E '(beta|rc|stable|alpha|prototype|@)' \
+    | grep -o -E '[0-9.]+' \
+    | sort -V \
+    | sed -n '$p'

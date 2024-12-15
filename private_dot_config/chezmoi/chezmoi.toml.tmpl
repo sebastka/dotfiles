@@ -1,0 +1,69 @@
+{{- $profile := "private" -}}
+{{- $name := "Sebastian Karlsen" -}}
+{{- $email := "sebastian@karlsen.fr" -}}
+{{- $gpg_key := "94863C7F986D65E8" -}}
+{{- $pinentry_program := "/usr/bin/pinentry-curses" -}}
+{{- $github_user := "sebastka" -}}
+{{- $ssh_key_name := printf "%s@%s" .chezmoi.username .chezmoi.fqdnHostname -}}
+{{- $ssh_key_path := printf "%s/%s" (joinPath .chezmoi.homeDir ".ssh/key" ) $ssh_key_name -}}
+{{- $ssh_key_public_string := "" -}}
+{{- $shell := "bash" -}}
+{{- $locale := "nb_NO" -}}
+{{- $nbproc := 0 -}}
+{{- $init_sys := "systemd" -}}
+
+{{- if contains "fjordmail.no" .chezmoi.fqdnHostname -}}
+    {{- $profile = "work" -}}
+    {{- $email = "sebastian@corp.inbox.com" -}}
+    {{- $gpg_key = "" -}}
+    {{- $github_user = "fjordmailtech" -}}
+{{- end -}}
+
+{{- if eq .chezmoi.os "freebsd" -}}
+    # {{- $shell = "sh" -}}
+
+    {{- $init_sys = "init" -}} # rcNG is the default init system on FreeBSD
+    # https://docs.freebsd.org/en/articles/linux-users/#startup
+    # https://www.freebsd.org/cgi/man.cgi?init
+{{- else if eq .chezmoi.os "openbsd" -}}
+    {{- $shell = "ksh" -}}
+
+    {{- $init_sys = "init" -}}
+    # https://www.openbsdhandbook.com/openbsd_for_linux_users/#init
+    # https://man.openbsd.org/init.8
+{{- else if eq .chezmoi.os "darwin" -}}
+    {{- $pinentry_program = "/opt/homebrew/bin/pinentry-mac" -}}
+    {{- $shell = "zsh" -}}
+    {{- $locale = "no_NO" -}}
+    {{- $init_sys = "launchd" -}}
+{{- end -}}
+
+{{- if eq .chezmoi.hostname "zeus" -}}
+    {{- $nbproc = 32 -}}
+{{- else if eq .chezmoi.hostname "boreas" -}}
+    {{- $nbproc = 8 -}}
+{{- end -}}
+
+{{- if stat $ssh_key_path -}}
+{{- $ssh_key_public_string = index (split " " (include (print $ssh_key_path ".pub"))) "_1" -}}
+{{- end -}}
+
+encryption = "gpg"
+
+[data]
+    profile = "{{ $profile }}"
+    locale = "{{ $locale }}"
+    email = "{{ $email }}"
+    name = "{{ $name }}"
+    github_user = "{{ $github_user }}"
+    gpg_key = "{{ $gpg_key }}"
+    pinentry_program = "{{ $pinentry_program }}"
+    ssh_key_name = "{{ $ssh_key_name }}"
+    ssh_key_public_string = "{{ $ssh_key_public_string }}"
+    ssh_key_path = "{{ $ssh_key_path }}"
+    shell = "{{ $shell }}"
+    nbproc = {{ $nbproc }}
+    init_sys = "{{ $init_sys }}"
+
+[gpg]
+    recipient = "{{ $gpg_key }}"

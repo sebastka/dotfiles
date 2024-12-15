@@ -1,0 +1,47 @@
+#       _    _ _
+#      / \  | (_) __ _ ___
+#     / _ \ | | |/ _` / __|
+#    / ___ \| | | (_| \__ \
+#   /_/   \_\_|_|\__,_|___/
+
+# X11 config in .config/X11
+[ ! -f "$XINITRC" ] || alias startx='startx $XINITRC'
+[ ! -f "$XDG_CONFIG_HOME/X11/Xresources" ] || alias xrdb='xrdb $XDG_CONFIG_HOME/X11/Xresources'
+
+# XDG
+alias svn='svn --config-dir "$XDG_CONFIG_HOME/subversion"'
+
+# GPG encrypt/decrypt
+alias encrypt='gpg --armor --encrypt'
+alias decrypt='gpg --decrypt --use-embedded-filename'
+
+# Use makeflags by default
+alias make='make $MAKEFLAGS'
+
+# To follow files after a logrotate
+alias tailer='tail --follow=name --retry'
+
+# Abbreviations
+alias \
+    e='$EDITOR' \
+    v='$VISUAL' \
+    m='$PAGER' \
+    ll='ls -alh' \
+    cz='chezmoi' \
+    fpu='flatpak update'
+
+# Git
+alias \
+    g='git' \
+    ga='git add' \
+    gc='git commit -S -v'
+
+# Docker
+alias \
+    d='docker' \
+    dpa='docker system prune --all --volumes; docker volume prune --filter all=1' \
+    dc='docker-compose'
+
+# Terraform / OpenTofu
+[ ! -x "$(command -v terraform)" ] || alias tf='terraform'
+[ ! -x "$(command -v tofu)" ] || alias tf='tofu'

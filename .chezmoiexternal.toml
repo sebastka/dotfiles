@@ -1,0 +1,18 @@
+# Description: External data for chezmoi
+# https://www.chezmoi.io/reference/special-files-and-directories/chezmoiexternal-format/
+
+[".local/state/vim/bundle/Vundle.vim"]
+    type = "git-repo"
+    url = "https://github.com/sebastka/Vundle.vim.git"
+
+#[".local/state/vim/bundle/gruvbox"]
+#    type = "git-repo"
+#    url = "https://github.com/morhetz/gruvbox.git"
+
+# [".local/state/tmux/plugins/tpm"]
+#    type = "git-repo"
+#    url = "https://github.com/tmux-plugins/tpm.git"
+
+#[".config/nvim"]
+#    type = "git-repo"
+#    url = "https://github.com/NvChad/NvChad.git"

@@ -1,0 +1,15 @@
+#    ___  ____  
+#   / _ \/ ___| 
+#  | | | \___ \ 
+#  | |_| |___) |
+#   \___/|____/ 
+
+{{ if eq .chezmoi.os "linux" -}}
+. "$XDG_CONFIG_HOME/sh/os/linux"
+{{- else if eq .chezmoi.os "darwin" -}}
+. "$XDG_CONFIG_HOME/sh/os/darwin"
+{{- else if (or (contains "freebsd" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "freebsd" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "freebsd" .chezmoi.osRelease.idLike))) -}}
+. "$XDG_CONFIG_HOME/sh/os/freebsd"
+{{- else if (or (contains "openbsd" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "openbsd" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "openbsd" .chezmoi.osRelease.idLike))) -}}
+. "$XDG_CONFIG_HOME/sh/os/openbsd"
+{{- end }}

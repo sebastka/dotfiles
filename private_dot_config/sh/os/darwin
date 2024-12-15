@@ -1,0 +1,25 @@
+#   ____                      _       
+#  |  _ \  __ _ _ ____      _(_)_ __  
+#  | | | |/ _` | '__\ \ /\ / / | '_ \ 
+#  | |_| | (_| | |   \ V  V /| | | | |
+#  |____/ \__,_|_|    \_/\_/ |_|_| |_|
+
+alias \
+    se='sudo -e' \
+    sctl='launchctl print' \
+    jctl='' \
+    ls='ls --color=always' \
+    ll='ls -alhv' \
+    grep='grep --color=always'
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Overwrite default Apple bahaviour
+# See /etc/zshrc_Apple_Terminal
+[ ! -d "$HOME/.zsh_sessions" ] || rmdir "$HOME/.zsh_sessions"
+mkdir -p "$XDG_STATE_HOME/zsh/sessions"
+export SHELL_SESSION_DIR="$XDG_STATE_HOME/zsh/sessions"
+export SHELL_SESSION_FILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.session"
+export SHELL_SESSION_HISTFILE="$SHELL_SESSION_DIR/$TERM_SESSION_ID.history"
+export SHELL_SESSION_HISTFILE_NEW="$SHELL_SESSION_DIR/$TERM_SESSION_ID.historynew"
+export SHELL_SESSION_HISTFILE_SHARED="$XDG_STATE_HOME/zsh/history"

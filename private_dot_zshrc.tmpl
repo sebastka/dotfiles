@@ -1,0 +1,20 @@
+#             _              
+#     _______| |__  _ __ ___ 
+#    |_  / __| '_ \| '__/ __|
+#   _ / /\__ \ | | | | | (__ 
+#  (_)___|___/_| |_|_|  \___|
+
+# Abort if non-interactive shell
+echo "$-" | grep -q 'i' || return
+
+# Source global and local definitions
+# [ ! -f /etc/zshrc ] || . /etc/zshrc
+[ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
+
+[ -d "$XDG_CACHE_HOME/zsh" ] || mkdir "$XDG_CACHE_HOME/zsh"
+setopt SHARE_HISTORY
+export HISTFILE="$XDG_STATE_HOME/zsh/history"
+
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompcache"
+eval "$(starship init zsh)"

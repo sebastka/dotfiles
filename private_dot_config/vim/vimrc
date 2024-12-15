@@ -1,0 +1,219 @@
+"        _
+"       (_)
+" __   ___ _ __ ___  _ __ ___
+" \ \ / / | '_ ` _ \| '__/ __|
+"  \ V /| | | | | | | | | (__
+" (_)_/ |_|_| |_| |_|_|  \___|
+"
+
+" zo to open a single fold under the cursor.
+" zc to close the fold under the cursor.
+" zR to open all folds.
+" zM to close all folds.
+
+" XDG -------------------------------------------------------------------- {{{
+set nocompatible
+
+if empty($XDG_CACHE_HOME)  | let $XDG_CACHE_HOME  = $HOME."/.cache"       | endif
+if empty($XDG_CONFIG_HOME) | let $XDG_CONFIG_HOME = $HOME."/.config"      | endif
+if empty($XDG_DATA_HOME)   | let $XDG_DATA_HOME   = $HOME."/.local/share" | endif
+
+set runtimepath^=$XDG_CONFIG_HOME/vim
+set runtimepath+=$XDG_STATE_HOME/vim
+set runtimepath+=$XDG_CONFIG_HOME/vim/after
+set runtimepath+=$XDG_STATE_HOME/vim/bundle/Vundle.vim
+
+set packpath^=$XDG_STATE_HOME/vim,$XDG_CONFIG_HOME/vim
+set packpath+=$XDG_CONFIG_HOME/vim/after,$XDG_STATE_HOME/vim/after
+
+let g:netrw_home = $XDG_STATE_HOME."/vim"
+call mkdir($XDG_STATE_HOME."/vim/spell", 'p')
+set viewdir=$XDG_STATE_HOME/vim/view | call mkdir(&viewdir, 'p')
+
+set backupdir=$XDG_CACHE_HOME/vim/backup | call mkdir(&backupdir, 'p')
+set directory=$XDG_CACHE_HOME/vim/swap   | call mkdir(&directory, 'p')
+set undodir=$XDG_CACHE_HOME/vim/undo     | call mkdir(&undodir,   'p')
+
+set viminfofile=$XDG_STATE_HOME/vim/viminfo
+
+" }}}
+
+" CONFIG ----------------------------------------------------------------- {{{
+
+" General
+filetype off                    " Enable type file detection. Vim will be able to try to detect the type of file in use
+filetype plugin on              " Enable plugins and load plugin for the detected file type
+filetype plugin indent on
+filetype indent on              " Load an indent file for the detected file type
+set ff=unix                     " Set fileformat (unix,dos,mac)
+set encoding=utf8               " Output encoding that is shown in the terminal
+set fileencoding=utf-8          " Output encoding of the file that is written
+set clipboard^=unnamed,unnamedplus " The unnamed register is synchronized with the system clipboard
+syntax on                       " Turn syntax highlighting on
+"set nobackup                    " Do not save backup files
+
+" UI
+set number relativenumber       " Add numbers to each line on the left-hand side (hybrid mode)
+"set cursorline                 " Highlight cursor line underneath the cursor horizontally
+"set cursorcolumn               " Highlight cursor line underneath the cursor vertically
+"set list                        " Show tabs, trailing spaecs...
+set nowrap                      " Do not wrap lines. Allow long lines to extend as far as the line goes
+
+" Tabs
+set shiftwidth=4                " Set shift width to 4 spaces
+set tabstop=4                   " Set tab width to 4 columns
+set softtabstop=4               " Number of spaces that a <Tab> counts for while performing editing operations, like inserting a <Tab> or using <BS>
+set expandtab                   " Use space characters instead of tabs
+
+" Div
+set scrolloff=10                " Do not let cursor scroll below or above N number of lines when scrolling
+set mouse=a
+set nowrap                      " Do not wrap lines. Allow long lines to extend as far as the line goes
+set incsearch                   " While searching though a file incrementally highlight matching characters as you type
+set ignorecase                  " Ignore capital letters during search
+set smartcase                   " Override the ignorecase option if searching for capital letters: This will allow you to search specifically for capital letters
+set showcmd                     " Show partial command you type in the last line of the screen
+set showmode                    " Show the mode you are on the last line
+set showmatch                   " Show matching words during a search
+set hlsearch                    " Use highlighting when doing a search
+set history=1000                " Set the commands to save in history default number is 20
+set undofile                    " Save undos to a file, so we can undo even after closing it
+set undoreload=10000            " 10 000 should be enough
+
+" Wildmenu
+set wildmenu                    " Enable auto completion menu after pressing TAB
+set wildmode=list:longest       " Make wildmenu behave like similar to Bash completion
+set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx        " There are certain files that we would never want to edit with Vim: Wildmenu will ignore files with these extensions
+
+" }}}
+
+" PLUGIN ----------------------------------------------------------------- {{{
+
+call vundle#begin("$XDG_STATE_HOME/vim/bundle")
+Plugin 'VundleVim/Vundle.vim'
+" Plugin 'morhetz/gruvbox'
+call vundle#end()
+
+" Run :PluginInstall
+
+" }}}
+
+" THEME ------------------------------------------------------------------ {{{
+
+" set Vim-specific sequences for RGB colors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+set termguicolors
+set background=dark
+" colorscheme gruvbox
+"autocmd VimEnter * hi Normal ctermbg=none
+highlight Normal     ctermbg=NONE guibg=NONE
+highlight LineNr     ctermbg=NONE guibg=NONE
+highlight SignColumn ctermbg=NONE guibg=NONE
+
+" Sow trailing whitespaces
+highlight ExtraWhitespace ctermbg=blue guibg=blue
+match ExtraWhitespace /\s\+$/
+
+" }}}
+
+" MAPPINGS --------------------------------------------------------------- {{{
+
+" Template: <map_mode> <what_you_type> <what_is_executed>
+" - nnoremap - Allows you to map keys in normal mode.
+" - inoremap - Allows you to map keys in insert mode.
+" - vnoremap - Allows you to map keys in visual mode.
+
+" Set the backslash as the leader key.
+let mapleader = '\'
+
+" Press \\ to jump back to the last cursor position.
+nnoremap <leader>\ ``
+
+" Press \p to print the current file to the default printer from a Linux operating system.
+" View available printers:   lpstat -v
+" Set default printer:       lpoptions -d <printer_name>
+" <silent> means do not display output.
+nnoremap <silent> <leader>p :%w !lp<CR>
+
+" Type jj to exit insert mode quickly.
+"inoremap jj <Esc>
+
+" Press the space bar to type the : character in command mode.
+nnoremap <space> :
+
+" Pressing the letter o will open a new line below the current one.
+" Exit insert mode after creating a new line above or below the current line.
+nnoremap o o<esc>
+nnoremap O O<esc>
+
+" Center the cursor vertically when moving to the next word during a search.
+nnoremap n nzz
+nnoremap N Nzz
+
+" Yank from cursor to the end of line.
+nnoremap Y y$
+
+" Map the F5 key to run a Python script inside Vim.
+" I map F5 to a chain of commands here.
+" :w saves the file.
+" <CR> (carriage return) is like pressing the enter key.
+" !clear runs the external clear screen command.
+" !python3 % executes the current file with Python.
+nnoremap <f5> :w <CR>:!clear <CR>:!python % <CR>
+
+" You can split the window in Vim by typing :split or :vsplit.
+" Navigate the split view easier by pressing CTRL+j, CTRL+k, CTRL+h, or CTRL+l.
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+
+" Resize split windows using arrow keys by pressing:
+" CTRL+UP, CTRL+DOWN, CTRL+LEFT, or CTRL+RIGHT.
+noremap <c-up> <c-w>+
+noremap <c-down> <c-w>-
+noremap <c-left> <c-w>>
+noremap <c-right> <c-w><
+
+" }}}
+
+" VIMSCRIPT -------------------------------------------------------------- {{{
+
+" This will enable code folding.
+" Use the marker method of folding.
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" Autodeploy and load config
+autocmd BufWritePost */dotfiles/* !cd ~/dotfiles/ && ./deploy
+autocmd BufWritePost */vimrc source %
+
+" If the current file type is HTML/YML, set indentation to 2 spaces.
+autocmd Filetype html,yaml setlocal tabstop=2 shiftwidth=2 expandtab
+
+" If the current file type is hjson, set the file type to JavaScript.
+au BufRead,BufNewFile *.hjson setfiletype javascript
+
+" You can split a window into sections by typing `:split` or `:vsplit`.
+" Display cursorline and cursorcolumn ONLY in active window.
+augroup cursor_off
+autocmd!
+    autocmd WinLeave * set nocursorline nocursorcolumn
+    autocmd WinEnter * set cursorline cursorcolumn
+augroup END
+
+" }}}
+
+" STATUS LINE ------------------------------------------------------------ {{{
+
+set statusline=                         " Clear status line when vimrc is reloaded
+set statusline+=\ %F\ %M\ %Y\ %R        " Status line left side
+set statusline+=%=                      " Use a divider to separate the left side from the right side
+set statusline+=\ ascii:\ %b\ hex:\ 0x%B\ row:\ %l\ col:\ %c\ percent:\ %p%%        " Status line right side
+set laststatus=2                        " Show the status on the second to last line
+
+" }}}

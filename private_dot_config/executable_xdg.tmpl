@@ -1,0 +1,40 @@
+#!/bin/sh
+# https://wiki.archlinux.org/title/XDG_Base_Directory
+
+# Make sure env if set
+[ -z "$XDG_CONFIG_HOME" ] && export XDG_CONFIG_HOME="$HOME/.config"
+[ -z "$XDG_CACHE_HOME" ] && export XDG_CACHE_HOME="$HOME/.cache"
+[ -z "$XDG_DATA_HOME" ] && export XDG_DATA_HOME="$HOME/.local/share"
+[ -z "$XDG_STATE_HOME" ] && export XDG_STATE_HOME="$HOME/.local/state"
+{{- if eq .chezmoi.os "linux" -}}
+[ -z "$XDG_RUNTIME_DIR" ] && export XDG_RUNTIME_DIR="/run/user/{{ .chezmoi.uid }}"
+{{ else }}
+[ -z "$XDG_RUNTIME_DIR" ] && export XDG_RUNTIME_DIR="$XDG_CACHE_HOME"
+{{- end }}
+
+# Per-app settings
+export ANDROID_SDK_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/android"
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export GOPATH="$XDG_DATA_HOME/go"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc-2.0"
+export GTK_RC_FILES="$XDG_CONFIG_HOME/gtk-1.0/gtkrc"
+export INPUTRC="$XDG_CONFIG_HOME/readline/inputrc"
+export KDEHOME="$XDG_CONFIG_HOME/kde4"
+export LESSHISTFILE="-"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
+export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+export TMUX_TMPDIR="$XDG_RUNTIME_DIR"
+#export VIMINIT='let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | so $MYVIMRC'
+export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
+export VSCODE_PORTABLE="$XDG_DATA_HOME/vscode"
+export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
+#export XAUTHORITY="$XDG_STATE_HOME/Xauthority"
+export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
+export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
+
+export ANSIBLE_HOME="$XDG_CONFIG_HOME/ansible"
+export ANSIBLE_CONFIG="$XDG_CONFIG_HOME/ansible.cfg"
+export ANSIBLE_GALAXY_CACHE_DIR="$XDG_CACHE_HOME/ansible/galaxy_cache"

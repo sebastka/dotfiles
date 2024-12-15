@@ -1,0 +1,41 @@
+#        _
+#    ___| |__  _ __ ___
+#   / __| '_ \| '__/ __|
+#   \__ \ | | | | | (__
+#   |___/_| |_|_|  \___|
+
+[ ! -f /etc/shrc ] || . /etc/shrc
+
+# Abort if non-interactive shell
+echo "$-" | grep -q 'i' || return
+
+# GPG
+export GPG_TTY="$(tty)"
+export GPGKEY="{{ .gpg_key }}"
+
+# If .profile is not loaded (sudo su...)
+[ ! -z "$XDG_CONFIG_HOME" ] || . "$HOME/.config/xdg"
+
+{{ if stat .ssh_key_path -}}
+# SSH
+export SSH_KEY_PATH="{{ .ssh_key_path }}"
+. "$XDG_CONFIG_HOME/sh/ssh" > /dev/null
+{{- end }}
+
+# History file
+export HISTSIZE=100000
+export HISTFILESIZE=$HISTSIZE
+export SAVEHIST=$HISTSIZE
+export HISTTIMEFORMAT="[%F %T] "
+
+# Locale
+set -a; . "$XDG_CONFIG_HOME/locale.conf"; set +a;
+
+# Aliases
+. "$XDG_CONFIG_HOME/sh/aliasrc"
+
+# OS-specifics
+. "$XDG_CONFIG_HOME/sh/extra"
+
+# Functions
+. "$XDG_CONFIG_HOME/sh/functions"
