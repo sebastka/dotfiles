@@ -1,0 +1,69 @@
+#!/bin/sh
+set -eu
+
+main()
+{
+    public_prefix='#'
+    private_prefix=''
+    ts_prefix='#'
+    if [ "$#" -eq 1 ] && [ "$1" = "public" ]; then
+        public_prefix='';
+        private_prefix='#';
+    elif [ "$#" -eq 1 ] && [ "$1" = "ts" ]; then
+        ts_prefix='';
+        public_prefix='#';
+        private_prefix='#';
+    fi
+
+    doctl auth list | grep -v 'default' | while read context; do
+        get_context "$context" \
+            > "$HOME/.ssh/config.d/do.$context.conf"
+    done
+}
+
+get_context()
+{
+    context="$1"
+
+    doctl projects list --context "$context" --format 'ID,Name' | sed 1d \
+    | while read project_id project_name; do
+        printf '\n# DigitalOcean / %s\n' "$project_name"
+
+        get_project "$context" "$project_id"        
+    done
+}
+
+get_project()
+{
+    context="$1"
+    project_id="$2"
+
+    doctl projects resources list --context "$context" "$project_id" | sed 1d | grep 'do:droplet:' \
+    | while read res_urn _; do
+        get_ressources "$context" "$res_urn"
+    done
+}
+
+get_ressources()
+{
+    context="$1"
+    res_urn="$2"
+
+    doctl projects resources get --context "$context" "$res_urn" --format 'Name,PublicIPv4,PrivateIPv4' | sed 1d \
+    | while read hostname public private; do
+        printf 'Host %s\n' "$hostname"
+        printf '    %sHostname %s\n' "$public_prefix" "$public"
+        printf '    %sHostname %s\n' "$private_prefix" "$private"
+        #printf '    %sHostname %s\n' "$ts_prefix" "$(get_ts_addr "$private")"
+    done
+}
+
+get_ts_addr()
+{
+    private_addr="$1"
+
+    tailscale status --json \
+        | jq -r ".Peer.[] | {ts: .TailscaleIPs | first, priv: .PrimaryRoutes | first} | select(.priv == \"$private_addr/32\") | .ts"
+}
+
+main "$@"
