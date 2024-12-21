@@ -1,0 +1,10 @@
+{{ if eq .init_sys "systemd" -}}
+# Systemd
+alias \
+    sctl='sudo EDITOR="$EDITOR" PAGER="$PAGER" systemctl' \
+    jctl='sudo EDITOR="$EDITOR" PAGER="$PAGER" journalctl' \
+    ip='ip -color=auto'
+{{- else if eq .init_sys "init" -}}
+# Traditional init
+sctl() { sudo service "$2" "$1"; }
+{{- end }}

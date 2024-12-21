@@ -1,0 +1,12 @@
+[Unit]
+# systemctl --user enable mount@dirname
+#Requires=home-me.mount
+#After=home-me.mount
+
+[Service]
+ExecStart=/bin/mount %h/%I
+ExecStop=/bin/umount %h/%I
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,24 @@
+#   _     _                  
+#  | |   (_)_ __  _   ___  __
+#  | |   | | '_ \| | | \ \/ /
+#  | |___| | | | | |_| |>  < 
+#  |_____|_|_| |_|\__,_/_/\_\
+
+. "$XDG_CONFIG_HOME/sh/os/linux/aliasrc"
+. "$XDG_CONFIG_HOME/sh/os/linux/init"
+. "$XDG_CONFIG_HOME/sh/os/linux/{{ .chezmoi.arch }}"
+
+# Init new machine
+init_machine() {
+    sudo rm /etc/machine-id /var/lib/dbus/machine-id
+    sudo systemd-machine-id-setup
+    sudo ln -s /etc/machine-id /var/lib/dbus/machine-id
+
+    sudo rm /etc/ssh/ssh_host_*
+    sudo dpkg-reconfigure openssh-server
+}
+
+# Update arch mirrors
+arch_mirrors_update() {
+    sudo reflector --country Norway --country Sweden --country Denmark --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+}

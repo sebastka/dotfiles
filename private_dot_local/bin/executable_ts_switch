@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+
+find /var/lib -mindepth 1 -maxdepth 1 -type d -name "ts.*" \
+    | sed 's/\/var\/lib\/ts\.//' \
+    | while read account; do
+        if systemctl is-active "ts@$account" >/dev/null; then
+            echo "$account" > /tmp/ts.disabled
+            sudo systemctl disable --now "ts@$account"
+            sudo systemctl restart nftables
+            continue
+        fi
+done
+
+find /var/lib -mindepth 1 -maxdepth 1 -type d -name "ts.*" \
+    | sed 's/\/var\/lib\/ts\.//' \
+    | grep -v "$(cat /tmp/ts.disabled)" \
+    | while read account; do
+        sudo systemctl start "ts@$account"
+        break
+done
+
+rm -f /tmp/ts.disabled

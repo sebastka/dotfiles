@@ -1,0 +1,25 @@
+#                         __   _  _
+#    __ _ _ __ _ __ ___  / /_ | || |
+#   / _` | '__| '_ ` _ \| '_ \| || |_
+#  | (_| | |  | | | | | | (_) |__   _|
+#   \__,_|_|  |_| |_| |_|\___/   |_|
+
+install_starship()
+{
+    url="$(github_get_release_url 'starship/starship' 'v' 'select(.name == "starship-aarch64-unknown-linux-musl.tar.gz")')"
+
+    curl -L -s -o - "$url" \
+        | tar -xzf - -C /tmp
+
+    mv /tmp/starship "$HOME/.local/bin/starship"
+}
+
+install_doctl()
+{
+    url="$(github_get_release_url 'digitalocean/doctl' 'v' 'select(.name | test("linux-arm64.tar.gz"))')"
+
+    curl -L -s -o - "$url" \
+        | tar -xzf - -C /tmp
+
+    mv /tmp/doctl "$HOME/.local/bin/doctl"
+}

@@ -17,7 +17,7 @@ export LSCOLORS='ExGxFxdxCxegedabagecec'
 
 # Save history
 export HISTFILE="$XDG_STATE_HOME/ksh/history"
-mkdir -p "$(dirname "$HISTFILE")"
+[ -d "$XDG_STATE_HOME/ksh" ] || mkdir -p "$XDG_STATE_HOME/ksh"
 
 # Fix navigation
 set -o emacs

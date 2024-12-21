@@ -11,8 +11,8 @@ echo "$-" | grep -q 'i' || return
 # [ ! -f /etc/zshrc ] || . /etc/zshrc
 [ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
 
-[ -d "$XDG_STATE_HOME/zsh" ] || mkdir "$XDG_STATE_HOME/zsh"
 export HISTFILE="$XDG_STATE_HOME/zsh/history"
+[ -d "$XDG_STATE_HOME/zsh" ] || mkdir -p "$XDG_STATE_HOME/zsh"
 
 setopt SHARE_HISTORY
 autoload -Uz compinit

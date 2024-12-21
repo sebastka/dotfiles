@@ -1,0 +1,9 @@
+#   _   _ _   _ _
+#  | | | | |_(_) |___
+#  | | | | __| | / __|
+#  | |_| | |_| | \__ \
+#   \___/ \__|_|_|___/
+
+[ ! -s "$NVM_DIR/nvm.sh" ] || . "$NVM_DIR/nvm.sh"
+[ ! -s "$CARGO_HOME/env" ] || . "$CARGO_HOME/env"
+[ ! -s "$XDG_DATA_HOME/python/bin/activate" ] || . "$XDG_DATA_HOME/python/bin/activate"

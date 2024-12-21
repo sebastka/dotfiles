@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eux
+
+# Make sure:
+# - node/npm is installed with a supported version
+# - rust/cargo is installed
+
+main()
+{
+    version="$(get_latest_release_version)"
+    url="$(printf 'https://github.com/bitwarden/clients/archive/refs/tags/desktop-v%s.tar.gz' "$version")"
+    
+    rm -rf "$XDG_DATA_HOME/build/bitwarden-clients"
+    curl -L -s -o - "$url" | tar -xzf - -C /tmp
+    mkdir -p "$XDG_DATA_HOME/build"
+    mv "/tmp/clients-desktop-v$version" "$XDG_DATA_HOME/build/bitwarden-clients"
+    
+    cd "$XDG_DATA_HOME/build/bitwarden-clients/apps/desktop/desktop_native/napi"
+    npm run build
+}
+
+get_latest_release_version()
+{
+    curl -s "https://api.github.com/repos/bitwarden/clients/releases" \
+        | jq -r '.[].tag_name' \
+        | grep -v -E '(beta|rc|stable|alpha|prototype|@)' \
+        | grep 'desktop' \
+        | grep -o -E '[0-9.]+' \
+        | sort -V \
+        | sed -n '$p'
+}
+
+main

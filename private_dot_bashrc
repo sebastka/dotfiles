@@ -8,64 +8,46 @@
 # Abort if non-interactive shell
 echo "$-" | grep -q 'i' || return
 
-# Source global definitions
-#[ ! -f /etc/bashrc ] || . /etc/bashrc
-#[ ! -f /etc/bash.bashrc ] || . /etc/bash.bashrc
-[ ! -f "$HOME/.shrc" ] || . "$HOME/.shrc"
+# Source global definitions and completion
+[ ! -s /etc/bashrc ] || . /etc/bashrc
+[ ! -s /etc/bash.bashrc ] || . /etc/bash.bashrc
+[ ! -s /usr/share/bash-completion/bash_completion ] || . /usr/share/bash-completion/bash_completion # Loads completions in /etc and /usr/share + $XDG_DATA_HOME/bash-completion/completions
+[ ! -s "$HOME/.shrc" ] || . "$HOME/.shrc"
 
 eval "$(starship init bash)"
-[ ! -x "$(command -v tofu)" ] || complete -C "$(which tofu)" tofu
 
 # # History
-# shopt -s histappend
-# shopt -s checkwinsize
-# export HISTFILE="$XDG_STATE_HOME/bash/history"
-# export HISTCONTROL=ignoreboth
-# mkdir -p "$(dirname "$HISTFILE")"
+shopt -s histappend
+export HISTCONTROL=ignoreboth
+export HISTFILE="$XDG_STATE_HOME/bash/history"
+[ -d "$XDG_STATE_HOME/bash" ] || mkdir -p "$XDG_STATE_HOME/bash"
 
-# # From Ubuntu/Mint
-# [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-# if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-#     debian_chroot=$(cat /etc/debian_chroot)
-# fi
+# From Debian skel
+[ ! -x /usr/bin/lesspipe ] || eval "$(SHELL=/bin/sh lesspipe)"
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
 
-# # enable programmable completion features (you don't need to enable
-# # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# # sources /etc/bash.bashrc).
-# if ! shopt -oq posix; then
-#     if [ -f /usr/share/bash-completion/bash_completion ]; then
-#         . /usr/share/bash-completion/bash_completion
-#     elif [ -f /etc/bash_completion ]; then
-#         . /etc/bash_completion
-#     fi
+# Completion for utilties that support "$util completion bash"
+export BASH_COMPLETION_USER_DIR="$XDG_DATA_HOME/bash-completion"
+[ -d "$BASH_COMPLETION_USER_DIR/completions" ] || mkdir -p "$BASH_COMPLETION_USER_DIR/completions"
+for util in kubectl kubeadm helm doctl chezmoi cilium; do
+    if ! command -v $util >/dev/null 2>&1; then continue; fi
 
-#     # NVM
-#     [ ! -s "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
-# fi
+    [ -s "$BASH_COMPLETION_USER_DIR/completions/$util" ] \
+        || $util completion bash > "$BASH_COMPLETION_USER_DIR/completions/$util"
+done
 
-# # Load utilties
-# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-# [ -f "$XDG_CONFIG_HOME/envman/load.sh" ] && . "$XDG_CONFIG_HOME/envman/load.sh"
-# [ -f /usr/bin/terraform ] && complete -C /usr/bin/terraform terraform
+# Custom bash_completion files not present in the default dirs
+[ ! -s "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
 
-# # Python venv
-# [ ! -d "$XDG_DATA_HOME/python" ] || . "$XDG_DATA_HOME/python/bin/activate"
-
-# if [ -x "$(command -v tofu)" ]; then
-#     complete -C "$(whereis -b tofu | sed 1q | cut -d' ' -f2)" tofu
-#     complete -C "$(whereis -b tofu | sed 1q | cut -d' ' -f2)" tf
-# fi
-
-# # Completion for utilties that support "$util completion bash"
-# mkdir -p "$XDG_DATA_HOME/bash_completion"
-# for util in kubectl kubeadm helm doctl chezmoi cilium; do
-#     if ! command -v $util >/dev/null 2>&1; then continue; fi
-
-#     [ -f "$XDG_DATA_HOME/bash_completion/$util.bash" ] || \
-#         $util completion bash > "$XDG_DATA_HOME/bash_completion/$util.bash"
-    
-#     . "$XDG_DATA_HOME/bash_completion/$util.bash"
-# done
+# Autocomplete for aliases
+[ ! -x "$(command -v systemctl)" ] || { _completion_loader systemctl; complete -F _systemctl sctl; }
+[ ! -x "$(command -v journalctl)" ] || { _completion_loader journalctl; complete -F _journalctl jctl; }
+[ ! -x "$(command -v tofu)" ] || { _completion_loader tofu; complete -F _tofu tf; }
+[ ! -x "$(command -v chezmoi)" ] || { _completion_loader chezmoi; complete -F _chezmoi cz; }
+[ ! -x "$(command -v docker)" ] || { _completion_loader docker; complete -F _docker d; }
+[ ! -x "$(command -v kubectl)" ] || { _completion_loader kubectl; complete -F _kubectl k; }
 
 # # awscli
 # [ ! -f "$HOME/.local/bin/aws_completer" ] || complete -C "$HOME/.local/bin/aws_completer" aws

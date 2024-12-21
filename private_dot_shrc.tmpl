@@ -31,11 +31,14 @@ export HISTTIMEFORMAT="[%F %T] "
 # Locale
 set -a; . "$XDG_CONFIG_HOME/locale.conf"; set +a;
 
+# Cross-platform utils
+. "$XDG_CONFIG_HOME/sh/utils"
+
 # Aliases
 . "$XDG_CONFIG_HOME/sh/aliasrc"
 
-# OS-specifics
-. "$XDG_CONFIG_HOME/sh/extra"
+# Platform specific
+. "$XDG_CONFIG_HOME/sh/platform"
 
 # Functions
 . "$XDG_CONFIG_HOME/sh/functions"
