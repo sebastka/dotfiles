@@ -5,7 +5,7 @@ Host *
     IdentitiesOnly      yes
 {{- if stat .ssh_key_path }}
     IdentityFile        {{ .ssh_key_path }}
-{{ end }}
+{{ end -}}
     ControlMaster auto
-	ControlPath ~/.local/state/ssh/%r@%h:%p
-	ControlPersist yes
+    ControlPath ~/.local/state/ssh/%r@%h:%p
+    ControlPersist yes
