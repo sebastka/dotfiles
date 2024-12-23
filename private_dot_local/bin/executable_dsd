@@ -34,7 +34,7 @@ main() {
     fi
 
     # Let's make this script even worse
-    for f in .*.env.sh; do . "$f" > "$(echo "$f" | sed 's/\.sh//')"; done
+    for f in .*.env.sh; do . "$f" > "$(echo "$f" | sed 's/\.sh//')"; done || true
 
     (
         cat ../../docker-compose.common.yml
@@ -58,7 +58,7 @@ main() {
     ) | envsubst '$FM_ENV,$CLUSTER_NAME,$INSTANCE_NAME' | if [ ! -z "$dflag" ]; then cat; else docker stack deploy --detach=true --with-registry-auth --compose-file - "$service_name"; fi
 
     # Clean up
-    for f in .*.env.sh; do rm "$(echo "$f" | sed 's/\.sh//')"; done
+    for f in .*.env.sh; do rm "$(echo "$f" | sed 's/\.sh//')"; done || true
 }
 
 usage() { printf "Usage: %s: [-d] [-i instance_name] env\n" $0; }
