@@ -1,0 +1,66 @@
+#!/bin/sh
+set -eu
+
+# Docker stack deploy
+main() {
+    dflag=
+    iflag=
+    INSTANCE_NAME=
+
+    while getopts di:h name; do
+        case $name in
+            d) dflag=1; shift $(($OPTIND -1)); ;; # Dry run
+            i) iflag=1; export INSTANCE_NAME="$OPTARG"; shift $(($OPTIND -1)); ;; # Instance name
+            h) usage; exit 0; ;;
+            ?) usage; exit 2; ;;
+        esac
+    done
+
+    # One positional argument required
+    [ $# -eq 1 ] || { usage; exit 2; }
+
+    stack="$(pwd | rev | cut -d'/' -f1 | rev)"
+    export FM_ENV="$1"
+    export CLUSTER_NAME="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_name=' | cut -d'=' -f2)"
+    export CLUSTER_DOMAIN="$(docker node inspect self -f '{{ range $k, $v := .Spec.Labels }}{{ $k }}={{ $v }} {{end}}' | tr ' ' '\n' | grep 'cluster_domain=' | cut -d'=' -f2)"
+    [ ! -z "$INSTANCE_NAME" ] || export INSTANCE_NAME="$stack"
+
+    if [ "$FM_ENV" = 'all' ]; then
+        service_name="$stack" # traefik
+    elif [ ! -z "$iflag" ]; then
+        service_name="$FM_ENV-$stack-$INSTANCE_NAME" # dev-rc-soldk
+    else
+        service_name="$FM_ENV-$stack" # dev-fmapi
+    fi
+
+    # Let's make this script even worse
+    for f in .*.env.sh; do . "$f" > "$(echo "$f" | sed 's/\.sh//')"; done
+
+    (
+        cat ../../docker-compose.common.yml
+        cat docker-compose.base.yml 
+
+        for f in \
+                "docker-compose.$CLUSTER_NAME.$FM_ENV.$INSTANCE_NAME.yml" \
+                "docker-compose.$CLUSTER_NAME.FM_ENV.$INSTANCE_NAME.yml" \
+                "docker-compose.CLUSTER_NAME.$FM_ENV.$INSTANCE_NAME.yml" \
+                "docker-compose.CLUSTER_NAME.FM_ENV.$INSTANCE_NAME.yml" \
+                "docker-compose.$CLUSTER_NAME.$FM_ENV.yml" \
+                "docker-compose.$CLUSTER_NAME.FM_ENV.yml" \
+                "docker-compose.CLUSTER_NAME.$FM_ENV.yml" \
+                "docker-compose.CLUSTER_NAME.FM_ENV.yml";
+        do
+            [ -f "$f" ] && cat "$f" && exit 0 || continue
+        done
+
+        echo "No specific compose file found"
+        exit 1
+    ) | envsubst '$FM_ENV,$CLUSTER_NAME,$INSTANCE_NAME' | if [ ! -z "$dflag" ]; then cat; else docker stack deploy --detach=true --with-registry-auth --compose-file - "$service_name"; fi
+
+    # Clean up
+    for f in .*.env.sh; do rm "$(echo "$f" | sed 's/\.sh//')"; done
+}
+
+usage() { printf "Usage: %s: [-d] [-i instance_name] env\n" $0; }
+
+main "$@"; exit
