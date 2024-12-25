@@ -32,20 +32,22 @@ fi
 export BASH_COMPLETION_USER_DIR="$XDG_DATA_HOME/bash-completion"
 [ -d "$BASH_COMPLETION_USER_DIR/completions" ] || mkdir -p "$BASH_COMPLETION_USER_DIR/completions"
 for util in kubectl kubeadm helm doctl chezmoi cilium; do
-    if ! command -v $util >/dev/null 2>&1; then continue; fi
+    # Skip if the utility is not installed or not in $HOME/.local/bin
+    if ! command -v $util 2>/dev/null | grep -q "$HOME/.local/bin"; then continue; fi
 
-    [ -s "$BASH_COMPLETION_USER_DIR/completions/$util" ] \
+    [ -f "$BASH_COMPLETION_USER_DIR/completions/$util" ] \
         || $util completion bash > "$BASH_COMPLETION_USER_DIR/completions/$util"
 done
 
 # Custom bash_completion files not present in the default dirs
 [ ! -s "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
+[ ! -x "$(command -v tofu)" ] || complete -o nospace -C "$(which tofu)" tofu
 
 # Autocomplete for aliases
 [ ! -x "$(command -v systemctl)" ] || { _completion_loader systemctl; complete -F _systemctl sctl; }
 [ ! -x "$(command -v journalctl)" ] || { _completion_loader journalctl; complete -F _journalctl jctl; }
-[ ! -x "$(command -v tofu)" ] || { _completion_loader tofu; complete -F _tofu tf; }
-[ ! -x "$(command -v chezmoi)" ] || { _completion_loader chezmoi; complete -F _chezmoi cz; }
+[ ! -x "$(command -v tofu)" ] || { complete -o nospace -C "$(which tofu)" tf; }
+[ ! -x "$(command -v chezmoi)" ] || { _completion_loader chezmoi; complete -o default -F __start_chezmoi cz; }
 [ ! -x "$(command -v docker)" ] || { _completion_loader docker; complete -F _docker d; }
 [ ! -x "$(command -v kubectl)" ] || { _completion_loader kubectl; complete -F _kubectl k; }
 

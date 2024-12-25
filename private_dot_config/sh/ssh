@@ -7,6 +7,7 @@
 # https://stackoverflow.com/questions/18880024/start-ssh-agent-on-login
 
 SSH_ENV="$HOME/.ssh/ssh-agent.env"
+[ -d "$XDG_STATE_HOME/ssh" ] || mkdir -p "$XDG_STATE_HOME/ssh"
 
 [ -x "$(command -v ssh-agent)" ] || return 1
 
