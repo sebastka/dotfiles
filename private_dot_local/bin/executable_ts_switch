@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eu
 
+touch /tmp/ts.disabled
+
 find /var/lib -mindepth 1 -maxdepth 1 -type d -name "ts.*" \
     | sed 's/\/var\/lib\/ts\.//' \
     | while read account; do
