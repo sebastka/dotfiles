@@ -1,39 +1,29 @@
-
 #                       _  __   _  _
 #    __ _ _ __ ___   __| |/ /_ | || |
 #   / _` | '_ ` _ \ / _` | '_ \| || |_
 #  | (_| | | | | | | (_| | (_) |__   _|
 #   \__,_|_| |_| |_|\__,_|\___/   |_|
 
+install_starship() { _install_starship 'x86_64-unknown-linux-gnu'; }
+install_doctl() { _install_doctl 'amd64'; }
+install_chezmoi() { _install_chezmoi 'amd64'; }
+install_kubectl() { _install_kubectl 'amd64'; }
+install_helm() { _install_helm 'amd64'; }
+install_awscli() { _install_awscli 'x86_64'; }
+install_cli53() { _install_cli53 'amd64'; }
+install_k9s() { _install_k9s 'amd64'; }
+install_act() { _install_act 'amd64'; }
 
-install_starship()
-{
-    url="$(github_get_release_url 'starship/starship' 'v' 'select(.name == "starship-x86_64-unknown-linux-gnu.tar.gz")')"
+update_all() {
+    install_starship
+    install_doctl
+    install_chezmoi
+    install_kubectl
+    install_helm
+    install_awscli
+    install_cli53
+    install_k9s
+    install_act
 
-    curl -L -s -o - "$url" \
-        | tar -xzf - -C /tmp
-
-    mv /tmp/starship "$HOME/.local/bin/starship"
+    install_composer
 }
-
-install_doctl()
-{
-    url="$(github_get_release_url 'digitalocean/doctl' 'v' 'select(.name | test("linux-amd64.tar.gz"))')"
-
-    curl -L -s -o - "$url" \
-        | tar -xzf - -C /tmp
-
-    mv /tmp/doctl "$HOME/.local/bin/doctl"
-}
-
-# Needs to be tested:
-#install_cfterraforming() { github_install_bin cloudflare cf-terraforming '' 'select(.name | test("linux_amd64")) | select(.name | test("tar.gz"))'; }
-install_chezmoi() { github_install_bin twpayne chezmoi 'v'   'select(.name | test("linux.amd64")) | select(.name | test("musl") | not) | select(.name | test("tar.gz"))'; }
-install_composer() { github_install_bin composer composer '' 'select(.name | test("composer.phar")) | select(.name | test("composer.phar.asc") | not)'; }
-#install_ctop() { install_github_bin bcicen ctop; } # No tar.gz archive
-#install_neovim() { github_install_bin neovim neovim; }
-install_kubectl() { curl -L -s -o "/home/$USER/.local/bin/kubectl" "https://dl.k8s.io/release/$(curl -L -s "https://dl.k8s.io/release/stable.txt")/bin/linux/amd64/kubectl"; chmod +x "/home/$USER/.local/bin/kubectl"; }
-install_helm() { mkdir /tmp/helm; curl -L -s -o - "https://get.helm.sh/helm-v$(github_latest_release 'helm/helm')-linux-amd64.tar.gz" | tar -xzf - -C /tmp/helm; mv /tmp/helm/linux-amd64/helm /home/$USER/.local/bin/; rm -rf /tmp/helm; }
-install_awscli() { mkdir /tmp/aws; curl -L -s -o "/tmp/aws/awscliv2.zip" "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; unzip -q -d "/tmp/aws" "/tmp/aws/awscliv2.zip"; mkdir -p "$HOME/.local/bin" "$XDG_DATA_HOME/aws-cli"; /tmp/aws/aws/install  --bin-dir "$HOME/.local/bin" --install-dir "$XDG_DATA_HOME/aws-cli" --update; rm -rf /tmp/aws; }
-install_cli53() { github_install_bin barnybug cli53 '' 'select(.name | test("cli53-linux-amd64"))'; }
-install_k9s() { mkdir /tmp/k9s; curl -L -s -o - "$(github_get_release_url 'derailed/k9s' 'v' 'select(.name == "k9s_Linux_amd64.tar.gz")')" | tar -xzf - -C /tmp/k9s; mv /tmp/k9s/k9s /home/$USER/.local/bin/; rm -rf /tmp/k9s; }

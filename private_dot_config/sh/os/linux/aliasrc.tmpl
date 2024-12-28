@@ -6,9 +6,6 @@ alias \
     grep='grep --color=auto' \
     diff='diff --color=auto'
 
-# Install Starship (Assume GNU / x86_64)
-[ -x "$(command -v starship)" ] || install_starship
-
 {{ if (or (contains "debian" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "debian" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "debian" .chezmoi.osRelease.idLike))) }}
 # Debian(-like)
 alias \
@@ -16,8 +13,11 @@ alias \
     pu='p update && p upgrade -y && p dist-upgrade -y && p autoremove --purge && p clean'
 {{- else if (or (contains "arch" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "arch" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "arch" .chezmoi.osRelease.idLike))) }}
 # Arch Linux
-alias p='paru'
+alias  \
+    p='paru'
 {{- else if (or (contains "fedora" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "fedora" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "fedora" .chezmoi.osRelease.idLike))) }}
 # Fedora
-alias p='sudo dnf'
+alias  \
+    p='sudo dnf' \
+    pu='p update && p upgrade'
 {{- end }}

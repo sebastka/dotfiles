@@ -4,22 +4,26 @@
 #  | (_| | |  | | | | | | (_) |__   _|
 #   \__,_|_|  |_| |_| |_|\___/   |_|
 
-install_starship()
-{
-    url="$(github_get_release_url 'starship/starship' 'v' 'select(.name == "starship-aarch64-unknown-linux-musl.tar.gz")')"
+install_starship() { _install_starship 'aarch64-unknown-linux-musl'; }
+install_doctl() { _install_doctl 'arm64'; }
+install_chezmoi() { _install_chezmoi 'arm64'; }
+install_kubectl() { _install_kubectl 'arm64'; }
+install_helm() { _install_helm 'arm64'; }
+install_awscli() { _install_awscli 'aarch64'; }
+install_cli53() { _install_cli53 'arm64'; }
+install_k9s() { _install_k9s 'arm64'; }
+install_act() { _install_act 'arm64'; }
 
-    curl -L -s -o - "$url" \
-        | tar -xzf - -C /tmp
+update_all() {
+    install_starship
+    install_doctl
+    install_chezmoi
+    install_kubectl
+    install_helm
+    install_awscli
+    install_cli53
+    install_k9s
+    install_act
 
-    mv /tmp/starship "$HOME/.local/bin/starship"
-}
-
-install_doctl()
-{
-    url="$(github_get_release_url 'digitalocean/doctl' 'v' 'select(.name | test("linux-arm64.tar.gz"))')"
-
-    curl -L -s -o - "$url" \
-        | tar -xzf - -C /tmp
-
-    mv /tmp/doctl "$HOME/.local/bin/doctl"
+    install_composer
 }

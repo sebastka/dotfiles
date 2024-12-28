@@ -42,6 +42,9 @@ alias \
     dpa='docker system prune --all --volumes; docker volume prune --filter all=1' \
     dc='docker-compose'
 
+alias \
+    k='kubectl'
+
 # Terraform / OpenTofu
 [ ! -x "$(command -v terraform)" ] || alias tf='terraform'
 [ ! -x "$(command -v tofu)" ] || alias tf='tofu'
