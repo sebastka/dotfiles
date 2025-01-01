@@ -14,6 +14,14 @@ install_cli53() { _install_cli53 'amd64'; }
 install_k9s() { _install_k9s 'amd64'; }
 install_act() { _install_act 'amd64'; }
 
+install_bw() {
+    readonly repo="$1"
+    readonly url="$(curl -s "https://api.github.com/repos/bitwarden/clients/releases" | jq -r '[ .[] | select(.tag_name | startswith("cli-")) ][0].assets[] | select(.name | startswith("bw-linux")) | select(.name | endswith("zip")) | .browser_download_url')"
+
+    curl -s -L "$url" | zcat > "$HOME/.local/bin/bw"
+    chmod +x "$HOME/.local/bin/bw"
+}
+
 update_all() {
     install_starship
     install_doctl

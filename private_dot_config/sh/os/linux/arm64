@@ -13,6 +13,7 @@ install_awscli() { _install_awscli 'aarch64'; }
 install_cli53() { _install_cli53 'arm64'; }
 install_k9s() { _install_k9s 'arm64'; }
 install_act() { _install_act 'arm64'; }
+install_bw() { npm install -g @bitwarden/cli; }
 
 update_all() {
     install_starship
