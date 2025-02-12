@@ -33,6 +33,7 @@ _install_chezmoi() { _install_from_github_targz 'twpayne/chezmoi' 'v' "select(.n
 _install_k9s() { _install_from_github_targz 'derailed/k9s' 'v' "select(.name == \"k9s_Linux_$1.tar.gz\")"; }
 _install_act() { _install_from_github_targz 'nektos/act' 'v' "select(.name == \"act_Linux_$1.tar.gz\")"; }
 _install_cli53() { _install_from_github 'barnybug/cli53' '' "select(.name | test(\"cli53-linux-$1\"))"; }
+_install_stripecli() { _install_from_github_targz 'stripe/stripe-cli' 'v' "select(.name | test(\"stripe_1.23.10_linux_$1.tar.gz\"))"; }
 
 # ctop
 # cfterraforming

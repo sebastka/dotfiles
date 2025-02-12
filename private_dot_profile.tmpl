@@ -35,9 +35,14 @@ export MAKEFLAGS="-j{{ .nbproc }}"
 {{- end }}
 
 # Add to PATH
-[ -d "$HOME/.local/bin" ] && export PATH=$HOME/.local/bin:$PATH
-[ -d "$CARGO_HOME/bin" ] && export PATH=$CARGO_HOME/bin:$PATH
-[ -L /var/lib/rancher/rke2/bin ] && export PATH=/var/lib/rancher/rke2/bin:$PATH
+for p in \
+    "$HOME/.local/bin" \
+    "$CARGO_HOME/bin" \
+    /var/lib/rancher/rke2/bin \
+    "$XDG_CONFIG_HOME/composer/vendor/bin";
+do
+    [ ! -d "$p" ] || export PATH=$p:$PATH
+done
 
 {{ if eq .chezmoi.os "freebsd" -}}
 # FreeBSD

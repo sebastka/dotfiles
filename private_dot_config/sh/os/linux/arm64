@@ -11,6 +11,7 @@ install_kubectl() { _install_kubectl 'arm64'; }
 install_helm() { _install_helm 'arm64'; }
 install_awscli() { _install_awscli 'aarch64'; }
 install_cli53() { _install_cli53 'arm64'; }
+install_stripecli() { _install_stripecli 'arm64'; }
 install_k9s() { _install_k9s 'arm64'; }
 install_act() { _install_act 'arm64'; }
 install_bw() { npm install -g @bitwarden/cli; }

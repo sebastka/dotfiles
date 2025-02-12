@@ -15,6 +15,8 @@ main()
         private_prefix='#';
     fi
 
+    rm "$HOME"/.ssh/config.d/do.*.conf
+
     doctl auth list | grep -v 'default' | while read context; do
         get_context "$context" \
             > "$HOME/.ssh/config.d/do.$context.conf"
