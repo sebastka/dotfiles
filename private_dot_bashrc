@@ -42,7 +42,7 @@ for util in kubectl kubeadm helm doctl chezmoi cilium; do
 done
 
 # Stripe CLI
-if command -v stripe 2>/dev/null && [ ! -f "$BASH_COMPLETION_USER_DIR/completions/stripe" ]; then
+if command -v stripe >/dev/null && [ ! -f "$BASH_COMPLETION_USER_DIR/completions/stripe" ]; then
     stripe completion >/dev/null
     mv stripe-completion.bash "$BASH_COMPLETION_USER_DIR/completions/stripe"
 fi
