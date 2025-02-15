@@ -3,9 +3,9 @@ Include config.d/*.conf
 Host *
     AddKeysToAgent      yes
     IdentitiesOnly      yes
-    ControlMaster auto
-    ControlPath ~/.local/state/ssh/%r@%h:%p
-    ControlPersist yes
+    #ControlMaster auto
+    #ControlPath ~/.local/state/ssh/%r@%h:%p
+    #ControlPersist yes
 {{- if stat .ssh_key_path }}
     IdentityFile        {{ .ssh_key_path }}
 {{ end -}}
