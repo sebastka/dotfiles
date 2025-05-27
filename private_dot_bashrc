@@ -49,6 +49,7 @@ fi
 
 # Custom bash_completion files not present in the default dirs
 [ ! -s "$NVM_DIR/bash_completion" ] || . "$NVM_DIR/bash_completion"
+[ ! -s "$RVM_PATH/scripts/completion" ] || . "$RVM_PATH/scripts/completion"
 [ ! -x "$(command -v tofu)" ] || complete -o nospace -C "$(which tofu)" tofu
 
 # Autocomplete for aliases

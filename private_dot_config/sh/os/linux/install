@@ -8,3 +8,4 @@
 
 install_composer() { _install_from_github 'composer/composer' '' 'select(.name == "composer.phar")'; }
 install_nvm() { rm -rf "$NVM_DIR" && git clone --depth=1 --single-branch --branch=master git@github.com:nvm-sh/nvm.git "$NVM_DIR" && rm -rf "$NVM_DIR/.git"; }
+install_rvm() { curl -sSL https://get.rvm.io | bash -s -- --path "$RVM_PATH" --ignore-dotfiles; }

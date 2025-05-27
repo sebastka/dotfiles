@@ -33,10 +33,18 @@ export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
 export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
 export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
 
+# Composer
+# export COMPOSER_HOME="$XDG_DATA_HOME/composer"
+export COMPOSER_CACHE_DIR="$XDG_CACHE_HOME/composer"
+for d in files repo vcs; do [ -d "$COMPOSER_CACHE_DIR/$d" ] || mkdir -p "$COMPOSER_CACHE_DIR/$d"; done
+
 # NVM / Node / NPM
 export NVM_DIR="$XDG_CONFIG_HOME/nvm"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
+
+# RVM / Ruby / Gem
+export RVM_PATH="$XDG_STATE_HOME/rvm"
 
 # Ansible
 export ANSIBLE_HOME="$XDG_CONFIG_HOME/ansible"
