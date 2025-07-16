@@ -21,8 +21,8 @@ vifstab() {
         sudo cp -f "$d/fstab.bak" /etc/fstab
         sudo rm -rf "$d"
     else # Changes are invalid
-        cat "$d/fstab.bak"
-        sudo rm -f "$d"
+        sudo cat "$d/fstab.bak"
+        sudo rm -rf "$d"
     fi
 }
 
