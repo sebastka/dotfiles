@@ -12,7 +12,7 @@ scanport() {
 # Edit fstab safely
 vifstab() {
     sudo cp -f /etc/fstab /tmp/fstab.bak
-    sudoedit /etc/fstab.bak
+    sudoedit /tmp/fstab.bak
 
     if diff /etc/fstab /tmp/fstab.bak >/dev/null; then # No changes
         sudo rm /tmp/fstab.bak
