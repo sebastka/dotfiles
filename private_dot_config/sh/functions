@@ -11,16 +11,18 @@ scanport() {
 
 # Edit fstab safely
 vifstab() {
-    sudo cp -f /etc/fstab /tmp/fstab.bak
-    sudoedit /tmp/fstab.bak
+    d="$(mktemp -d)"
+    sudo cp -f /etc/fstab "$d/fstab.bak"
+    sudoedit "$d/fstab.bak"
 
-    if diff /etc/fstab /tmp/fstab.bak >/dev/null; then # No changes
-        sudo rm /tmp/fstab.bak
+    if diff /etc/fstab "$d/fstab.bak" >/dev/null; then # No changes
+        sudo rm -rf "$d"
     elif sudo findmnt --fstab --verify >/dev/null; then # Changes are valid
-        sudo mv -f /tmp/fstab.bak /tmp/fstab
+        sudo cp -f "$d/fstab.bak" /tmp/fstab
+        sudo rm -rf "$d"
     else # Changes are invalid
-        cat /tmp/fstab.bak
-        sudo rm -f /tmp/fstab.bak
+        cat "$d/fstab.bak"
+        sudo rm -f "$d"
     fi
 }
 
