@@ -17,7 +17,7 @@ vifstab() {
 
     if sudo diff /etc/fstab "$d/fstab.bak" >/dev/null; then # No changes
         echo "No changes"
-    elif sudo findmnt --fstab --verify >/dev/null | grep -q "0 parse errors, 0 errors, 1 warning"; then # Changes are valid
+    elif sudo findmnt --fstab --verify 2>&1 | grep -q -x "0 parse errors, 0 errors, 1 warning"; then # Changes are valid
         sudo cp -f "$d/fstab.bak" /etc/fstab
     else # Changes are invalid
         sudo cat "$d/fstab.bak"
