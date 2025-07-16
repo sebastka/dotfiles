@@ -11,7 +11,7 @@ scanport() {
 
 # Edit fstab safely
 vifstab() {
-    d="$(mktemp -d)"
+    d="$(sudo mktemp -d)"
     sudo cp -f /etc/fstab "$d/fstab.bak"
     sudoedit "$d/fstab.bak"
 
