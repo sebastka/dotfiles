@@ -18,7 +18,7 @@ vifstab() {
     if sudo diff /etc/fstab "$d/fstab.bak" >/dev/null; then # No changes
         sudo rm -rf "$d"
     elif sudo findmnt --fstab --verify >/dev/null; then # Changes are valid
-        sudo cp -f "$d/fstab.bak" /tmp/fstab
+        sudo cp -f "$d/fstab.bak" /etc/fstab
         sudo rm -rf "$d"
     else # Changes are invalid
         cat "$d/fstab.bak"
