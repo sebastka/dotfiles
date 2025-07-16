@@ -9,6 +9,21 @@ scanport() {
     iftop -nNP -m100M -i eth0 -f "port $1"
 }
 
+# Edit fstab safely
+vifstab() {
+    sudo cp -f /etc/fstab /tmp/fstab.bak
+    sudoedit /etc/fstab.bak
+
+    if diff /etc/fstab /tmp/fstab.bak >/dev/null; then # No changes
+        sudo rm /tmp/fstab.bak
+    elif sudo findmnt --fstab --verify >/dev/null; then # Changes are valid
+        sudo mv -f /tmp/fstab.bak /tmp/fstab
+    else # Changes are invalid
+        cat /tmp/fstab.bak
+        sudo rm -f /tmp/fstab.bak
+    fi
+}
+
 # Auto open tmux in mosh session
 mssh() {
     mosh "$*" -- tmux
