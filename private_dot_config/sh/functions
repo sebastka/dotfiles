@@ -16,14 +16,14 @@ vifstab() {
     sudoedit "$d/fstab.bak"
 
     if sudo diff /etc/fstab "$d/fstab.bak" >/dev/null; then # No changes
-        sudo rm -rf "$d"
+        echo "No changes"
     elif sudo findmnt --fstab --verify >/dev/null | grep -q -x "0 parse errors, 0 errors, 1 warning"; then # Changes are valid
         sudo cp -f "$d/fstab.bak" /etc/fstab
-        sudo rm -rf "$d"
     else # Changes are invalid
         sudo cat "$d/fstab.bak"
-        sudo rm -rf "$d"
     fi
+
+    sudo rm -rf "$d"
 }
 
 # Auto open tmux in mosh session
