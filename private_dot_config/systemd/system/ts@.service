@@ -25,6 +25,7 @@ WantedBy=multi-user.target
 
 ## Instruction:
 # 1. Copy to /lib/systemd/system/ts@.service
-# 2. sudo mkdir /var/lib/ts.XXX
-# 3. sudo systemctl start ts@XXX
-# 4. sudo tailscale up --accept-routes
+# 2. printf "PORT=41641\n" | sudo tee /etc/default/tailscaled
+# 3. sudo mkdir /var/lib/ts.XXX
+# 4. sudo systemctl start ts@XXX
+# 5. sudo tailscale up --accept-routes

@@ -33,7 +33,7 @@ fi
 # Completion for utilties that support "$util completion bash"
 export BASH_COMPLETION_USER_DIR="$XDG_DATA_HOME/bash-completion"
 [ -d "$BASH_COMPLETION_USER_DIR/completions" ] || mkdir -p "$BASH_COMPLETION_USER_DIR/completions"
-for util in kubectl kubeadm helm doctl chezmoi cilium; do
+for util in kubectl kubeadm helm doctl chezmoi cilium composer; do
     # Skip if the utility is not installed or not in $HOME/.local/bin
     if ! command -v $util 2>/dev/null | grep -q "$HOME/.local/bin"; then continue; fi
 

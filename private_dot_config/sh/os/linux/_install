@@ -21,8 +21,8 @@ _install_from_github_targz()
 {
     url="$(github_get_release_url "$1" "$2" "$3")"
 
-    curl -L -s -o - "$url" \
-        | tar -xzf - -C "$HOME/.local/bin/"
+    curl -L -s  "$url" \
+        | tar -xz -C "$HOME/.local/bin/"
 
     rm -rf "$HOME/.local/bin/completions" "$HOME/.local/bin/LICENSE" "$HOME/.local/bin/README.md";
 }
@@ -33,7 +33,7 @@ _install_chezmoi() { _install_from_github_targz 'twpayne/chezmoi' 'v' "select(.n
 _install_k9s() { _install_from_github_targz 'derailed/k9s' 'v' "select(.name == \"k9s_Linux_$1.tar.gz\")"; }
 _install_act() { _install_from_github_targz 'nektos/act' 'v' "select(.name == \"act_Linux_$1.tar.gz\")"; }
 _install_cli53() { _install_from_github 'barnybug/cli53' '' "select(.name | test(\"cli53-linux-$1\"))"; }
-_install_stripecli() { _install_from_github_targz 'stripe/stripe-cli' 'v' "select(.name | test(\"stripe_1.23.10_linux_$1.tar.gz\"))"; }
+_install_stripecli() { _install_from_github_targz 'stripe/stripe-cli' 'v' "select(.name | test(\"_linux_$1.tar.gz\"))"; }
 
 # ctop
 # cfterraforming
