@@ -1,0 +1,75 @@
+#!/bin/sh
+set -eu
+
+main()
+{
+    printf -- '0) None\n'
+    get_list | while IFS=, read n account; do
+        printf -- '%d) %s' "$n" "$account"
+        ! is_active "$account" || printf -- ' *'
+        printf -- '\n'
+    done
+
+    printf -- 'Select option: '
+    read c
+
+    if [ "$c" -eq 0 ]; then
+        disable_all
+    else
+        get_list | while IFS=, read n account; do
+            if [ "$c" -eq "$n" ]; then
+                toggle "$account"
+            fi
+        done
+    fi
+}
+
+get_list()
+{
+    i=1
+    find /var/lib -mindepth 1 -maxdepth 1 -type d -name "ts.*" \
+        | cut -d'.' -f2- \
+        | while read account; do
+            printf -- '%d,%s\n' "$i" "$account"
+            i=$((i+1))
+        done
+}
+
+is_active()
+{
+    systemctl is-active "ts@$1" >/dev/null;
+}
+
+toggle()
+{
+    if is_active "$1"; then
+        disable "$1"
+    else
+        disable_all
+        enable "$1"
+    fi
+}
+
+disable()
+{
+    sudo systemctl disable --now "ts@$1"
+    printf -- '- Disabled ts.%s\n' "$1"
+
+    sudo systemctl restart nftables
+    printf -- '- Restarted nftables\n'
+}
+
+enable()
+{
+    sudo systemctl start "ts@$1"
+    printf -- '- Started ts.%s\n' "$1"
+}
+
+disable_all()
+{
+    get_list | while IFS=, read n account; do
+        ! is_active "$account" || disable "$account"
+    done
+}
+
+main
