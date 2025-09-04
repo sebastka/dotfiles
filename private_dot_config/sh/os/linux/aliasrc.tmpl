@@ -9,7 +9,7 @@ alias \
 {{ if (or (contains "debian" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "debian" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "debian" .chezmoi.osRelease.idLike))) }}
 # Debian(-like)
 alias \
-    p='sudo apt-get' \
+    p='sudo apt' \
     pu='p update && p upgrade -y && p dist-upgrade -y && p autoremove --purge && p clean'
 {{- else if (or (contains "arch" .chezmoi.os) (and (hasKey .chezmoi.osRelease "id") (contains "arch" .chezmoi.osRelease.id)) (and (hasKey .chezmoi.osRelease "idLike") (contains "arch" .chezmoi.osRelease.idLike))) }}
 # Arch Linux
