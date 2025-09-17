@@ -20,7 +20,7 @@ eval "$(starship init bash)"
 
 # # History
 shopt -s histappend
-export HISTCONTROL=ignoreboth
+export HISTCONTROL=ignoreboth:ignorespace
 export HISTFILE="$XDG_STATE_HOME/bash/history"
 [ -d "$XDG_STATE_HOME/bash" ] || mkdir -p "$XDG_STATE_HOME/bash"
 
