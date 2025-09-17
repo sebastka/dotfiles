@@ -13,15 +13,13 @@ main()
     printf -- 'Select option: '
     read c
 
-    if [ "$c" -eq 0 ]; then
-        disable_all
-    else
-        get_list | while IFS=, read n account; do
-            if [ "$c" -eq "$n" ]; then
-                toggle "$account"
-            fi
-        done
-    fi
+    [ ! -z "$c" ] || return; # No option selected
+    [ ! "$c" -eq 0 ] || { disable_all; return; } # 0 - Disable all
+
+    # Toggle specific account
+    get_list | while IFS=, read n account; do
+        [ ! "$c" -eq "$n" ] || toggle "$account"
+    done
 }
 
 get_list()
