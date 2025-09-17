@@ -22,6 +22,7 @@ install_bw() {
     curl -s -L "$url" | zcat > "$HOME/.local/bin/bw"
     chmod +x "$HOME/.local/bin/bw"
 }
+install_bws() { _install_bws 'x86_64-unknown-linux-gnu'; }
 
 update_all() {
     install_starship

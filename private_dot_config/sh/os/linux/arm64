@@ -15,6 +15,7 @@ install_stripecli() { _install_stripecli 'arm64'; }
 install_k9s() { _install_k9s 'arm64'; }
 install_act() { _install_act 'arm64'; }
 install_bw() { npm install -g @bitwarden/cli; }
+install_bws() { _install_bws 'aarch64-unknown-linux-gnu'; }
 
 update_all() {
     install_starship
